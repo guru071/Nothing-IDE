@@ -12,7 +12,22 @@ npm start
 
 Server listens on `http://localhost:3000` (or `$PORT` if set).
 
-## Deploy to Render (free tier)
+## Deploy to Vercel (free tier)
+
+The Express app runs as a single serverless function via `api/index.js` + `vercel.json` (both already set up in this folder) — no other code changes needed.
+
+1. Push this repository to GitHub (already done if you're using `guru071/Nothing-IDE`).
+2. On [vercel.com](https://vercel.com), **Add New → Project**, import the repo.
+3. Set **Root Directory** to `server` (since this is a subfolder of the IDE repo).
+4. Framework preset: **Other**. Build command / output directory: leave default/empty.
+5. Deploy. Vercel gives you a URL like `https://your-project.vercel.app`.
+
+**Free-tier caveats to know about:**
+- No persistent disk — anything written at runtime (like the download counter in `plugins.json`) resets on the next deploy, and may not even be shared between concurrent invocations. Fine for this server since nothing critical depends on it.
+- Response size is capped (~4.5MB) on the Hobby plan. The bundled `hello-world.zip` example is tiny, but if you add a plugin with a large archive, its `/api/plugin/download/:id` response could exceed that limit and fail — keep individual plugin zips small.
+- No cold-start delay worth mentioning (Vercel's functions start fast), unlike Render's free tier.
+
+## Deploy to Render (free tier) — alternative
 
 1. Push this repository to GitHub (or GitLab/Bitbucket).
 2. On [render.com](https://render.com), create a new **Web Service** and connect the repo.
@@ -28,7 +43,7 @@ Server listens on `http://localhost:3000` (or `$PORT` if set).
 
 ## Point the app at this server
 
-In Nothing IDE: **Settings → Plugin server**, enter your Render URL (e.g. `https://your-service.onrender.com`). No rebuild needed — it's a runtime setting.
+In Nothing IDE: **Settings → Plugin server**, enter your deployed URL (e.g. `https://your-project.vercel.app`). No rebuild needed — it's a runtime setting.
 
 ## Adding your own plugins
 

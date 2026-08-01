@@ -1,11 +1,30 @@
-// automatically include credentials for acode.app API requests
+// automatically include credentials for acode.app API requests, and hide
+// paid plugins from marketplace listings everywhere in the app - this build
+// is free-only by policy, and rather than trying to unlock third-party
+// paid plugins (which would mean bypassing other developers' actual
+// payments), free listings simply never show them in the first place.
 (function () {
 	const _fetch = window.fetch;
 	window.fetch = function (url, options) {
 		if (typeof url === "string" && url.includes("acode.app/api")) {
 			options = { ...options, credentials: "include" };
 		}
-		return _fetch.call(this, url, options);
+
+		const isPluginListing =
+			typeof url === "string" && /\/api\/plugins?(\?|$)/.test(url);
+		if (!isPluginListing) {
+			return _fetch.call(this, url, options);
+		}
+
+		return _fetch.call(this, url, options).then((response) => {
+			const originalJson = response.json.bind(response);
+			response.json = async () => {
+				const data = await originalJson();
+				if (!Array.isArray(data)) return data;
+				return data.filter((item) => !(Number(item?.price) > 0));
+			};
+			return response;
+		});
 	};
 })();
 

@@ -160,6 +160,13 @@ app.get("/", (req, res) => {
 	res.type("text/plain").send("Nothing IDE plugin marketplace server is running.");
 });
 
-app.listen(PORT, () => {
-	console.log(`Plugin marketplace server listening on port ${PORT}`);
-});
+// When run directly (`npm start`, or on Render/any long-running host) bind to
+// a port. On Vercel this file is required by api/index.js as a serverless
+// function handler instead, so it must not call listen() there.
+if (require.main === module) {
+	app.listen(PORT, () => {
+		console.log(`Plugin marketplace server listening on port ${PORT}`);
+	});
+}
+
+module.exports = app;
