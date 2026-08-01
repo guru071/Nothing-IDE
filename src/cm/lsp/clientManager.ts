@@ -1363,8 +1363,8 @@ function contentUriToFileUri(uri: string): string | null {
     if (!normalized) return null;
 
     switch (providerId) {
-      case "foxdebug.acode":
-      case "foxdebug.acodefree":
+      case "tech.goatech.nothingide":
+      case "tech.goatech.nothingidefree":
         normalized = normalized.replace(/:+$/, "");
         if (!normalized) return null;
         if (normalized.startsWith("raw:/")) {

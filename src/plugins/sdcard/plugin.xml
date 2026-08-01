@@ -12,7 +12,7 @@
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="SDcard">
-        <param name="android-package" value="com.foxdebug.sdcard.SDcard"/>
+        <param name="android-package" value="tech.goatech.nothingide.sdcard.SDcard"/>
       </feature>
     </config-file>
 
@@ -20,8 +20,8 @@
     <framework src="commons-codec:commons-codec:1.10" />
     <framework src="androidx.documentfile:documentfile:1.0.1" />
 
-    <source-file src="src/android/SDcard.java" target-dir="src/com/foxdebug/sdcard"/>
-    <source-file src="src/android/WorkspaceIndex.java" target-dir="src/com/foxdebug/sdcard"/>
+    <source-file src="src/android/SDcard.java" target-dir="src/tech/goatech/nothingide/sdcard"/>
+    <source-file src="src/android/WorkspaceIndex.java" target-dir="src/tech/goatech/nothingide/sdcard"/>
     <config-file target="AndroidManifest.xml" parent="/manifest"></config-file>
   </platform>
 </plugin>

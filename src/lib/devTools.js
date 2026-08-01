@@ -8,7 +8,7 @@ let erudaInstance = null;
 let isInitialized = false;
 
 /**
- * Developer tools module for debugging Acode
+ * Developer tools module for debugging Nothing IDE
  */
 const devTools = {
 	/**

@@ -10,14 +10,14 @@
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="CrashHandler">
-        <param name="android-package" value="com.foxdebug.crashhandler.CrashHandler"/>
+        <param name="android-package" value="tech.goatech.nothingide.crashhandler.CrashHandler"/>
         <param name="onload" value="true" />
       </feature>
     </config-file>
 
     <config-file parent="./application" target="AndroidManifest.xml">
       <activity
-        android:name="com.foxdebug.crashhandler.CrashActivity"
+        android:name="tech.goatech.nothingide.crashhandler.CrashActivity"
         android:process=":crash"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:exported="false"
@@ -26,7 +26,7 @@
       </activity>
     </config-file>
 
-    <source-file src="src/android/CrashHandler.java" target-dir="src/com/foxdebug/crashhandler"/>
-    <source-file src="src/android/CrashActivity.java" target-dir="src/com/foxdebug/crashhandler"/>
+    <source-file src="src/android/CrashHandler.java" target-dir="src/tech/goatech/nothingide/crashhandler"/>
+    <source-file src="src/android/CrashActivity.java" target-dir="src/tech/goatech/nothingide/crashhandler"/>
   </platform>
 </plugin>

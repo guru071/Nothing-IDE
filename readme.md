@@ -1,74 +1,47 @@
-# Acode - Code Editor for Android
+# Nothing IDE
 
-<p align="center">
-  <img src='res/logo_1.png' width='250'>
-</p>
+A free, full-featured code editor and IDE for Android — edit, run, and build projects entirely on your phone or tablet, online or offline.
 
-[![](https://img.shields.io/endpoint?logo=telegram&label=Acode&style=flat&url=https%3A%2F%2Facode.app%2Fapi%2Ftelegram-members-count)](https://t.me/foxdebug_acode) [![](https://dcbadge.vercel.app/api/server/vVxVWYUAWD?style=flat)](https://discord.gg/vVxVWYUAWD)
+## Features
 
-## • Overview
+- Multi-language syntax highlighting and autocomplete, powered by CodeMirror and language servers
+- Command palette (Ctrl-Shift-P) with VS Code-style keybindings
+- VS Code Dark and VS Code Light editor themes, plus dozens of other built-in themes
+- Built-in Linux terminal sandbox (Alpine via proot) with a real shell, package manager, and language runtimes
+- Git source control panel — stage, unstage, commit, push, pull, and view diffs without leaving the editor
+- On-device Android APK builder — compile and sign a debug APK straight from the terminal sandbox, no desktop required
+- On-device GUI desktop (VNC) — run graphical Linux apps and view them in-app
+- Camera and sensor capture bridge for on-device Python/OpenCV scripts
+- A large plugin ecosystem for extending the editor further
+- No ads, no paywall, no account required
 
-Welcome to Acode Editor - a powerful and versatile code editing tool designed specifically for Android devices. Whether you're working on HTML, CSS, JavaScript, or other programming languages, Acode empowers you to code on-the-go with confidence.
+## Project Structure
 
-## • Features
-
-- Edit and create websites, and instantly preview them in a browser.
-- Seamlessly modify source files for various languages like Python, Java, JavaScript, and more.
-- Built-in javascript console
-- Enjoy multi-language editing support with easy management tools.
-- Enjoy a large collections of community plugins to enhance your coding experience.
-
-## • Installation
-
-You can get Acode Editor from popular platforms:
-
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="60">](https://play.google.com/store/apps/details?id=com.foxdebug.acodefree) [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="60"/>](https://www.f-droid.org/packages/com.foxdebug.acode/)
-
-## • Project Structure
-
-<pre>
-Acode/
+```
+Nothing IDE/
 |
 |- src/   - Core code and language files
 |
 |- www/   - Public documents, compiled files, and HTML templates
 |
 |- utils/ - CLI tools for building, string manipulation, and more
-</pre>
-
-## • Multi-language Support
-
-Enhance Acode's capabilities by adding new languages easily. Just create a file with the language code (e.g., en-us for English) in [`src/lang/`](https://github.com/Acode-Foundation/Acode/tree/main/src/lang) and include it in [`src/lib/lang.js`](https://github.com/Acode-Foundation/Acode/blob/main/src/lib/lang.js). Manage strings across languages effortlessly using utility commands:
-
-```shell
-pnpm run lang add
-pnpm run lang remove
-pnpm run lang search
-pnpm run lang update
 ```
 
-## • Contributing & Building the Application
+## Multi-language UI Support
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
+Add a new UI language by creating a file with the language code (e.g. `en-us` for English) in [`src/lang/`](src/lang/) and registering it in [`src/lib/lang.js`](src/lib/lang.js). Manage strings across languages with:
 
-## • Contributors
+```shell
+npm run lang add
+npm run lang remove
+npm run lang search
+npm run lang update
+```
 
-<a href="https://github.com/Acode-Foundation/Acode/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Acode-Foundation/Acode" />
-</a>
+## Building the Application
 
-## • Developing a Plugin for Acode
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed build instructions.
 
-For comprehensive documentation on creating plugins for Acode Editor, visit the [repository](https://github.com/Acode-Foundation/acode-plugin).
+## Developing a Plugin
 
-For plugin development information, refer to: [Acode Plugin Documentation](https://docs.acode.app/)
-
-## Star History
-
-<a href="https://star-history.com/#Acode-Foundation/Acode&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Acode-Foundation/Acode&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Acode-Foundation/Acode&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Acode-Foundation/Acode&type=Date" />
- </picture>
-</a>
+Plugins extend the editor with new commands, languages, and UI. See the plugin API exposed via `acode.addCommand`, `acode.registerFileHandler`, and related methods in `src/lib/acode.js`.

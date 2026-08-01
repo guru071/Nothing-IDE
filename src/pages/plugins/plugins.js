@@ -8,7 +8,6 @@ import TabView from "components/tabView";
 import tutorial from "components/tutorial";
 import prompt from "dialogs/prompt";
 import actionStack from "lib/actionStack";
-import auth from "lib/auth";
 import config from "lib/config";
 import installPlugin from "lib/installPlugin";
 import loadPlugin from "lib/loadPlugin";
@@ -675,9 +674,9 @@ export default function PluginsInclude(updates) {
 		$list.owned.setAttribute("empty-msg", strings["loading..."]);
 
 		let iapPurchases = [];
+		const disabledMap = settings.value.pluginsDisabled || {};
 		if (helpers.isIapAvailable()) {
 			iapPurchases = await helpers.promisify(iap.getPurchases);
-			const disabledMap = settings.value.pluginsDisabled || {};
 
 			iapPurchases.forEach(async ({ productIds }) => {
 				const [sku] = productIds;
@@ -686,10 +685,6 @@ export default function PluginsInclude(updates) {
 
 				plugins.owned.push(plugin);
 			});
-		} else if (!(await auth.getLoggedInUser())) {
-			console.log("Not logged in");
-			$list.owned.setAttribute("empty-msg", strings["login-to-view"]);
-			return;
 		}
 
 		try {

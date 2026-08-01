@@ -403,7 +403,7 @@ export default {
 		);
 		const isTermuxUri = currentUri.includes("com.termux.documents");
 		const isAcodeTerminalPublicSafUri = currentUri.includes(
-			"com.foxdebug.acode.documents",
+			"tech.goatech.nothingide.documents",
 		);
 		const [, treeSegment = ""] = currentUri.split("/tree/");
 		const terminalBasePath = isAcodeTerminalPublicSafUri

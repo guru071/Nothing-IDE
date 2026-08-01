@@ -1,0 +1,24 @@
+[
+	{
+		"id": "hello-world",
+		"name": "Hello World",
+		"icon": "/static/plugins/hello-world/icon.png",
+		"version": "1.0.0",
+		"license": "MIT",
+		"author": "Nothing IDE",
+		"author_verified": true,
+		"price": 0,
+		"currencySymbol": "$",
+		"downloads": 0,
+		"keywords": [
+			"example",
+			"starter"
+		],
+		"description": "An example plugin that registers a single command. Use it as a starting point for your own plugins.",
+		"changelogs": "## 1.0.0\n\nInitial release.",
+		"supported_editor": "cm",
+		"min_version_code": null,
+		"sku": null,
+		"file": "hello-world.zip"
+	}
+]

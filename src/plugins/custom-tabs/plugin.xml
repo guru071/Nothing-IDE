@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android" id="com.foxdebug.acode.rk.customtabs"
+    xmlns:android="http://schemas.android.com/apk/res/android" id="tech.goatech.nothingide.rk.customtabs"
     version="1.0.0">
     <name>Custom Tabs</name>
 
@@ -13,7 +13,7 @@
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="CustomTabs">
                 <param name="android-package"
-                    value="com.foxdebug.acode.rk.customtabs.CustomTabsPlugin" />
+                    value="tech.goatech.nothingide.rk.customtabs.CustomTabsPlugin" />
             </feature>
 
         </config-file>
@@ -30,6 +30,6 @@
 
         <source-file
             src="src/CustomTabsPlugin.java"
-            target-dir="src/com/foxdebug/acode/rk/customtabs" />
+            target-dir="src/tech/goatech/nothingide/rk/customtabs" />
     </platform>
 </plugin>

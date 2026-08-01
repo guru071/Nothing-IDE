@@ -1,4 +1,4 @@
-package com.foxdebug.crashhandler;
+package tech.goatech.nothingide.crashhandler;
 
 import android.app.Activity;
 import android.content.ClipData;

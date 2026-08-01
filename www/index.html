@@ -125,7 +125,7 @@
 
       if (!hasES6) {
         setStartupMessage(
-          "Acode requires a modern browser. Please update Android System WebView or Chrome."
+          "Nothing IDE requires a modern browser. Please update Android System WebView or Chrome."
         );
       }
 
@@ -137,7 +137,7 @@
         window.__ACODE_WEBVIEW_MAJOR__ < MIN_WEBVIEW_MAJOR
       ) {
         setStartupMessage(
-          "Your Android System WebView is old. Update Android System WebView or Chrome if Acode stays on this screen."
+          "Your Android System WebView is old. Update Android System WebView or Chrome if Nothing IDE stays on this screen."
         );
       }
 
@@ -145,7 +145,7 @@
         if (!isStartupLoading()) return;
         var message = event && event.message ? event.message : "Startup error";
         setStartupMessage(
-          "Acode failed to start. Update Android System WebView or Chrome. " +
+          "Nothing IDE failed to start. Update Android System WebView or Chrome. " +
           message
         );
       }
@@ -156,7 +156,7 @@
         var message =
           reason && reason.message ? reason.message : "Startup promise failed";
         setStartupMessage(
-          "Acode failed to start. Update Android System WebView or Chrome. " +
+          "Nothing IDE failed to start. Update Android System WebView or Chrome. " +
           message
         );
       }
@@ -171,7 +171,7 @@
 
   <script src="./build/boot.js"></script>
 
-  <title>Acode</title>
+  <title>Nothing IDE</title>
 </head>
 
 <body class="loading" data-version="" data-small-msg="">

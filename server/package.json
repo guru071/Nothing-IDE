@@ -1,0 +1,15 @@
+{
+	"name": "nothing-ide-plugin-server",
+	"version": "1.0.0",
+	"description": "Self-hosted plugin marketplace server for Nothing IDE",
+	"main": "src/index.js",
+	"scripts": {
+		"start": "node src/index.js"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"dependencies": {
+		"express": "^4.19.2"
+	}
+}

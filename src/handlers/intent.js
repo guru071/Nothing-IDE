@@ -1,8 +1,5 @@
 import fsOperation from "fileSystem";
-import auth from "lib/auth";
-import config from "lib/config";
 import openFile from "lib/openFile";
-import { hideAd } from "lib/startAd";
 import helpers from "utils/helpers";
 
 const handlers = [];
@@ -24,13 +21,9 @@ export default async function HandleIntent(intent = {}) {
 		const url = intent.fileUri || intent.data;
 		if (!url) return;
 
-		if (url.startsWith("acode://")) {
-			const path = url.replace("acode://", "");
+		if (url.startsWith("nothing://")) {
+			const path = url.replace("nothing://", "");
 			const [module, action, value] = path.split("/");
-
-			if (module === "auth" && action === "callback") {
-				return;
-			}
 
 			let defaultPrevented = false;
 			const event = new IntentEvent(module, action, value);
@@ -51,22 +44,6 @@ export default async function HandleIntent(intent = {}) {
 
 				const installed = await fsOperation(PLUGIN_DIR, value).exists();
 				Plugin({ id: value, installed, install: action === "install" });
-			}
-
-			if (module === "pro") {
-				try {
-					const user = await auth.getLoggedInUser(true);
-					if (user.acode_pro) {
-						hideAd();
-						config.HAS_PRO = true;
-						const settings = document.querySelector(
-							'[data-action="list-item"][data-key="removeads"',
-						);
-						if (settings) {
-							settings.remove();
-						}
-					}
-				} catch (error) {}
 			}
 
 			return;

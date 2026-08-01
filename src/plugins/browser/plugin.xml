@@ -9,13 +9,13 @@
 
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="Browser">
-        <param name="android-package" value="com.foxdebug.browser.Plugin"/>
+        <param name="android-package" value="tech.goatech.nothingide.browser.Plugin"/>
       </feature>
     </config-file>
 
 
     <config-file parent="./application" target="AndroidManifest.xml">
-      <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:name="com.foxdebug.browser.BrowserActivity" android:theme="@style/Theme.App.Activity" android:windowSoftInputMode="adjustResize" android:resizeableActivity="true">
+      <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:name="tech.goatech.nothingide.browser.BrowserActivity" android:theme="@style/Theme.App.Activity" android:windowSoftInputMode="adjustResize" android:resizeableActivity="true">
       </activity>
     </config-file>
 
@@ -24,10 +24,10 @@
     <resource-file src="res/android/menu_enter.xml" target="res/anim/menu_enter.xml" />
     <resource-file src="res/android/menu_exit.xml" target="res/anim/menu_exit.xml" />
     <resource-file src="res/android/styles.xml" target="res/values/styles.xml" />
-    <source-file src="android/com/foxdebug/browser/Browser.java" target-dir="src/com/foxdebug/browser"/>
-    <source-file src="android/com/foxdebug/browser/BrowserActivity.java" target-dir="src/com/foxdebug/browser"/>
-    <source-file src="android/com/foxdebug/browser/Emulator.java" target-dir="src/com/foxdebug/browser"/>
-    <source-file src="android/com/foxdebug/browser/Plugin.java" target-dir="src/com/foxdebug/browser"/>
-    <source-file src="android/com/foxdebug/browser/Menu.java" target-dir="src/com/foxdebug/browser"/>
+    <source-file src="android/tech/goatech/nothingide/browser/Browser.java" target-dir="src/tech/goatech/nothingide/browser"/>
+    <source-file src="android/tech/goatech/nothingide/browser/BrowserActivity.java" target-dir="src/tech/goatech/nothingide/browser"/>
+    <source-file src="android/tech/goatech/nothingide/browser/Emulator.java" target-dir="src/tech/goatech/nothingide/browser"/>
+    <source-file src="android/tech/goatech/nothingide/browser/Plugin.java" target-dir="src/tech/goatech/nothingide/browser"/>
+    <source-file src="android/tech/goatech/nothingide/browser/Menu.java" target-dir="src/tech/goatech/nothingide/browser"/>
   </platform>
 </plugin>
