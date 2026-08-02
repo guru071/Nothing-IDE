@@ -99,13 +99,35 @@ export default function mainSettings() {
 		},
 		{
 			key: "anthropicApiKey",
-			text: "AI Agent API key",
+			text: "AI Agent: Claude API key",
 			icon: "chat_bubble",
 			value: config.ANTHROPIC_API_KEY,
 			valueText: (value) => (value ? "••••••••" : "Not set"),
 			prompt: "Anthropic API key",
 			promptType: "password",
 			info: "Your own Anthropic API key, used only to call Claude directly from this device for the AI Agent panel. Get one at console.anthropic.com. Nothing IDE never sees or stores this key anywhere but on your device.",
+			category: categories.customizationTools,
+		},
+		{
+			key: "openaiApiKey",
+			text: "AI Agent: OpenAI API key",
+			icon: "chat_bubble",
+			value: config.OPENAI_API_KEY,
+			valueText: (value) => (value ? "••••••••" : "Not set"),
+			prompt: "OpenAI API key",
+			promptType: "password",
+			info: "Your own OpenAI API key, used only to call OpenAI directly from this device for the AI Agent panel. Get one at platform.openai.com. Nothing IDE never sees or stores this key anywhere but on your device.",
+			category: categories.customizationTools,
+		},
+		{
+			key: "geminiApiKey",
+			text: "AI Agent: Gemini API key",
+			icon: "chat_bubble",
+			value: config.GEMINI_API_KEY,
+			valueText: (value) => (value ? "••••••••" : "Not set"),
+			prompt: "Google Gemini API key",
+			promptType: "password",
+			info: "Your own Google Gemini API key, used only to call Gemini directly from this device for the AI Agent panel. Get one at aistudio.google.com/apikey. Nothing IDE never sees or stores this key anywhere but on your device.",
 			category: categories.customizationTools,
 		},
 		{
@@ -174,6 +196,14 @@ export default function mainSettings() {
 
 			case "anthropicApiKey":
 				config.ANTHROPIC_API_KEY = value;
+				break;
+
+			case "openaiApiKey":
+				config.OPENAI_API_KEY = value;
+				break;
+
+			case "geminiApiKey":
+				config.GEMINI_API_KEY = value;
 				break;
 
 			case "app-settings":

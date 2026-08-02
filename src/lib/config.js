@@ -1,6 +1,8 @@
 const DEFAULT_BASE_URL = "https://nothing-ide-goatech-d3fa1ace.vercel.app";
 const PLUGIN_SERVER_OVERRIDE_KEY = "custom_plugin_server_url";
 const ANTHROPIC_API_KEY_STORAGE_KEY = "anthropic_api_key";
+const OPENAI_API_KEY_STORAGE_KEY = "openai_api_key";
+const GEMINI_API_KEY_STORAGE_KEY = "gemini_api_key";
 let hasPro = false;
 
 const config = {
@@ -40,6 +42,38 @@ const config = {
 			localStorage.removeItem(ANTHROPIC_API_KEY_STORAGE_KEY);
 		} else {
 			localStorage.setItem(ANTHROPIC_API_KEY_STORAGE_KEY, trimmed);
+		}
+	},
+
+	// User-supplied OpenAI API key for the AI Agent panel. Stored on-device
+	// only (localStorage) - never bundled into the app, never sent anywhere but
+	// api.openai.com directly from this device.
+	get OPENAI_API_KEY() {
+		return localStorage.getItem(OPENAI_API_KEY_STORAGE_KEY) || "";
+	},
+
+	set OPENAI_API_KEY(value) {
+		const trimmed = String(value || "").trim();
+		if (!trimmed) {
+			localStorage.removeItem(OPENAI_API_KEY_STORAGE_KEY);
+		} else {
+			localStorage.setItem(OPENAI_API_KEY_STORAGE_KEY, trimmed);
+		}
+	},
+
+	// User-supplied Google Gemini API key for the AI Agent panel. Stored
+	// on-device only (localStorage) - never bundled into the app, never sent
+	// anywhere but generativelanguage.googleapis.com directly from this device.
+	get GEMINI_API_KEY() {
+		return localStorage.getItem(GEMINI_API_KEY_STORAGE_KEY) || "";
+	},
+
+	set GEMINI_API_KEY(value) {
+		const trimmed = String(value || "").trim();
+		if (!trimmed) {
+			localStorage.removeItem(GEMINI_API_KEY_STORAGE_KEY);
+		} else {
+			localStorage.setItem(GEMINI_API_KEY_STORAGE_KEY, trimmed);
 		}
 	},
 

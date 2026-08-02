@@ -3,8 +3,24 @@ import Sidebar from "components/sidebar";
 import toast from "components/toast";
 import confirm from "dialogs/confirm";
 import loader from "dialogs/loader";
-import { getCurrentProject, hasApiKey, runAgentTurn } from "lib/aiAgentService";
+import * as claudeAgent from "lib/aiAgentService";
+import { getCurrentProject } from "lib/aiTools";
+import * as geminiAgent from "lib/geminiAgentService";
 import * as offlineAi from "lib/offlineAi";
+import * as openaiAgent from "lib/openaiAgentService";
+
+const PROVIDER_STORAGE_KEY = "ai_agent_provider";
+
+/** Every online provider the AI Agent panel can talk to. Each module exposes
+ * the same `hasApiKey()`/`runAgentTurn(history, handlers)` contract
+ * (see aiAgentService.js, openaiAgentService.js, geminiAgentService.js) even
+ * though their wire formats and conversation-history shapes differ - so
+ * conversation history is kept separately per provider below. */
+const PROVIDERS = [
+	{ id: "claude", label: "Claude", ...claudeAgent },
+	{ id: "openai", label: "OpenAI", ...openaiAgent },
+	{ id: "gemini", label: "Gemini", ...geminiAgent },
+];
 
 /** @type {HTMLElement} */
 let container;
@@ -17,11 +33,16 @@ let $sendButton;
 /** @type {HTMLElement} */
 let $headerEl;
 
-let conversation = [];
+let providerId = localStorage.getItem(PROVIDER_STORAGE_KEY) || PROVIDERS[0].id;
+let conversations = { claude: [], openai: [], gemini: [] };
 let offlineConversation = [];
 let displayMessages = [];
 let sending = false;
 let offlineMode = false;
+
+function getProvider() {
+	return PROVIDERS.find((p) => p.id === providerId) || PROVIDERS[0];
+}
 
 export default [
 	"chat_bubble", // icon
@@ -38,6 +59,16 @@ function buildHeader() {
 			<div className="title">
 				AI Agent
 				<span>
+					{!offlineMode && (
+						<button
+							type="button"
+							className="mode-button"
+							title="Switch AI provider"
+							onclick={() => cycleProvider()}
+						>
+							{getProvider().label}
+						</button>
+					)}
 					<button
 						type="button"
 						className="mode-button"
@@ -117,17 +148,28 @@ function onSelected() {
 }
 
 function newChat() {
-	conversation = [];
+	conversations = { claude: [], openai: [], gemini: [] };
 	offlineConversation = [];
 	displayMessages = [];
 	render();
 }
 
-function toggleMode() {
-	offlineMode = !offlineMode;
+function refreshHeader() {
 	const newHeader = buildHeader();
 	$headerEl.replaceWith(newHeader);
 	$headerEl = newHeader;
+}
+
+function cycleProvider() {
+	const idx = PROVIDERS.findIndex((p) => p.id === providerId);
+	providerId = PROVIDERS[(idx + 1) % PROVIDERS.length].id;
+	localStorage.setItem(PROVIDER_STORAGE_KEY, providerId);
+	refreshHeader();
+}
+
+function toggleMode() {
+	offlineMode = !offlineMode;
+	refreshHeader();
 	$input.placeholder = offlineMode
 		? "Chat with the offline model (no file/shell access, conversation only)…"
 		: "Ask the AI Agent to read, write, or run something in this project…";
@@ -138,14 +180,6 @@ function escapeHtml(str = "") {
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
 		.replace(/>/g, "&gt;");
-}
-
-function extractText(content) {
-	return content
-		.filter((block) => block.type === "text")
-		.map((block) => block.text)
-		.join("\n\n")
-		.trim();
 }
 
 function render() {
@@ -193,8 +227,10 @@ async function send() {
 		return;
 	}
 
-	if (!hasApiKey()) {
-		toast("Add your Anthropic API key in Settings › AI Agent first.");
+	const provider = getProvider();
+
+	if (!provider.hasApiKey()) {
+		toast(`Add your ${provider.label} API key in Settings › AI Agent first.`);
 		return;
 	}
 	if (!getCurrentProject()) {
@@ -204,7 +240,7 @@ async function send() {
 
 	$input.value = "";
 	displayMessages.push({ role: "user", text });
-	conversation.push({ role: "user", content: text });
+	conversations[provider.id].push({ role: "user", content: text });
 	render();
 
 	sending = true;
@@ -212,34 +248,36 @@ async function send() {
 	loader.showTitleLoader();
 
 	try {
-		const { messages, finalResponse } = await runAgentTurn(conversation, {
-			onConfirm: (title, message) => confirm(title, message),
-			onToolCall: (name, input) => {
-				const label =
-					name === "run_command"
-						? `Running: ${input.command}`
-						: name === "write_file"
-							? `Writing ${input.path}`
-							: name === "read_file"
-								? `Reading ${input.path}`
-								: `Listing ${input.path || "."}`;
-				displayMessages.push({ role: "tool", text: label });
-				render();
+		const { messages, finalText, refused } = await provider.runAgentTurn(
+			conversations[provider.id],
+			{
+				onConfirm: (title, message) => confirm(title, message),
+				onToolCall: (name, input) => {
+					const label =
+						name === "run_command"
+							? `Running: ${input.command}`
+							: name === "write_file"
+								? `Writing ${input.path}`
+								: name === "read_file"
+									? `Reading ${input.path}`
+									: `Listing ${input.path || "."}`;
+					displayMessages.push({ role: "tool", text: label });
+					render();
+				},
 			},
-		});
+		);
 
-		conversation = messages;
+		conversations[provider.id] = messages;
 
-		if (finalResponse.stop_reason === "refusal") {
+		if (refused) {
 			displayMessages.push({
 				role: "error",
-				text: "Claude declined to respond to that request.",
+				text: `${provider.label} declined to respond to that request.`,
 			});
 		} else {
-			const text = extractText(finalResponse.content);
 			displayMessages.push({
 				role: "assistant",
-				text: text || "(no response)",
+				text: finalText || "(no response)",
 			});
 		}
 	} catch (error) {
