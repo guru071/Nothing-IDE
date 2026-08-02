@@ -1,0 +1,53 @@
+#android-build {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-size: 13px;
+
+  .ab-intro {
+    color: var(--secondary-text-color);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 16px;
+
+    code {
+      background: var(--secondary-color, rgba(127, 127, 127, 0.12));
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+  }
+
+  .ab-status {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    color: var(--primary-text-color);
+    font-size: 13px;
+  }
+
+  .action-button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    background: var(--primary-color);
+    color: var(--primary-text-color);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-bottom: 10px;
+
+    &.secondary {
+      background: none;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

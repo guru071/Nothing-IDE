@@ -670,6 +670,16 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "androidBuild",
+		description: "Android Build (on-device APK builder)",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "android_build");
+			return true;
+		},
+	});
+	addCommand({
 		name: "increaseUiZoom",
 		description: "Increase UI zoom",
 		readOnly: true,

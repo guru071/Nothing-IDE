@@ -133,6 +133,14 @@ export default function help() {
 			chevron: true,
 		},
 		{
+			key: "android-build",
+			text: "Android Build",
+			icon: "android-full",
+			info: "Build a debug APK on-device from a raw Java Android project (no Gradle) using aapt2/javac/D8 in the terminal.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -186,6 +194,9 @@ export default function help() {
 				break;
 			case "apk-analyzer":
 				acode.exec("open", "apk_analyzer");
+				break;
+			case "android-build":
+				acode.exec("open", "android_build");
 				break;
 			case "github":
 				openUrl(config.GITHUB_URL);

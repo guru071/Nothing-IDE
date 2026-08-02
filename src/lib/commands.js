@@ -401,6 +401,14 @@ export default {
 				).default();
 				break;
 
+			case "android_build":
+				(
+					await import(
+						/* webpackChunkName: "androidBuild" */ "pages/androidBuild/androidBuild"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")

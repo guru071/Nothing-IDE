@@ -16,7 +16,11 @@ const SIZE_CATEGORIES = [
 	{ label: "Signing (META-INF)", test: (name) => name.startsWith("META-INF/") },
 ];
 
-export default function ApkAnalyzer() {
+/**
+ * @param {{url: string, name: string}} [initialFile] Skip the file picker
+ * and analyze this file directly (e.g. a build's just-produced APK).
+ */
+export default function ApkAnalyzer(initialFile) {
 	const $page = Page("APK Analyzer");
 	const $meta = <div className="apk-meta">No APK selected.</div>;
 	const $chooseButton = (
@@ -43,7 +47,12 @@ export default function ApkAnalyzer() {
 	actionStack.push({ id: "apk-analyzer", action: $page.hide });
 
 	$chooseButton.addEventListener("click", chooseFile);
-	chooseFile();
+
+	if (initialFile?.url) {
+		analyze(initialFile.url, initialFile.name || initialFile.url);
+	} else {
+		chooseFile();
+	}
 
 	async function chooseFile() {
 		try {
