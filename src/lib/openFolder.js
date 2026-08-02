@@ -194,6 +194,15 @@ function openFolder(_path, opts = {}) {
 	editorManager.onupdate("add-folder", event);
 	editorManager.emit("add-folder", event);
 
+	void import("./projectExtensionRecommendations").then(
+		({ default: recommend }) => {
+			recommend(_path, title);
+		},
+		(error) => {
+			console.warn("Failed to load project extension recommendations.", error);
+		},
+	);
+
 	if (listFiles) {
 		FileList.addRoot({ url: _path, name: title }).catch((err) => {
 			console.error("Failed to add root to FileList:", err);

@@ -98,6 +98,17 @@ export default function mainSettings() {
 			category: categories.customizationTools,
 		},
 		{
+			key: "anthropicApiKey",
+			text: "AI Agent API key",
+			icon: "chat_bubble",
+			value: config.ANTHROPIC_API_KEY,
+			valueText: (value) => (value ? "••••••••" : "Not set"),
+			prompt: "Anthropic API key",
+			promptType: "password",
+			info: "Your own Anthropic API key, used only to call Claude directly from this device for the AI Agent panel. Get one at console.anthropic.com. Nothing IDE never sees or stores this key anywhere but on your device.",
+			category: categories.customizationTools,
+		},
+		{
 			key: "lsp-settings",
 			text:
 				strings?.lsp_settings ||
@@ -159,6 +170,10 @@ export default function mainSettings() {
 		switch (key) {
 			case "pluginServer":
 				config.BASE_URL = value;
+				break;
+
+			case "anthropicApiKey":
+				config.ANTHROPIC_API_KEY = value;
 				break;
 
 			case "app-settings":

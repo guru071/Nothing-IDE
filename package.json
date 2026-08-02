@@ -112,6 +112,7 @@
     "ws": "^8.21.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
     "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/lang-angular": "^0.1.4",

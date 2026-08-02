@@ -2,6 +2,9 @@ import { EditorState } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import aura, { config as auraConfig } from "./aura";
 import ayuDark, { config as ayuDarkConfig } from "./ayuDark";
+import catppuccinMocha, {
+	config as catppuccinMochaConfig,
+} from "./catppuccinMocha";
 import cobalt, { config as cobaltConfig } from "./cobalt";
 import dracula, { config as draculaConfig } from "./dracula";
 import githubDark, { config as githubDarkConfig } from "./githubDark";
@@ -13,6 +16,7 @@ import materialPalenight, {
 import monokai, { config as monokaiConfig } from "./monokai";
 import noctisLilac, { config as noctisLilacConfig } from "./noctisLilac";
 import nord, { config as nordConfig } from "./nord";
+import rosePineDawn, { config as rosePineDawnConfig } from "./rosePineDawn";
 import solarizedDark, { config as solarizedDarkConfig } from "./solarizedDark";
 import solarizedLight, {
 	config as solarizedLightConfig,
@@ -282,6 +286,20 @@ addTheme(
 	!!vscodeLightConfig.dark,
 	() => vscodeLight(),
 	vscodeLightConfig,
+);
+addTheme(
+	catppuccinMochaConfig.name,
+	"Catppuccin Mocha",
+	!!catppuccinMochaConfig.dark,
+	() => catppuccinMocha(),
+	catppuccinMochaConfig,
+);
+addTheme(
+	rosePineDawnConfig.name,
+	"Rosé Pine Dawn",
+	!!rosePineDawnConfig.dark,
+	() => rosePineDawn(),
+	rosePineDawnConfig,
 );
 
 export default {

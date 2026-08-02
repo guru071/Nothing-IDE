@@ -85,9 +85,9 @@ fi
     echo "$$" > "$PREFIX/pid"
     chmod +x "$PREFIX/axs"
 
-    if [ ! -e "$PREFIX/alpine/etc/acode_motd" ]; then
-        cat <<EOF > "$PREFIX/alpine/etc/acode_motd"
-Welcome to Alpine Linux in Acode!
+    if [ ! -e "$PREFIX/alpine/etc/nothing_motd" ]; then
+        cat <<EOF > "$PREFIX/alpine/etc/nothing_motd"
+Welcome to Alpine Linux in Nothing IDE!
 
 Working with packages:
 
@@ -99,24 +99,27 @@ Working with packages:
 EOF
     fi
 
-    # Create acode CLI tool
-    if [ ! -e "$PREFIX/alpine/usr/local/bin/acode" ]; then
+    # Remove any stale binary/MOTD from before the Nothing IDE rebrand.
+    rm -f "$PREFIX/alpine/usr/local/bin/acode" "$PREFIX/alpine/etc/acode_motd"
+
+    # Create nothing CLI tool
+    if [ ! -e "$PREFIX/alpine/usr/local/bin/nothing" ]; then
         mkdir -p "$PREFIX/alpine/usr/local/bin"
-        cat <<'ACODE_CLI' > "$PREFIX/alpine/usr/local/bin/acode"
+        cat <<'NOTHING_CLI' > "$PREFIX/alpine/usr/local/bin/nothing"
 #!/bin/bash
-# acode - Open files/folders in Acode editor
-# Uses OSC escape sequences to communicate with the Acode terminal
+# nothing - Open files/folders in Nothing IDE
+# Uses OSC escape sequences to communicate with the Nothing IDE terminal
 
 usage() {
-    echo "Usage: acode [file/folder...]"
+    echo "Usage: nothing [file/folder...]"
     echo ""
-    echo "Open files or folders in Acode editor."
+    echo "Open files or folders in Nothing IDE."
     echo ""
     echo "Examples:"
-    echo "  acode file.txt      # Open a file"
-    echo "  acode .             # Open current folder"
-    echo "  acode ~/project     # Open a folder"
-    echo "  acode -h, --help    # Show this help"
+    echo "  nothing file.txt      # Open a file"
+    echo "  nothing .             # Open current folder"
+    echo "  nothing ~/project     # Open a folder"
+    echo "  nothing -h, --help    # Show this help"
 }
 
 get_abs_path() {
@@ -145,7 +148,7 @@ get_abs_path() {
     echo "$abs_path"
 }
 
-open_in_acode() {
+open_in_nothing() {
     local path=$(get_abs_path "$1")
     local type="file"
     [[ -d "$path" ]] && type="folder"
@@ -156,7 +159,7 @@ open_in_acode() {
 }
 
 if [[ $# -eq 0 ]]; then
-    open_in_acode "."
+    open_in_nothing "."
     exit 0
 fi
 
@@ -168,7 +171,7 @@ for arg in "$@"; do
             ;;
         *)
             if [[ -e "$arg" ]]; then
-                open_in_acode "$arg"
+                open_in_nothing "$arg"
             else
                 echo "Error: '$arg' does not exist" >&2
                 exit 1
@@ -176,8 +179,8 @@ for arg in "$@"; do
             ;;
     esac
 done
-ACODE_CLI
-        chmod +x "$PREFIX/alpine/usr/local/bin/acode"
+NOTHING_CLI
+        chmod +x "$PREFIX/alpine/usr/local/bin/nothing"
     fi
 
     # Create initrc if it doesn't exist
@@ -232,8 +235,8 @@ _shorten_path() {
 PROMPT_COMMAND='_PS1_PATH=$(_shorten_path); _PS1_EXIT=$?'
 
 # Display MOTD if available
-if [ -s /etc/acode_motd ]; then
-    cat /etc/acode_motd
+if [ -s /etc/nothing_motd ]; then
+    cat /etc/nothing_motd
 fi
 
 check_binary_execution() {
@@ -280,7 +283,7 @@ Then run the binary again.
     fi
 }
 
-_acode_preexec() {
+_nothing_preexec() {
     # Skip commands executed by the trap itself
     [[ "$BASH_COMMAND" == trap* ]] && return
 
@@ -298,11 +301,11 @@ else
 fi
 
 # Only add our handler if it's not already present
-if [[ "${__acode_existing_cmd}" != *"_acode_preexec"* ]]; then
+if [[ "${__acode_existing_cmd}" != *"_nothing_preexec"* ]]; then
     if [[ -n "${__acode_existing_cmd}" ]]; then
-        trap "${__acode_existing_cmd}; _acode_preexec" DEBUG
+        trap "${__acode_existing_cmd}; _nothing_preexec" DEBUG
     else
-        trap '_acode_preexec' DEBUG
+        trap '_nothing_preexec' DEBUG
     fi
 fi
 unset __acode_existing_debug_trap __acode_existing_cmd

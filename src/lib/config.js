@@ -1,12 +1,13 @@
-const DEFAULT_BASE_URL = "https://acode.app";
+const DEFAULT_BASE_URL = "https://nothing-ide-goatech-d3fa1ace.vercel.app";
 const PLUGIN_SERVER_OVERRIDE_KEY = "custom_plugin_server_url";
+const ANTHROPIC_API_KEY_STORAGE_KEY = "anthropic_api_key";
 let hasPro = false;
 
 const config = {
-	// The plugin marketplace's base URL. Defaults to the original Acode
-	// marketplace, but can be pointed at your own self-hosted server (see
-	// /server in this repo) via Settings > Plugins > Plugin Server, without
-	// needing an app rebuild.
+	// The plugin marketplace's base URL. Defaults to our own self-hosted
+	// server (see /server in this repo) - no dependency on acode.app. Point
+	// this at a different server via Settings > Plugins > Plugin Server,
+	// without needing an app rebuild.
 	get BASE_URL() {
 		return localStorage.getItem(PLUGIN_SERVER_OVERRIDE_KEY) || DEFAULT_BASE_URL;
 	},
@@ -22,6 +23,22 @@ const config = {
 
 	get DEFAULT_BASE_URL() {
 		return DEFAULT_BASE_URL;
+	},
+
+	// User-supplied Anthropic API key for the AI Agent panel. Stored on-device
+	// only (localStorage) - never bundled into the app, never sent anywhere but
+	// api.anthropic.com directly from this device.
+	get ANTHROPIC_API_KEY() {
+		return localStorage.getItem(ANTHROPIC_API_KEY_STORAGE_KEY) || "";
+	},
+
+	set ANTHROPIC_API_KEY(value) {
+		const trimmed = String(value || "").trim();
+		if (!trimmed) {
+			localStorage.removeItem(ANTHROPIC_API_KEY_STORAGE_KEY);
+		} else {
+			localStorage.setItem(ANTHROPIC_API_KEY_STORAGE_KEY, trimmed);
+		}
 	},
 
 	SUPPORTED_EDITOR: "cm",

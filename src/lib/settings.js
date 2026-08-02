@@ -163,6 +163,7 @@ class Settings {
 			highlightSelectionMatches: false,
 			autoCloseTags: true,
 			autoRenameTags: true,
+			codeSnippets: true,
 			showPrintMargin: false,
 			printMargin: 80,
 			scrollbarSize: 20,
