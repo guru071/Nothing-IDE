@@ -106,6 +106,15 @@ function renderUploadPage() {
 			<input type="text" name="keywords" placeholder="theme, dark" />
 		</label>
 
+		<div class="row">
+			<label>Price (USD) <span class="hint">(0 = free)</span>
+				<input type="number" name="price" value="0" min="0" step="0.01" />
+			</label>
+			<label>Google Play SKU <span class="hint">(required if price > 0 - must already exist as a one-time product in Play Console)</span>
+				<input type="text" name="sku" placeholder="plugin_my_plugin" />
+			</label>
+		</div>
+
 		<label>Changelog <span class="hint">(markdown)</span>
 			<textarea name="changelogs" placeholder="## 1.0.0&#10;&#10;Initial release."></textarea>
 		</label>

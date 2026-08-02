@@ -1,9 +1,11 @@
 # Nothing IDE Plugin Server
 
 A self-hosted replacement for Acode's plugin marketplace backend — no dependency on
-acode.app, no accounts, no paid plugins. Plugin metadata lives in a **Supabase**
-Postgres table, and icons/zip archives live in **Supabase Storage**. That means
-adding a new plugin or theme is a web upload, not a git commit + redeploy.
+acode.app. Plugin metadata lives in a **Supabase** Postgres table, and icons/zip
+archives live in **Supabase Storage**. That means adding a new plugin or theme is
+a web upload, not a git commit + redeploy. Accounts (Supabase Auth, GitHub/Google
+sign-in) and paid plugins (Google Play Billing) are supported - see
+"Accounts and paid plugins" below.
 
 The `data/` folder in this repo (`plugins.json`, `plugins/`, `downloads/`) is the
 original flat-file seed content, kept only as the source for the one-time
@@ -97,16 +99,53 @@ normal plugin whose `main.js` calls the theme-registration API instead of
 exact `register`/`unregister`/`apply` methods available to plugins).
 
 Publishing again with the same plugin ID replaces it in place (same as bumping
-its version) — there's no separate "update" flow.
+its version) — there's no separate "update" flow. To publish a **paid** plugin,
+also fill in **Price** and **Google Play SKU** — the SKU must already exist as a
+one-time product for this app in the Google Play Console (Play Billing requires
+products to be created there; this server can't create them for you).
+
+## Accounts and paid plugins
+
+Two pieces, both opt-in (the server runs fine without either configured - free
+plugins and anonymous browsing keep working exactly as before):
+
+**Accounts** use Supabase's own built-in Auth, not custom code here:
+1. In the Supabase dashboard: **Authentication → Providers**, enable **GitHub**
+   and/or **Google**.
+2. Each needs an OAuth app/client created on that provider's own developer
+   console (GitHub: Settings → Developer settings → OAuth Apps. Google: Cloud
+   Console → Credentials → OAuth client ID), with the callback URL Supabase's
+   dashboard shows you (`https://<project-ref>.supabase.co/auth/v1/callback`).
+   Paste the resulting Client ID/Secret into Supabase's provider settings.
+3. That's it on the server side - `getUserFromRequest`/`requireUser` in
+   `src/auth.js` verify whatever Supabase Auth session token the app sends,
+   there's nothing else to configure here.
+
+**Paid plugins** are verified through Google Play Billing (the app already has
+`cordova-plugin-iap` wired up for this), not a separate payment processor -
+Play Store policy requires in-app digital goods to go through Play Billing.
+Server-side purchase verification needs a Google Cloud service account with
+Play Console access:
+1. Google Cloud Console → create/select a project → **APIs & Services →
+   Library** → enable "Google Play Android Developer API".
+2. **IAM & Admin → Service Accounts** → create one → **Keys** → add key → JSON
+   (downloads a file with `client_email` and `private_key`).
+3. Play Console → **Users and permissions** → invite that service account's
+   email with "View financial data" + app access permissions.
+4. Set either `GOOGLE_SERVICE_ACCOUNT_JSON` (the whole downloaded file's
+   contents, as one env var) or both `GOOGLE_SERVICE_ACCOUNT_EMAIL` +
+   `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` on the server.
+5. Run the `purchases` table section of `supabase-schema.sql` (added
+   alongside `plugins`) if you haven't already.
 
 ## API reference
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /api/plugins?page=&limit=&name=&explore=random&orderBy=` | List/search/paginate plugins |
+| `GET /api/plugins?page=&limit=&name=&explore=random&orderBy=&owned=true` | List/search/paginate plugins (`owned=true` needs an `Authorization: Bearer <supabase-session-token>` header, returns only that user's purchased plugins) |
 | `GET /api/plugin/:id` | Single plugin's full metadata |
 | `GET /api/plugin/download/:id` | Redirects to the plugin's zip in Supabase Storage |
 | `GET /api/plugin/check-update/:id/:version` | Check if a newer version exists |
-| `POST /api/plugin/order` | No-op (no paid plugins/accounts in this server) |
+| `POST /api/plugin/order` | Verifies a Google Play purchase token (requires auth) and records ownership |
 | `GET /upload` | Browser upload form |
 | `POST /api/admin/plugins` | Publish/replace a plugin (requires `x-admin-token` header) |

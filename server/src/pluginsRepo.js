@@ -25,7 +25,9 @@ function getPublicUrl(bucketPath) {
 }
 
 /** Shapes a database row into exactly what the Nothing IDE app's marketplace
- * client expects - no accounts in this server, so nothing is ever "owned". */
+ * client expects. Ownership isn't included here - the listHandler filters
+ * by the caller's real purchases (see getOwnedPluginIds) when a signed-in
+ * user is making the request. */
 function toPublicPlugin(row) {
 	return {
 		id: row.id,
@@ -43,7 +45,7 @@ function toPublicPlugin(row) {
 		changelogs: row.changelogs,
 		supported_editor: row.supported_editor,
 		min_version_code: null,
-		sku: null,
+		sku: row.sku || null,
 	};
 }
 
@@ -133,6 +135,64 @@ async function upsertPlugin(row) {
 	if (error) throw error;
 }
 
+/** Row for one plugin (not the public-shape one), needed by /api/checkout
+ * to read its price/name without exposing icon/changelog fields. */
+async function getPluginRaw(id) {
+	const client = requireSupabase();
+	const { data, error } = await client
+		.from("plugins")
+		.select("*")
+		.eq("id", id)
+		.maybeSingle();
+	if (error) throw error;
+	return data;
+}
+
+async function getOwnedPluginIds(userId) {
+	const client = requireSupabase();
+	const { data, error } = await client
+		.from("purchases")
+		.select("plugin_id")
+		.eq("user_id", userId);
+	if (error) throw error;
+	return new Set(data.map((row) => row.plugin_id));
+}
+
+async function hasPurchased(userId, pluginId) {
+	const client = requireSupabase();
+	const { data, error } = await client
+		.from("purchases")
+		.select("id")
+		.eq("user_id", userId)
+		.eq("plugin_id", pluginId)
+		.maybeSingle();
+	if (error) throw error;
+	return Boolean(data);
+}
+
+async function recordPurchase({
+	userId,
+	pluginId,
+	playPurchaseToken,
+	playOrderId,
+	amount,
+	currency,
+}) {
+	const client = requireSupabase();
+	const { error } = await client.from("purchases").upsert(
+		{
+			user_id: userId,
+			plugin_id: pluginId,
+			play_purchase_token: playPurchaseToken,
+			play_order_id: playOrderId,
+			amount,
+			currency,
+		},
+		{ onConflict: "user_id,plugin_id" },
+	);
+	if (error) throw error;
+}
+
 async function listAllRaw() {
 	const client = requireSupabase();
 	const { data, error } = await client
@@ -146,6 +206,7 @@ async function listAllRaw() {
 module.exports = {
 	listPlugins,
 	getPlugin,
+	getPluginRaw,
 	getPluginDownload,
 	bumpDownloads,
 	getVersion,
@@ -153,4 +214,7 @@ module.exports = {
 	upsertPlugin,
 	listAllRaw,
 	toPublicPlugin,
+	getOwnedPluginIds,
+	hasPurchased,
+	recordPurchase,
 };
