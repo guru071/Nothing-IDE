@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nothing IDE</title>
+<style>
+	:root { color-scheme: dark; }
+	* { box-sizing: border-box; }
+	body {
+		margin: 0;
+		min-height: 100vh;
+		font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+		background: #14141a;
+		color: #e6e6ea;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 32px 16px;
+	}
+	main { width: 100%; max-width: 480px; text-align: center; }
+	h1 { font-size: 1.6rem; margin-bottom: 4px; }
+	p { color: #9a9aa5; font-size: 0.95rem; line-height: 1.5; }
+	.links {
+		margin-top: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+	a.button {
+		display: block;
+		background: #1c1c24;
+		border: 1px solid #2c2c36;
+		border-radius: 8px;
+		padding: 14px 16px;
+		color: #e6e6ea;
+		text-decoration: none;
+		font-size: 0.95rem;
+		font-weight: 600;
+		transition: border-color 0.15s ease;
+	}
+	a.button:hover { border-color: #635bff; }
+	a.button span { display: block; font-weight: 400; font-size: 0.8rem; color: #9a9aa5; margin-top: 3px; }
+</style>
+</head>
+<body>
+<main>
+	<h1>Nothing IDE</h1>
+	<p>Android IDE by GOAT'ECH. This site hosts the plugin/theme marketplace's publishing tools.</p>
+	<div class="links">
+		<a class="button" href="./upload/">
+			Publish a plugin or theme
+			<span>Upload form - talks to the marketplace API on Vercel</span>
+		</a>
+		<a class="button" href="https://github.com/guru071/Nothing-IDE">
+			Source code
+			<span>guru071/Nothing-IDE on GitHub</span>
+		</a>
+	</div>
+</main>
+</body>
+</html>
