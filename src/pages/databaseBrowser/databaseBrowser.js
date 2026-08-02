@@ -434,6 +434,21 @@ function renderServerMode() {
 	}
 }
 
+function formatCell(cell) {
+	if (cell === null || cell === undefined) return "NULL";
+	// sql.js returns BLOB columns as a Uint8Array - showing that via String()
+	// would dump a garbled comma-separated byte list, so show a short hex
+	// preview and the real size instead.
+	if (cell instanceof Uint8Array) {
+		const previewBytes = Array.from(cell.subarray(0, 16))
+			.map((b) => b.toString(16).padStart(2, "0"))
+			.join(" ");
+		const suffix = cell.length > 16 ? "..." : "";
+		return `<BLOB ${cell.length} bytes: ${previewBytes}${suffix}>`;
+	}
+	return String(cell);
+}
+
 function renderResultTable({ columns, values }) {
 	return (
 		<div className="db-table-wrap">
@@ -449,7 +464,11 @@ function renderResultTable({ columns, values }) {
 					{values.map((row) => (
 						<tr>
 							{row.map((cell) => (
-								<td>{cell === null ? "NULL" : String(cell)}</td>
+								<td
+									className={cell instanceof Uint8Array ? "db-cell-blob" : ""}
+								>
+									{formatCell(cell)}
+								</td>
 							))}
 						</tr>
 					))}

@@ -172,6 +172,11 @@
       color: var(--primary-text-color);
       font-family: monospace;
     }
+
+    td.db-cell-blob {
+      color: var(--secondary-text-color);
+      font-style: italic;
+    }
   }
 
   .db-row-count {
