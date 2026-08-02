@@ -54,7 +54,7 @@ In Nothing IDE: **Settings → Plugin server**, enter your deployed URL (e.g. `h
    zip -j -X ../../downloads/<your-plugin-id>.zip plugin.json main.js icon.png readme.md
    ```
 3. Add an entry to `data/plugins.json` (copy the `hello-world` entry as a template — the `icon` field should be `/static/plugins/<your-plugin-id>/icon.png`, and `file` should be `<your-plugin-id>.zip`).
-4. Commit and push — Render redeploys automatically.
+4. Commit and push — Vercel redeploys automatically (or Render, if you're using that instead).
 
 ## API reference
 
