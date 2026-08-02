@@ -1,6 +1,10 @@
-import setupScript from "./androidBuild/setup.sh";
 import buildScript from "./androidBuild/build.sh";
-import { addedFolder, convertToProotPath, isTerminalAccessiblePath } from "./openFolder";
+import setupScript from "./androidBuild/setup.sh";
+import {
+	addedFolder,
+	convertToProotPath,
+	isTerminalAccessiblePath,
+} from "./openFolder";
 
 /**
  * Returns the currently open project as an in-sandbox path, or null if no

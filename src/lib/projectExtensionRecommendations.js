@@ -1,7 +1,7 @@
 import fsOperation from "fileSystem";
 import Url from "utils/Url";
-import appSettings from "./settings";
 import notificationManager from "./notificationManager";
+import appSettings from "./settings";
 
 const notifiedFolders = new Set();
 
@@ -111,6 +111,9 @@ export default function recommendProjectExtensions(folderUrl, folderName) {
 	if (appSettings.value.recommendExtensions === false) return;
 
 	void scanFolder(folderUrl, folderName).catch((error) => {
-		console.warn("Failed to scan project for extension recommendations.", error);
+		console.warn(
+			"Failed to scan project for extension recommendations.",
+			error,
+		);
 	});
 }

@@ -110,7 +110,9 @@ function init() {
 			try {
 				await startDesktop();
 			} catch (error) {
-				window.toast?.(`Failed to start GUI desktop: ${error?.message || error}`);
+				window.toast?.(
+					`Failed to start GUI desktop: ${error?.message || error}`,
+				);
 			}
 		},
 	});
@@ -137,7 +139,9 @@ function init() {
 				await stopDesktop();
 				window.toast?.("GUI desktop stopped");
 			} catch (error) {
-				window.toast?.(`Failed to stop GUI desktop: ${error?.message || error}`);
+				window.toast?.(
+					`Failed to stop GUI desktop: ${error?.message || error}`,
+				);
 			}
 		},
 	});

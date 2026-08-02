@@ -1,6 +1,9 @@
 import Url from "utils/Url";
-import { addedFolder } from "./openFolder";
-import { convertToProotPath, isTerminalAccessiblePath } from "./openFolder";
+import {
+	addedFolder,
+	convertToProotPath,
+	isTerminalAccessiblePath,
+} from "./openFolder";
 
 /**
  * Wraps a string in POSIX single-quotes, safe for embedding in a shell command.
@@ -116,10 +119,7 @@ async function getStatus(path) {
 }
 
 function getDiff(path, file, staged = false) {
-	return run(
-		path,
-		`git diff ${staged ? "--cached " : ""}-- ${sh(file)} 2>&1`,
-	);
+	return run(path, `git diff ${staged ? "--cached " : ""}-- ${sh(file)} 2>&1`);
 }
 
 function stage(path, file) {
@@ -145,10 +145,7 @@ function commit(path, message) {
 	// Base64-encode the message to sidestep shell-quoting issues with
 	// newlines/quotes in the commit message.
 	const encoded = window.btoa(unescape(encodeURIComponent(message)));
-	return run(
-		path,
-		`git commit -m "$(echo ${sh(encoded)} | base64 -d)" 2>&1`,
-	);
+	return run(path, `git commit -m "$(echo ${sh(encoded)} | base64 -d)" 2>&1`);
 }
 
 function push(path) {
@@ -210,7 +207,9 @@ async function clone(url, intoPath) {
 	return {
 		folderName,
 		prootPath: Url.join(parentPath, folderName),
-		androidUrl: parentAndroidUrl ? Url.join(parentAndroidUrl, folderName) : null,
+		androidUrl: parentAndroidUrl
+			? Url.join(parentAndroidUrl, folderName)
+			: null,
 		output,
 	};
 }

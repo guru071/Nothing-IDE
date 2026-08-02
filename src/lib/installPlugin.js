@@ -138,7 +138,8 @@ export default async function installPlugin(
 
 				let titleText;
 				if (manifests.length > 1) {
-					titleText = "Nothing IDE wants to install the following dependencies:";
+					titleText =
+						"Nothing IDE wants to install the following dependencies:";
 				} else {
 					titleText = "Nothing IDE wants to install the following dependency:";
 				}

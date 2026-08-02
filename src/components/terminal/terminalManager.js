@@ -1124,7 +1124,8 @@ class TerminalManager {
 	convertProotPath(prootPath) {
 		if (!prootPath) return prootPath;
 
-		const packageName = window.BuildInfo?.packageName || "tech.goatech.nothingide";
+		const packageName =
+			window.BuildInfo?.packageName || "tech.goatech.nothingide";
 		const dataDir = `/data/user/0/${packageName}`;
 		const alpineRoot = `${dataDir}/files/alpine`;
 

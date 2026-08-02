@@ -13,7 +13,9 @@ const config = {
 	},
 
 	set BASE_URL(value) {
-		const trimmed = String(value || "").trim().replace(/\/+$/, "");
+		const trimmed = String(value || "")
+			.trim()
+			.replace(/\/+$/, "");
 		if (!trimmed || trimmed === DEFAULT_BASE_URL) {
 			localStorage.removeItem(PLUGIN_SERVER_OVERRIDE_KEY);
 		} else {

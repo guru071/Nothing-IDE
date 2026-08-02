@@ -35,7 +35,10 @@ function sh(str = "") {
 function splitPath(prootPath) {
 	const idx = prootPath.lastIndexOf("/");
 	if (idx <= 0) return { dir: "/", name: prootPath };
-	return { dir: prootPath.slice(0, idx) || "/", name: prootPath.slice(idx + 1) };
+	return {
+		dir: prootPath.slice(0, idx) || "/",
+		name: prootPath.slice(idx + 1),
+	};
 }
 
 /**
@@ -90,7 +93,10 @@ async function buildProjectCommand(project) {
 		}
 		const scriptName = scripts.dev ? "dev" : scripts.start ? "start" : null;
 		const command = scriptName ? `npm run ${scriptName}` : "npm start";
-		return { command: `cd ${sh(project.path)} && ${command}`, name: "package.json" };
+		return {
+			command: `cd ${sh(project.path)} && ${command}`,
+			name: "package.json",
+		};
 	}
 
 	if (out.includes("HAS_MAIN_PY")) {
@@ -148,7 +154,10 @@ async function runCommandInTerminal(title, command) {
 async function run() {
 	const fileCommand = buildActiveFileCommand();
 	if (fileCommand) {
-		await runCommandInTerminal(`Run - ${fileCommand.name}`, fileCommand.command);
+		await runCommandInTerminal(
+			`Run - ${fileCommand.name}`,
+			fileCommand.command,
+		);
 		return;
 	}
 

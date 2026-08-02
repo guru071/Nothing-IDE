@@ -141,7 +141,10 @@ export const catppuccinMochaHighlightStyle = HighlightStyle.define([
 ]);
 
 export function catppuccinMocha() {
-	return [catppuccinMochaTheme, syntaxHighlighting(catppuccinMochaHighlightStyle)];
+	return [
+		catppuccinMochaTheme,
+		syntaxHighlighting(catppuccinMochaHighlightStyle),
+	];
 }
 
 export default catppuccinMocha;

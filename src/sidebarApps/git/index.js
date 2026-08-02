@@ -1,11 +1,11 @@
 import "./style.scss";
 import Sidebar from "components/sidebar";
+import toast from "components/toast";
 import alert from "dialogs/alert";
 import confirm from "dialogs/confirm";
+import loader from "dialogs/loader";
 import prompt from "dialogs/prompt";
 import select from "dialogs/select";
-import loader from "dialogs/loader";
-import toast from "components/toast";
 import gitService from "lib/gitService";
 
 /**@type {HTMLElement} */
@@ -111,9 +111,7 @@ async function showMenu(e) {
 		);
 	}
 
-	const choice = await select("Source Control", items, true).catch(
-		() => null,
-	);
+	const choice = await select("Source Control", items, true).catch(() => null);
 	if (!choice) return;
 
 	if (choice === "clone") {

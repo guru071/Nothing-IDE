@@ -29,7 +29,8 @@ const isTerminalSafUri = (value = "") =>
 	isTermuxSafUri(value) || isAcodeTerminalPublicSafUri(value);
 
 const getTerminalPaths = () => {
-	const packageName = window.BuildInfo?.packageName || "tech.goatech.nothingide";
+	const packageName =
+		window.BuildInfo?.packageName || "tech.goatech.nothingide";
 	const dataDir = `/data/user/0/${packageName}`;
 	const alpineRoot = `${dataDir}/files/alpine`;
 	const publicDir = `${dataDir}/files/public`;
@@ -1301,9 +1302,9 @@ openFolder.find = (url) => {
 };
 
 export {
-	isTerminalAccessiblePath,
 	convertToProotPath,
-	isTerminalSafUri,
 	isAcodeTerminalPublicSafUri,
+	isTerminalAccessiblePath,
+	isTerminalSafUri,
 };
 export default openFolder;

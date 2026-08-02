@@ -142,7 +142,7 @@ async function capturePhoto() {
 		"",
 		`path = "${prootPath}"`,
 		"img = cv2.imread(path)",
-		'if img is None:',
+		"if img is None:",
 		'    raise SystemExit(f"Could not read {path}")',
 		"",
 		'print("shape:", img.shape)',

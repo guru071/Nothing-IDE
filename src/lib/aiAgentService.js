@@ -1,5 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import fsOperation from "fileSystem";
+import Anthropic from "@anthropic-ai/sdk";
 import Url from "utils/Url";
 import config from "./config";
 import gitService from "./gitService";
@@ -18,7 +18,10 @@ const TOOLS = [
 		input_schema: {
 			type: "object",
 			properties: {
-				path: { type: "string", description: "Path relative to the project root" },
+				path: {
+					type: "string",
+					description: "Path relative to the project root",
+				},
 			},
 			required: ["path"],
 		},
@@ -45,8 +48,14 @@ const TOOLS = [
 		input_schema: {
 			type: "object",
 			properties: {
-				path: { type: "string", description: "Path relative to the project root" },
-				content: { type: "string", description: "The full new content of the file" },
+				path: {
+					type: "string",
+					description: "Path relative to the project root",
+				},
+				content: {
+					type: "string",
+					description: "The full new content of the file",
+				},
 			},
 			required: ["path", "content"],
 		},
@@ -176,7 +185,10 @@ async function executeTool(name, input, { project, onConfirm }) {
 				};
 			}
 			if (typeof window.Executor?.execute !== "function") {
-				return { content: "The Terminal feature isn't installed.", isError: true };
+				return {
+					content: "The Terminal feature isn't installed.",
+					isError: true,
+				};
 			}
 			const approved = await onConfirm(
 				"Run command",

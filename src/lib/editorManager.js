@@ -64,6 +64,7 @@ import createTouchSelectionMenu from "cm/touchSelectionMenu";
 import "cm/supportedModes";
 import { autocompletion } from "@codemirror/autocomplete";
 import { serverCompletionSource } from "@codemirror/lsp-client";
+import autoElseExtension, { autoElseCompletionSource } from "cm/autoElse";
 import colorView from "cm/colorView";
 import {
 	getAllFolds,
@@ -82,9 +83,8 @@ import {
 	isMultiCursorSelectionActive as resolveMultiCursorSelectionActive,
 	isShiftSelectionActive as resolveShiftSelectionActive,
 } from "cm/shiftSelection";
-import tagAutoRename from "cm/tagAutoRename";
 import snippetsExtension, { snippetCompletionSource } from "cm/snippets";
-import autoElseExtension, { autoElseCompletionSource } from "cm/autoElse";
+import tagAutoRename from "cm/tagAutoRename";
 import { getThemeConfig, getThemeExtensions } from "cm/themes";
 import list from "components/collapsableList";
 import quickTools from "components/quickTools";

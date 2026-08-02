@@ -3,11 +3,7 @@ import Sidebar from "components/sidebar";
 import toast from "components/toast";
 import confirm from "dialogs/confirm";
 import loader from "dialogs/loader";
-import {
-	getCurrentProject,
-	hasApiKey,
-	runAgentTurn,
-} from "lib/aiAgentService";
+import { getCurrentProject, hasApiKey, runAgentTurn } from "lib/aiAgentService";
 
 /** @type {HTMLElement} */
 let container;
@@ -79,7 +75,11 @@ function initApp(el) {
 	};
 
 	$sendButton = (
-		<button type="button" className="action-button send-button" onclick={() => send()}>
+		<button
+			type="button"
+			className="action-button send-button"
+			onclick={() => send()}
+		>
 			<span className="icon file_downloadget_app"></span> Send
 		</button>
 	);
@@ -128,10 +128,13 @@ function render() {
 	if (!displayMessages.length) {
 		$body.append(
 			<div className="empty-state">
-				<p>Ask the AI Agent to explain, write, fix, or run something in your open project.</p>
+				<p>
+					Ask the AI Agent to explain, write, fix, or run something in your open
+					project.
+				</p>
 				<p className="hint">
-					It can read and write files and run shell commands here, but always asks before it
-					writes or runs anything.
+					It can read and write files and run shell commands here, but always
+					asks before it writes or runs anything.
 				</p>
 			</div>,
 		);

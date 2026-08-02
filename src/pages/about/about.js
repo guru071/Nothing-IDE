@@ -1,11 +1,11 @@
 import "./about.scss";
-import goatechLogo from "./goatech-logo.jpeg";
 import Logo from "components/logo";
 import Page from "components/page";
 import Reactive from "html-tag-js/reactive";
 import actionStack from "lib/actionStack";
 import { hideAd } from "lib/startAd";
 import helpers from "utils/helpers";
+import goatechLogo from "./goatech-logo.jpeg";
 export default function AboutInclude() {
 	const $page = Page(strings.about.capitalize());
 	const webviewVersionName = Reactive("N/A");
