@@ -329,6 +329,14 @@ export default {
 				).default();
 				break;
 
+			case "account":
+				(
+					await import(
+						/* webpackChunkName: "account" */ "pages/account/account"
+					)
+				).default();
+				break;
+
 			case "log_viewer":
 				(
 					await import(

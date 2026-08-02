@@ -32,6 +32,14 @@ export default function mainSettings() {
 	};
 	const items = [
 		{
+			key: "account",
+			text: "Account",
+			icon: "account_circle",
+			info: "Sign in with GitHub or Google - needed to buy paid plugins and keep them across devices.",
+			category: categories.core,
+			chevron: true,
+		},
+		{
 			key: "app-settings",
 			text: strings["app settings"],
 			icon: "tune",
@@ -190,6 +198,10 @@ export default function mainSettings() {
 	 */
 	async function callback(key, value) {
 		switch (key) {
+			case "account":
+				acode.exec("open", "account");
+				break;
+
 			case "pluginServer":
 				config.BASE_URL = value;
 				break;

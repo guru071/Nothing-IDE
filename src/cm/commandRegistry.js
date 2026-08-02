@@ -590,6 +590,16 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "account",
+		description: "Account (sign in for paid plugins)",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "account");
+			return true;
+		},
+	});
+	addCommand({
 		name: "wirelessDebug",
 		description: "Wireless Debugging (ADB over Wi-Fi)",
 		readOnly: true,

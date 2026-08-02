@@ -39,6 +39,7 @@ import adRewards from "lib/adRewards";
 import ajax from "lib/ajax";
 import androidBuilder from "lib/androidBuilder";
 import applySettings from "lib/applySettings";
+import auth from "lib/auth";
 import checkFiles from "lib/checkFiles";
 import clipboardHistory from "lib/clipboardHistory";
 import { canSaveFile } from "lib/commands";
@@ -478,6 +479,11 @@ async function loadApp() {
 	editorManager.on("switch-file", onFileUpdate);
 	editorManager.on("file-loaded", onFileUpdate);
 	navigator.app.overrideButton("menubutton", true);
+	system.setAuthCallbackHandler((url) => {
+		auth
+			.handleAuthCallbackUrl(url)
+			.catch((error) => window.log("error", error));
+	}, console.error);
 	system.setIntentHandler(intentHandler, intentHandler.onError);
 	system.getCordovaIntent(intentHandler, intentHandler.onError);
 	setTimeout(showTutorials, 1000);

@@ -8,6 +8,7 @@ import TabView from "components/tabView";
 import tutorial from "components/tutorial";
 import prompt from "dialogs/prompt";
 import actionStack from "lib/actionStack";
+import auth from "lib/auth";
 import config from "lib/config";
 import installPlugin from "lib/installPlugin";
 import loadPlugin from "lib/loadPlugin";
@@ -688,7 +689,10 @@ export default function PluginsInclude(updates) {
 		}
 
 		try {
-			const res = await fetch(`${config.API_BASE}/plugins?owned=true`);
+			const accessToken = await auth.getAccessToken();
+			const res = await fetch(`${config.API_BASE}/plugins?owned=true`, {
+				headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+			});
 			if (res.ok) {
 				const ownedPlugins = await res.json();
 				if (Array.isArray(ownedPlugins)) {

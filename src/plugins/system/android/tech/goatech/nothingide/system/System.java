@@ -83,6 +83,7 @@ public class System extends CordovaPlugin {
   private int systemBarColor = 0xFF000000;
   private Theme theme;
   private CallbackContext intentHandler;
+  private CallbackContext authCallbackHandler;
   private CordovaWebView webView;
   private String fileProviderAuthority;
   private RewardPassManager rewardPassManager;
@@ -164,6 +165,9 @@ public class System extends CordovaPlugin {
         return true;
       case "set-intent-handler":
         setIntentHandler(callbackContext);
+        return true;
+      case "set-auth-callback-handler":
+        setAuthCallbackHandler(callbackContext);
         return true;
       case "shareText":
         String text = args.getString(0);
@@ -1882,6 +1886,7 @@ public class System extends CordovaPlugin {
   private void getCordovaIntent(CallbackContext callback) {
     Intent intent = activity.getIntent();
     if (isReservedAuthIntent(intent)) {
+      forwardAuthCallback(intent);
       callback.sendPluginResult(
         new PluginResult(PluginResult.Status.OK, new JSONObject())
       );
@@ -1899,9 +1904,32 @@ public class System extends CordovaPlugin {
     callback.sendPluginResult(result);
   }
 
+  private void setAuthCallbackHandler(CallbackContext callback) {
+    authCallbackHandler = callback;
+    PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+    result.setKeepCallback(true);
+    callback.sendPluginResult(result);
+  }
+
+  /** Forwards a nothing://auth/callback intent's full data URI (which
+   * carries the OAuth tokens as a URL fragment) to JS instead of silently
+   * dropping it - the reserved-intent check still keeps it out of the
+   * normal file/URL-open intent handler above. */
+  private void forwardAuthCallback(Intent intent) {
+    if (authCallbackHandler == null) return;
+    Uri data = intent != null ? intent.getData() : null;
+    PluginResult result = new PluginResult(
+      PluginResult.Status.OK,
+      data != null ? data.toString() : ""
+    );
+    result.setKeepCallback(true);
+    authCallbackHandler.sendPluginResult(result);
+  }
+
   @Override
   public void onNewIntent(Intent intent) {
     if (isReservedAuthIntent(intent)) {
+      forwardAuthCallback(intent);
       return;
     }
     if (intentHandler != null) {

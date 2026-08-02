@@ -6,6 +6,7 @@ import loader from "dialogs/loader";
 import { addIntentHandler, removeIntentHandler } from "handlers/intent";
 import purchaseListener from "handlers/purchase";
 import actionStack from "lib/actionStack";
+import auth from "lib/auth";
 import config from "lib/config";
 import customTab from "lib/customTab";
 import installPlugin from "lib/installPlugin";
@@ -312,20 +313,45 @@ export default async function PluginInclude(
 				return;
 			}
 
+			// Purchases must be tied to a signed-in account so the server can
+			// actually record ownership - check this before charging real money
+			// through Play Billing, not after.
+			const accessToken = await auth.getAccessToken();
+			if (!accessToken) {
+				alert(
+					strings.info,
+					"Sign in first (Settings › Account) to buy this plugin.",
+				);
+				return;
+			}
+
 			iap.setPurchaseUpdatedListener(...purchaseListener(onpurchase, onerror));
 			$button.textContent = strings["loading..."];
 			await helpers.promisify(iap.purchase, product.productId);
 
 			async function onpurchase(e) {
 				const purchase = await getPurchase(product.productId);
-				await fetch(Url.join(config.API_BASE, "plugin/order"), {
-					method: "POST",
-					body: JSON.stringify({
-						id: plugin.id,
-						token: purchase?.purchaseToken,
-						package: BuildInfo.packageName,
-					}),
-				});
+				const orderRes = await fetch(
+					Url.join(config.API_BASE, "plugin/order"),
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${accessToken}`,
+						},
+						body: JSON.stringify({
+							id: plugin.id,
+							token: purchase?.purchaseToken,
+							package: BuildInfo.packageName,
+						}),
+					},
+				);
+				if (!orderRes.ok) {
+					const { error } = await orderRes.json().catch(() => ({}));
+					helpers.error(new Error(error || "Purchase verification failed."));
+					$button.textContent = oldText;
+					return;
+				}
 				purchaseToken = purchase?.purchaseToken;
 				purchased = !!purchase;
 				$button.textContent = oldText;

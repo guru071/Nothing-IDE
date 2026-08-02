@@ -7,6 +7,7 @@ import JSZip from "jszip";
 import helpers from "utils/helpers";
 import Url from "utils/Url";
 import { isVersionGreater } from "utils/version";
+import auth from "./auth";
 import config from "./config";
 import InstallState from "./installState";
 import { loadPluginWithTimeout } from "./loadPlugins";
@@ -463,20 +464,37 @@ async function resolveDep(manifest) {
 			return true;
 		}
 
+		const accessToken = await auth.getAccessToken();
+		if (!accessToken) {
+			alert(
+				strings.info,
+				"Sign in first (Settings › Account) to buy this plugin.",
+			);
+			return true;
+		}
+
 		iap.setPurchaseUpdatedListener(...purchaseListener(onpurchase, onerror));
 		loaderDialog.setMessage(strings["loading..."]);
 		await helpers.promisify(iap.purchase, product.productId);
 
 		async function onpurchase(e) {
 			const purchase = await getPurchase(product.productId);
-			await fetch(Url.join(config.API_BASE, "plugin/order"), {
+			const orderRes = await fetch(Url.join(config.API_BASE, "plugin/order"), {
 				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
 				body: JSON.stringify({
 					id: manifest.id,
 					token: purchase?.purchaseToken,
 					package: BuildInfo.packageName,
 				}),
 			});
+			if (!orderRes.ok) {
+				const { error } = await orderRes.json().catch(() => ({}));
+				throw new Error(error || "Purchase verification failed.");
+			}
 			purchaseToken = purchase?.purchaseToken;
 		}
 
