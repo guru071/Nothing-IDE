@@ -10,6 +10,10 @@ const PLUGINS_STATIC_DIR = path.join(DATA_DIR, "plugins");
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+// Both Render and Vercel sit behind a proxy that terminates TLS and forwards
+// the real scheme via X-Forwarded-Proto; without this, req.protocol always
+// reports "http" and icon URLs get built wrong (mixed-content on an https page).
+app.set("trust proxy", true);
 app.use(express.json());
 
 // CORS: the app running on a phone has no origin restrictions to worry
