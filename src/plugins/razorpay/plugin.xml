@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-razorpay" version="1.0.0">
+  <name>cordova-plugin-razorpay</name>
+  <description>Native Razorpay Checkout for Android.</description>
+  <license>MIT</license>
+  <keywords>cordova,plugin,razorpay,payments</keywords>
+
+  <js-module src="www/plugin.js" name="razorpay">
+    <clobbers target="window.razorpay" />
+  </js-module>
+
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="Razorpay">
+        <param name="android-package" value="tech.goatech.nothingide.razorpay.RazorpayPlugin"/>
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity
+        android:name="tech.goatech.nothingide.razorpay.RazorpayCheckoutActivity"
+        android:exported="false" />
+    </config-file>
+
+    <source-file src="src/android/RazorpayPlugin.java" target-dir="src/tech/goatech/nothingide/razorpay"/>
+    <source-file src="src/android/RazorpayCheckoutActivity.java" target-dir="src/tech/goatech/nothingide/razorpay"/>
+    <framework src="com.razorpay:checkout:1.6.41" />
+  </platform>
+</plugin>

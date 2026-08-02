@@ -270,39 +270,85 @@ export default async function PluginInclude(
 		const $button = e.target;
 		const oldText = $button.textContent;
 
-		try {
-			if (helpers.shouldAllowExternalPurchase()) {
-				await customTab(`${config.BASE_URL}/plugin/${id}?callback=app`);
-				if (!purchaseHandlerSet) {
-					purchaseHandlerSet = true;
-					const handler = async ({ module, action, value }) => {
-						if (module === "plugin" && action === "purchased" && value === id) {
-							loader.show();
-
-							try {
-								const pluginData = await fsOperation(
-									config.API_BASE,
-									`plugin/${id}`,
-								).readFile("json");
-
-								purchased = pluginData.owned;
-								render();
-							} catch (error) {
-								window.log(error);
-								helpers.error(error);
-							}
-
-							loader.hide();
-							purchaseHandlerSet = false;
-							removeIntentHandler(handler);
-						}
-					};
-					addIntentHandler(handler);
-					cleanups.push(() => removeIntentHandler(handler));
-				}
+		if (helpers.shouldAllowExternalPurchase()) {
+			// Not a Play Store install, so Play Billing isn't available - use the
+			// native Razorpay checkout instead (typeof guard: on iOS/desktop
+			// builds this Android-only Cordova plugin simply doesn't exist).
+			if (typeof razorpay === "undefined") {
+				alert(strings.error, strings.api_error);
 				return;
 			}
-		} catch (error) {}
+
+			const accessToken = await auth.getAccessToken();
+			if (!accessToken) {
+				alert(
+					strings.info,
+					"Sign in first (Settings › Account) to buy this plugin.",
+				);
+				return;
+			}
+
+			try {
+				$button.textContent = strings["loading..."];
+
+				const orderRes = await fetch(
+					Url.join(config.API_BASE, "plugin/razorpay/order"),
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${accessToken}`,
+						},
+						body: JSON.stringify({ id: plugin.id }),
+					},
+				);
+				if (!orderRes.ok) {
+					const { error } = await orderRes.json().catch(() => ({}));
+					throw new Error(error || "Could not start checkout.");
+				}
+				const order = await orderRes.json();
+
+				const result = await razorpay.open(order.keyId, {
+					order_id: order.orderId,
+					amount: order.amount,
+					currency: order.currency,
+					name: config.BRAND_NAME,
+					description: plugin.name,
+					image: config.BRAND_LOGO_URL,
+					theme: { color: config.BRAND_COLOR },
+				});
+
+				const verifyRes = await fetch(
+					Url.join(config.API_BASE, "plugin/razorpay/verify"),
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${accessToken}`,
+						},
+						body: JSON.stringify({
+							orderId: result.orderId,
+							paymentId: result.paymentId,
+							signature: result.signature,
+						}),
+					},
+				);
+				if (!verifyRes.ok) {
+					const { error } = await verifyRes.json().catch(() => ({}));
+					throw new Error(error || "Payment verification failed.");
+				}
+
+				purchased = true;
+				$button.textContent = oldText;
+				install();
+			} catch (error) {
+				window.log("error", "Failed to buy via Razorpay:");
+				window.log("error", error);
+				helpers.error(error);
+				$button.textContent = oldText;
+			}
+			return;
+		}
 
 		try {
 			if (!product) throw new Error("Product not found");

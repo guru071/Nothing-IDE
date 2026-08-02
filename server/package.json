@@ -15,6 +15,7 @@
 		"express": "^4.19.2",
 		"google-auth-library": "^10.9.1",
 		"multer": "^2.2.0",
+		"razorpay": "^2.9.8",
 		"ws": "^8.21.1"
 	}
 }

@@ -138,6 +138,26 @@ Play Console access:
 5. Run the `purchases` table section of `supabase-schema.sql` (added
    alongside `plugins`) if you haven't already.
 
+**Not on Play Store yet?** The app falls back to a native Razorpay checkout
+instead (`helpers.shouldAllowExternalPurchase()` in the app detects this
+automatically - no Play Console account needed to sell plugins in the
+meantime):
+1. Razorpay dashboard → **Settings → API Keys** → generate a Key ID + Key
+   Secret (test mode keys work for trying this out before going live).
+2. Set `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` on the server. The Key ID
+   is also handed to the app per-order (safe, it's meant to be public); the
+   Key Secret never leaves the server - it's only used here to create orders
+   and verify payment signatures.
+3. Run the `purchases` (with its `razorpay_order_id`/`razorpay_payment_id`
+   columns) and `razorpay_orders` table sections of `supabase-schema.sql`.
+4. Prices for this path are read straight off the plugin's `price` field as
+   rupees (Razorpay is INR-first) - set it accordingly when uploading a
+   plugin meant to sell through this path.
+5. Branding shown in the checkout sheet (name/logo/theme color) comes from
+   the app's own `src/lib/config.js` (`BRAND_NAME`/`BRAND_LOGO_URL`/
+   `BRAND_COLOR`) and `server/public/brand-icon.png` - replace that file to
+   change the logo.
+
 ## API reference
 
 | Endpoint | Purpose |
@@ -147,5 +167,7 @@ Play Console access:
 | `GET /api/plugin/download/:id` | Redirects to the plugin's zip in Supabase Storage |
 | `GET /api/plugin/check-update/:id/:version` | Check if a newer version exists |
 | `POST /api/plugin/order` | Verifies a Google Play purchase token (requires auth) and records ownership |
+| `POST /api/plugin/razorpay/order` | Creates a Razorpay order for a paid plugin (requires auth) |
+| `POST /api/plugin/razorpay/verify` | Verifies a completed Razorpay payment's signature and records ownership (requires auth) |
 | `GET /upload` | Browser upload form |
 | `POST /api/admin/plugins` | Publish/replace a plugin (requires `x-admin-token` header) |

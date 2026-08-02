@@ -1,7 +1,9 @@
+const path = require("node:path");
 const express = require("express");
 const multer = require("multer");
 const { getUserFromRequest, requireUser } = require("./auth");
 const { verifyPlayPurchase } = require("./playBilling");
+const razorpay = require("./razorpay");
 const pluginsRepo = require("./pluginsRepo");
 const { renderUploadPage } = require("./uploadPage");
 
@@ -17,6 +19,9 @@ const app = express();
 // reports "http" and icon URLs get built wrong (mixed-content on an https page).
 app.set("trust proxy", true);
 app.use(express.json());
+// Serves server/public/brand-icon.png (the app logo shown inside the native
+// Razorpay checkout sheet) and anything else dropped in that folder later.
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // CORS: the app running on a phone has no origin restrictions to worry
 // about, but allow browser-based testing (e.g. curl/Postman/dev tools) too.
@@ -153,6 +158,85 @@ app.post("/api/plugin/order", requireUser, async (req, res) => {
 		});
 
 		res.json({ success: true });
+	} catch (error) {
+		sendError(res, 500, error);
+	}
+});
+
+/** POST /api/plugin/razorpay/order - creates a Razorpay order for a paid
+ * plugin, for the non-Play-Store purchase path (native Razorpay checkout).
+ * Records who it's for so /verify below can confirm the payment belongs to
+ * the same signed-in user before recording ownership. */
+app.post("/api/plugin/razorpay/order", requireUser, async (req, res) => {
+	try {
+		const { id } = req.body || {};
+		if (!id) return sendError(res, 400, "id is required.");
+
+		const plugin = await pluginsRepo.getPluginRaw(id);
+		if (!plugin) return sendError(res, 404, "Plugin not found");
+
+		const price = Number(plugin.price) || 0;
+		if (price <= 0) return sendError(res, 400, "This plugin is free.");
+
+		const order = await razorpay.createOrder({
+			amount: Math.round(price * 100),
+			currency: "INR",
+			receipt: `plugin_${id}_${req.user.id}_${Date.now()}`,
+		});
+
+		await pluginsRepo.createPendingRazorpayOrder({
+			orderId: order.id,
+			userId: req.user.id,
+			pluginId: id,
+			amount: price,
+			currency: "inr",
+		});
+
+		res.json({
+			orderId: order.id,
+			amount: order.amount,
+			currency: order.currency,
+			keyId: razorpay.getPublicKeyId(),
+			name: plugin.name,
+		});
+	} catch (error) {
+		sendError(res, 500, error);
+	}
+});
+
+/** POST /api/plugin/razorpay/verify - confirms a completed native checkout's
+ * signature, checks the order was actually created for this same user (a
+ * valid signature alone only proves the order/payment pair is genuine, not
+ * who's allowed to claim it), then records ownership. */
+app.post("/api/plugin/razorpay/verify", requireUser, async (req, res) => {
+	try {
+		const { orderId, paymentId, signature } = req.body || {};
+		if (!orderId || !paymentId || !signature) {
+			return sendError(res, 400, "orderId, paymentId, and signature are required.");
+		}
+
+		if (!razorpay.verifyPaymentSignature({ orderId, paymentId, signature })) {
+			return sendError(res, 402, "Payment signature could not be verified.");
+		}
+
+		const pending = await pluginsRepo.consumePendingRazorpayOrder(orderId);
+		if (!pending) {
+			return sendError(res, 404, "No matching order found (already used or never created).");
+		}
+		if (pending.user_id !== req.user.id) {
+			return sendError(res, 403, "This order wasn't created by the signed-in user.");
+		}
+
+		await pluginsRepo.recordPurchase({
+			userId: req.user.id,
+			pluginId: pending.plugin_id,
+			razorpayOrderId: orderId,
+			razorpayPaymentId: paymentId,
+			amount: pending.amount,
+			currency: pending.currency,
+		});
+
+		res.json({ success: true, id: pending.plugin_id });
 	} catch (error) {
 		sendError(res, 500, error);
 	}

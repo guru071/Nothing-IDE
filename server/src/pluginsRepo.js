@@ -173,8 +173,10 @@ async function hasPurchased(userId, pluginId) {
 async function recordPurchase({
 	userId,
 	pluginId,
-	playPurchaseToken,
-	playOrderId,
+	playPurchaseToken = null,
+	playOrderId = null,
+	razorpayOrderId = null,
+	razorpayPaymentId = null,
 	amount,
 	currency,
 }) {
@@ -185,12 +187,47 @@ async function recordPurchase({
 			plugin_id: pluginId,
 			play_purchase_token: playPurchaseToken,
 			play_order_id: playOrderId,
+			razorpay_order_id: razorpayOrderId,
+			razorpay_payment_id: razorpayPaymentId,
 			amount,
 			currency,
 		},
 		{ onConflict: "user_id,plugin_id" },
 	);
 	if (error) throw error;
+}
+
+/** Records that a Razorpay order was created for this user/plugin, so the
+ * verify step can later confirm the payment belongs to whoever asked for it
+ * (a valid signature alone only proves the order/payment pair is genuine,
+ * not who's allowed to claim it). */
+async function createPendingRazorpayOrder({ orderId, userId, pluginId, amount, currency }) {
+	const client = requireSupabase();
+	const { error } = await client.from("razorpay_orders").insert({
+		order_id: orderId,
+		user_id: userId,
+		plugin_id: pluginId,
+		amount,
+		currency,
+	});
+	if (error) throw error;
+}
+
+/** Looks up and deletes a pending order in one step - deleting it means a
+ * signature can never be replayed twice against the same order. Returns
+ * null if the order id is unknown or was already consumed. */
+async function consumePendingRazorpayOrder(orderId) {
+	const client = requireSupabase();
+	const { data, error } = await client
+		.from("razorpay_orders")
+		.select("*")
+		.eq("order_id", orderId)
+		.maybeSingle();
+	if (error) throw error;
+	if (!data) return null;
+
+	await client.from("razorpay_orders").delete().eq("order_id", orderId);
+	return data;
 }
 
 async function listAllRaw() {
@@ -217,4 +254,6 @@ module.exports = {
 	getOwnedPluginIds,
 	hasPurchased,
 	recordPurchase,
+	createPendingRazorpayOrder,
+	consumePendingRazorpayOrder,
 };

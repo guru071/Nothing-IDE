@@ -104,6 +104,16 @@ const config = {
 		return `${config.BASE_URL}/api`;
 	},
 
+	// Branding shown inside the native Razorpay checkout sheet (used for the
+	// non-Play-Store purchase path) - kept in sync with the app's own splash
+	// screen color (res/android/values/ic_launcher_background.xml) so it looks
+	// like part of the app, not a generic payment popup.
+	BRAND_NAME: "Nothing IDE",
+	BRAND_COLOR: "#12141A",
+	get BRAND_LOGO_URL() {
+		return `${config.BASE_URL}/brand-icon.png`;
+	},
+
 	LOG_FILE_NAME: "NothingIDE.log",
 
 	// This build has no paid tier - everything is unlocked, no ads, no purchases.

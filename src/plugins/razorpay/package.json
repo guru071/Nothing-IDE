@@ -1,0 +1,13 @@
+{
+  "name": "cordova-plugin-razorpay",
+  "version": "1.0.0",
+  "description": "Native Razorpay Checkout for Android.",
+  "main": "www/plugin.js",
+  "keywords": [
+    "cordova",
+    "razorpay",
+    "payments"
+  ],
+  "author": "",
+  "license": "MIT"
+}
