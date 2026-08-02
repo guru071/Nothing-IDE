@@ -600,6 +600,36 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "regexPlayground",
+		description: "Regex Playground",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "regex_playground");
+			return true;
+		},
+	});
+	addCommand({
+		name: "colorPicker",
+		description: "Color Picker",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "color_picker");
+			return true;
+		},
+	});
+	addCommand({
+		name: "restClient",
+		description: "REST Client",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "rest_client");
+			return true;
+		},
+	});
+	addCommand({
 		name: "increaseUiZoom",
 		description: "Increase UI zoom",
 		readOnly: true,

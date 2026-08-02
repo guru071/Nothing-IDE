@@ -77,6 +77,30 @@ export default function help() {
 			chevron: true,
 		},
 		{
+			key: "regex-playground",
+			text: "Regex Playground",
+			icon: "text-search",
+			info: "Test a regular expression against sample text with live match highlighting and capture groups.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
+			key: "color-picker",
+			text: "Color Picker",
+			icon: "colorize",
+			info: "Pick a color and convert between HEX/RGB/HSL, or insert it straight into the current file.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
+			key: "rest-client",
+			text: "REST Client",
+			icon: "cloud",
+			info: "Send HTTP requests (any method, custom headers/body) and inspect the response, with request history.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -109,6 +133,15 @@ export default function help() {
 				break;
 			case "wireless-debug":
 				acode.exec("open", "wireless_debug");
+				break;
+			case "regex-playground":
+				acode.exec("open", "regex_playground");
+				break;
+			case "color-picker":
+				acode.exec("open", "color_picker");
+				break;
+			case "rest-client":
+				acode.exec("open", "rest_client");
 				break;
 			case "github":
 				openUrl(config.GITHUB_URL);

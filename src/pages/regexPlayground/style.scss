@@ -1,0 +1,131 @@
+#regex-playground {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-size: 13px;
+
+  .regex-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  .regex-pattern-input {
+    flex: 1;
+    min-width: 160px;
+    font-family: monospace;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--secondary-color, transparent);
+    color: var(--primary-text-color);
+    font-size: 13px;
+  }
+
+  .regex-flags {
+    display: flex;
+    gap: 6px;
+  }
+
+  .regex-flag {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: monospace;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+
+    input {
+      margin: 0;
+    }
+  }
+
+  .regex-error {
+    color: var(--danger-color, #c74e39);
+    font-size: 12px;
+    min-height: 16px;
+    margin-bottom: 8px;
+  }
+
+  .regex-section-label {
+    color: var(--secondary-text-color);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 12px 0 6px;
+  }
+
+  .regex-test-input {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: monospace;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--secondary-color, transparent);
+    color: var(--primary-text-color);
+    font-size: 13px;
+  }
+
+  .regex-highlighted {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 10px;
+    min-height: 60px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--primary-text-color);
+
+    mark {
+      background: rgba(255, 193, 7, 0.4);
+      color: inherit;
+      border-radius: 2px;
+    }
+  }
+
+  .regex-match-count {
+    margin-top: 10px;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+  }
+
+  .regex-match-list {
+    margin-top: 6px;
+  }
+
+  .regex-match-item {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+
+    .regex-match-head {
+      color: var(--secondary-text-color);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .regex-match-full {
+      font-family: monospace;
+      color: var(--primary-text-color);
+      word-break: break-word;
+    }
+
+    .regex-match-groups {
+      margin-top: 4px;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-color);
+
+      .regex-match-group {
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--secondary-text-color);
+      }
+    }
+  }
+}

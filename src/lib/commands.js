@@ -345,6 +345,30 @@ export default {
 				).default();
 				break;
 
+			case "regex_playground":
+				(
+					await import(
+						/* webpackChunkName: "regexPlayground" */ "pages/regexPlayground/regexPlayground"
+					)
+				).default();
+				break;
+
+			case "color_picker":
+				(
+					await import(
+						/* webpackChunkName: "colorPicker" */ "pages/colorPicker/colorPicker"
+					)
+				).default();
+				break;
+
+			case "rest_client":
+				(
+					await import(
+						/* webpackChunkName: "restClient" */ "pages/restClient/restClient"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")

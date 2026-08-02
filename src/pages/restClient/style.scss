@@ -1,0 +1,177 @@
+#rest-client {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-size: 13px;
+
+  .rest-request-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .rest-method {
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--secondary-color, transparent);
+    color: var(--primary-text-color);
+    padding: 8px 6px;
+    font-size: 13px;
+  }
+
+  .rest-url {
+    flex: 1;
+    min-width: 0;
+    font-family: monospace;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--secondary-color, transparent);
+    color: var(--primary-text-color);
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .rest-send {
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+    background: var(--primary-color);
+    color: var(--primary-text-color);
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+
+  .rest-section-label {
+    color: var(--secondary-text-color);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 14px 0 6px;
+  }
+
+  .rest-header-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--secondary-color, transparent);
+      color: var(--primary-text-color);
+      padding: 6px 8px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    button {
+      flex-shrink: 0;
+      border: none;
+      background: none;
+      color: var(--secondary-text-color);
+      cursor: pointer;
+    }
+  }
+
+  .rest-add-header {
+    border: none;
+    background: none;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 0;
+  }
+
+  .rest-body-input {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: monospace;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--secondary-color, transparent);
+    color: var(--primary-text-color);
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .rest-status {
+    margin-top: 14px;
+    font-weight: 600;
+    font-size: 13px;
+
+    &[data-ok="true"] {
+      color: #4caf50;
+    }
+
+    &[data-ok="false"] {
+      color: var(--danger-color, #c74e39);
+    }
+  }
+
+  .rest-response-headers {
+    margin-top: 6px;
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--secondary-text-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .rest-response-body {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--primary-text-color);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .rest-history-empty {
+    color: var(--secondary-text-color);
+    font-size: 12px;
+  }
+
+  .rest-history-item {
+    display: flex;
+    gap: 8px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 12px;
+
+    &:active {
+      background-color: var(--active-icon-color);
+    }
+
+    .rest-history-method {
+      flex-shrink: 0;
+      font-weight: 600;
+      color: var(--secondary-text-color);
+      width: 46px;
+    }
+
+    .rest-history-url {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--primary-text-color);
+    }
+  }
+}
