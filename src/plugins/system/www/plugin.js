@@ -1,4 +1,7 @@
 module.exports = {
+  openDeveloperOptions: function (success, error) {
+    cordova.exec(success, error, 'System', 'openDeveloperOptions', []);
+  },
   isManageExternalStorageDeclared: function (success, error) {
     cordova.exec(success, error, 'System', 'isManageExternalStorageDeclared', []);
   },

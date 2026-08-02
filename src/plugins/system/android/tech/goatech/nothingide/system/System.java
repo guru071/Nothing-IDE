@@ -260,6 +260,18 @@ public class System extends CordovaPlugin {
 
         callbackContext.success(arch);
         return true;
+      case "openDeveloperOptions":
+        try {
+          Intent devOptionsIntent = new Intent(
+            Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS
+          );
+          devOptionsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          context.startActivity(devOptionsIntent);
+          callbackContext.success();
+        } catch (Exception e) {
+          callbackContext.error(e.toString());
+        }
+        return true;
       case "requestStorageManager":
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
           try {

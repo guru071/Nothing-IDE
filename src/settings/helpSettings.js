@@ -54,6 +54,29 @@ export default function help() {
 			category: categories.guide,
 		},
 		{
+			key: "guide-outline-problems",
+			text: "Outline & Problems Panels",
+			icon: "document-code",
+			info: "Two sidebar panels next to Files/Search/Git: Outline shows the current file's symbols (from the language server), Problems lists diagnostics across all open files. Both update live and jump to the source on tap.",
+			category: categories.guide,
+		},
+		{
+			key: "app-logs",
+			text: "View App Logs",
+			icon: "bug_report",
+			info: "This app's own runtime log - useful when reporting a bug. Filter by level, share, or clear.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
+			key: "wireless-debug",
+			text: "Wireless Debugging",
+			icon: "terminal",
+			info: "Connect a computer to this device over Wi-Fi for ADB, without a USB cable.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -81,6 +104,12 @@ export default function help() {
 
 	function callback(key) {
 		switch (key) {
+			case "app-logs":
+				acode.exec("open", "log_viewer");
+				break;
+			case "wireless-debug":
+				acode.exec("open", "wireless_debug");
+				break;
 			case "github":
 				openUrl(config.GITHUB_URL);
 				break;

@@ -50,7 +50,7 @@ import guiDesktop from "lib/guiDesktop";
 import hardwareBridge from "lib/hardwareBridge";
 import lang from "lib/lang";
 import loadPlugins from "lib/loadPlugins";
-import Logger from "lib/logger";
+import logger from "lib/logger";
 import notificationManager from "lib/notificationManager";
 import openFolder, { addedFolder } from "lib/openFolder";
 import { registerPrettierFormatter } from "lib/registerPrettierFormatter";
@@ -71,7 +71,6 @@ import $_menu from "views/menu.hbs";
 
 const oldPreventDefault = TouchEvent.prototype.preventDefault;
 const previousVersionCode = Number.parseInt(localStorage.versionCode, 10);
-const logger = new Logger();
 
 ajax.response = (xhr) => {
 	return xhr.response;

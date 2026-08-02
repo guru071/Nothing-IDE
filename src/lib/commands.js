@@ -329,6 +329,22 @@ export default {
 				).default();
 				break;
 
+			case "log_viewer":
+				(
+					await import(
+						/* webpackChunkName: "logViewer" */ "pages/logViewer/logViewer"
+					)
+				).default();
+				break;
+
+			case "wireless_debug":
+				(
+					await import(
+						/* webpackChunkName: "wirelessDebug" */ "pages/wirelessDebug/wirelessDebug"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")
@@ -657,7 +673,7 @@ export default {
 		editorManager.activeFile.eol = eol;
 	},
 	"open-log-file"() {
-		openFile(Url.join(DATA_STORAGE, config.LOG_FILE_NAME));
+		this.open("log_viewer");
 	},
 	"copy-device-info"() {
 		let webviewInfo = {};

@@ -581,11 +581,21 @@ function registerCoreCommands() {
 	});
 	addCommand({
 		name: "openLogFile",
-		description: "Open Log File",
+		description: "View App Logs",
 		readOnly: true,
 		requiresView: false,
 		run() {
 			acode.exec("open-log-file");
+			return true;
+		},
+	});
+	addCommand({
+		name: "wirelessDebug",
+		description: "Wireless Debugging (ADB over Wi-Fi)",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "wireless_debug");
 			return true;
 		},
 	});
