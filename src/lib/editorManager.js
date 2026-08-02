@@ -91,6 +91,7 @@ import quickTools from "components/quickTools";
 import ScrollBar from "components/scrollbar";
 import SideButton, { sideButtonContainer } from "components/sideButton";
 import keyboardHandler, { keydownState } from "handlers/keyboard";
+import { clearQuickToolsModifierState } from "handlers/quickTools";
 import { animate } from "motion";
 import config from "./config";
 import EditorFile from "./editorFile";
@@ -804,11 +805,19 @@ async function EditorManager($header, $body) {
 		});
 	};
 	const isMultiCursorSelectionActive = (event) => {
-		return resolveMultiCursorSelectionActive({
+		const quickToolsCtrl = quickTools?.$footer?.dataset?.ctrl != null;
+		const quickToolsMeta = quickTools?.$footer?.dataset?.meta != null;
+		const active = resolveMultiCursorSelectionActive({
 			event,
-			quickToolsCtrl: quickTools?.$footer?.dataset?.ctrl != null,
-			quickToolsMeta: quickTools?.$footer?.dataset?.meta != null,
+			quickToolsCtrl,
+			quickToolsMeta,
 		});
+		// The on-screen Ctrl/Meta quick-tools buttons are sticky toggles with no
+		// physical key to release, so a tap that consumes one to add a cursor
+		// must release it immediately - otherwise every later tap in the editor
+		// keeps adding more cursors until the user notices and taps it off.
+		if (quickToolsCtrl || quickToolsMeta) clearQuickToolsModifierState();
+		return active;
 	};
 	const isQuickToolsMultiCursorSelectionActive = () => {
 		return resolveMultiCursorSelectionActive({
