@@ -393,6 +393,14 @@ export default {
 				).default();
 				break;
 
+			case "apk_analyzer":
+				(
+					await import(
+						/* webpackChunkName: "apkAnalyzer" */ "pages/apkAnalyzer/apkAnalyzer"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")

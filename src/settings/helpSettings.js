@@ -125,6 +125,14 @@ export default function help() {
 			chevron: true,
 		},
 		{
+			key: "apk-analyzer",
+			text: "APK Analyzer",
+			icon: "android",
+			info: "Inspect any APK's package name, version, SDK range, permissions, component counts, and a size breakdown by category.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -175,6 +183,9 @@ export default function help() {
 				break;
 			case "clipboard-history":
 				acode.exec("open", "clipboard_history");
+				break;
+			case "apk-analyzer":
+				acode.exec("open", "apk_analyzer");
 				break;
 			case "github":
 				openUrl(config.GITHUB_URL);

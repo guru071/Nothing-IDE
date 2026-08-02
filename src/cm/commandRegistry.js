@@ -660,6 +660,16 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "apkAnalyzer",
+		description: "APK Analyzer",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "apk_analyzer");
+			return true;
+		},
+	});
+	addCommand({
 		name: "increaseUiZoom",
 		description: "Increase UI zoom",
 		readOnly: true,
