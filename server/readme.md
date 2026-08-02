@@ -1,60 +1,103 @@
 # Nothing IDE Plugin Server
 
-A self-hosted replacement for Acode's plugin marketplace backend. No database, no user accounts — plugin metadata lives in `data/plugins.json` and archives live in `data/downloads/`, both plain files checked into this repo. That sidesteps Render's free-tier Postgres database, which gets deleted after 30 days unless you're on a paid plan.
+A self-hosted replacement for Acode's plugin marketplace backend — no dependency on
+acode.app, no accounts, no paid plugins. Plugin metadata lives in a **Supabase**
+Postgres table, and icons/zip archives live in **Supabase Storage**. That means
+adding a new plugin or theme is a web upload, not a git commit + redeploy.
+
+The `data/` folder in this repo (`plugins.json`, `plugins/`, `downloads/`) is the
+original flat-file seed content, kept only as the source for the one-time
+migration script (see below) and as a local example to copy from — the running
+server no longer reads it at request time.
+
+## One-time setup: Supabase
+
+1. Create a free project at [supabase.com](https://supabase.com) (no credit card
+   required).
+2. Open **SQL Editor → New query**, paste the contents of `supabase-schema.sql`
+   in this folder, and run it. This creates the `plugins` table and an atomic
+   download-counter function.
+3. Open **Storage → New bucket**, name it exactly `plugin-assets`, and check
+   **Public bucket**. That's the only bucket needed — icons and zips both live
+   in it, under `icons/` and `downloads/` subfolders created automatically on
+   first upload.
+4. Open **Settings → API Keys** and copy the **Project URL** and the
+   **Secret key** (`sb_secret_...`) — not the **Publishable key**
+   (`sb_publishable_...`). The secret key is required for the server to write
+   plugin rows and upload files, and must never be shipped to the app or a
+   browser. (Older Supabase projects instead show a legacy `service_role` JWT
+   under **Project API keys** — that works too, as `SUPABASE_SERVICE_ROLE_KEY`.)
 
 ## Run locally
 
 ```bash
 cd server
 npm install
+SUPABASE_URL=https://xxxx.supabase.co \
+SUPABASE_SECRET_KEY=your-secret-key \
+UPLOAD_ADMIN_TOKEN=some-long-random-string \
 npm start
 ```
 
-Server listens on `http://localhost:3000` (or `$PORT` if set).
+Server listens on `http://localhost:3000` (or `$PORT` if set). `UPLOAD_ADMIN_TOKEN`
+is a password you make up yourself — it gates the `/upload` page and its API so
+random visitors can't publish plugins.
+
+### Migrate the two example plugins
+
+Once the schema and bucket exist, seed Supabase with `hello-world` and
+`uuid-generator` from this repo's `data/` folder:
+
+```bash
+SUPABASE_URL=https://xxxx.supabase.co \
+SUPABASE_SECRET_KEY=your-secret-key \
+node scripts/migrate-to-supabase.js
+```
 
 ## Deploy to Vercel (free tier)
 
-The Express app runs as a single serverless function via `api/index.js` + `vercel.json` (both already set up in this folder) — no other code changes needed.
+The Express app runs as a single serverless function via `api/index.js` + `vercel.json`
+(both already set up in this folder) — no other code changes needed.
 
 1. Push this repository to GitHub (already done if you're using `guru071/Nothing-IDE`).
 2. On [vercel.com](https://vercel.com), **Add New → Project**, import the repo.
-3. Set **Root Directory** to `server` (since this is a subfolder of the IDE repo).
+3. Set **Root Directory** to `server`.
 4. Framework preset: **Other**. Build command / output directory: leave default/empty.
-5. Deploy. Vercel gives you a URL like `https://your-project.vercel.app`.
+5. In **Settings → Environment Variables**, add `SUPABASE_URL`,
+   `SUPABASE_SECRET_KEY`, and `UPLOAD_ADMIN_TOKEN`.
+6. Deploy. Vercel gives you a URL like `https://your-project.vercel.app`.
 
 **Free-tier caveats to know about:**
-- No persistent disk — anything written at runtime (like the download counter in `plugins.json`) resets on the next deploy, and may not even be shared between concurrent invocations. Fine for this server since nothing critical depends on it.
-- Response size is capped (~4.5MB) on the Hobby plan. The bundled `hello-world.zip` example is tiny, but if you add a plugin with a large archive, its `/api/plugin/download/:id` response could exceed that limit and fail — keep individual plugin zips small.
-- No cold-start delay worth mentioning (Vercel's functions start fast), unlike Render's free tier.
-
-## Deploy to Render (free tier) — alternative
-
-1. Push this repository to GitHub (or GitLab/Bitbucket).
-2. On [render.com](https://render.com), create a new **Web Service** and connect the repo.
-3. Set **Root Directory** to `server` (since this is a subfolder of the IDE repo).
-4. Build command: `npm install`
-5. Start command: `npm start`
-6. Instance type: Free.
-7. Deploy. Render gives you a URL like `https://your-service.onrender.com`.
-
-**Free-tier caveats to know about:**
-- The service spins down after ~15 minutes of inactivity. The next request (e.g. opening the Plugins panel after the app's been idle) takes 30-60+ seconds to wake back up.
-- No persistent disk on the free plan — anything written at runtime (like the download counter in `plugins.json`) resets on every redeploy/restart. Fine for this server since nothing critical depends on it; just don't rely on those counts surviving a restart.
+- Response size is capped (~4.5MB) on Vercel's Hobby plan for the `/api/plugin/download/:id`
+  route — but that route now just 302-redirects to the file's Supabase Storage URL, so it's
+  no longer a concern (Supabase serves the actual bytes, not this server).
+- Supabase's free tier pauses a project after a week of no API requests; one visit to the
+  marketplace (or the `/upload` page) wakes it back up within a few seconds.
 
 ## Point the app at this server
 
-In Nothing IDE: **Settings → Plugin server**, enter your deployed URL (e.g. `https://your-project.vercel.app`). No rebuild needed — it's a runtime setting.
+In Nothing IDE: **Settings → Plugin server**, enter your deployed URL (e.g.
+`https://your-project.vercel.app`). No rebuild needed — it's a runtime setting.
+This is already the app's *default* plugin server, so most users won't need to
+touch this setting at all.
 
-## Adding your own plugins
+## Publishing a plugin or theme
 
-1. Create `data/plugins/<your-plugin-id>/` with `plugin.json`, `main.js`, `icon.png`, `readme.md` (see `data/plugins/hello-world/` for a working example, including the `acode.setPluginInit`/`acode.addCommand` API pattern).
-2. Zip the plugin's files (flat, no wrapper folder) into `data/downloads/<your-plugin-id>.zip`:
-   ```bash
-   cd data/plugins/<your-plugin-id>
-   zip -j -X ../../downloads/<your-plugin-id>.zip plugin.json main.js icon.png readme.md
-   ```
-3. Add an entry to `data/plugins.json` (copy the `hello-world` entry as a template — the `icon` field should be `/static/plugins/<your-plugin-id>/icon.png`, and `file` should be `<your-plugin-id>.zip`).
-4. Commit and push — Vercel redeploys automatically (or Render, if you're using that instead).
+Visit `https://your-project.vercel.app/upload` in any browser. Fill in the form
+(plugin ID, name, version, an icon PNG, and the plugin's zip file), enter your
+`UPLOAD_ADMIN_TOKEN`, and submit — it's live in the app's Extensions panel
+immediately, no redeploy.
+
+The zip must be flat (no wrapper folder) and contain `plugin.json`, `main.js`,
+`icon.png`, and `readme.md` — see `data/plugins/hello-world/` for a working
+example, including the `acode.setPluginInit`/`acode.addCommand` API pattern.
+**Themes are published exactly the same way** — a "theme plugin" is just a
+normal plugin whose `main.js` calls the theme-registration API instead of
+`addCommand` (see `src/lib/acode.js`'s theme registry object in the app for the
+exact `register`/`unregister`/`apply` methods available to plugins).
+
+Publishing again with the same plugin ID replaces it in place (same as bumping
+its version) — there's no separate "update" flow.
 
 ## API reference
 
@@ -62,6 +105,8 @@ In Nothing IDE: **Settings → Plugin server**, enter your deployed URL (e.g. `h
 |---|---|
 | `GET /api/plugins?page=&limit=&name=&explore=random&orderBy=` | List/search/paginate plugins |
 | `GET /api/plugin/:id` | Single plugin's full metadata |
-| `GET /api/plugin/download/:id` | Download the plugin's zip archive |
+| `GET /api/plugin/download/:id` | Redirects to the plugin's zip in Supabase Storage |
 | `GET /api/plugin/check-update/:id/:version` | Check if a newer version exists |
 | `POST /api/plugin/order` | No-op (no paid plugins/accounts in this server) |
+| `GET /upload` | Browser upload form |
+| `POST /api/admin/plugins` | Publish/replace a plugin (requires `x-admin-token` header) |

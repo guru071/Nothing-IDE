@@ -4,12 +4,16 @@
 	"description": "Self-hosted plugin marketplace server for Nothing IDE",
 	"main": "src/index.js",
 	"scripts": {
-		"start": "node src/index.js"
+		"start": "node src/index.js",
+		"migrate": "node scripts/migrate-to-supabase.js"
 	},
 	"engines": {
 		"node": ">=18"
 	},
 	"dependencies": {
-		"express": "^4.19.2"
+		"@supabase/supabase-js": "^2.109.0",
+		"express": "^4.19.2",
+		"multer": "^2.2.0",
+		"ws": "^8.21.1"
 	}
 }
