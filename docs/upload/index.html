@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nothing IDE Marketplace - Upload</title>
+<style>
+	:root { color-scheme: dark; }
+	* { box-sizing: border-box; }
+	body {
+		margin: 0;
+		font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+		background: #14141a;
+		color: #e6e6ea;
+		display: flex;
+		justify-content: center;
+		padding: 32px 16px 64px;
+	}
+	main { width: 100%; max-width: 560px; }
+	h1 { font-size: 1.4rem; margin-bottom: 4px; }
+	p.subtitle { color: #9a9aa5; margin-top: 0; margin-bottom: 28px; font-size: 0.9rem; }
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		background: #1c1c24;
+		border: 1px solid #2c2c36;
+		border-radius: 10px;
+		padding: 20px;
+	}
+	label { font-size: 0.85rem; color: #c4c4cc; display: flex; flex-direction: column; gap: 6px; }
+	input, textarea {
+		background: #101014;
+		border: 1px solid #33333f;
+		border-radius: 6px;
+		color: #e6e6ea;
+		padding: 9px 10px;
+		font-size: 0.9rem;
+		font-family: inherit;
+	}
+	textarea { resize: vertical; min-height: 60px; }
+	.row { display: flex; gap: 10px; }
+	.row > label { flex: 1; }
+	button {
+		background: #635bff;
+		color: white;
+		border: none;
+		border-radius: 6px;
+		padding: 11px 16px;
+		font-size: 0.95rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	button:disabled { opacity: 0.6; cursor: not-allowed; }
+	#status {
+		margin-top: 14px;
+		padding: 10px 12px;
+		border-radius: 6px;
+		font-size: 0.85rem;
+		white-space: pre-wrap;
+		display: none;
+	}
+	#status.ok { display: block; background: rgba(60, 190, 120, 0.15); border: 1px solid rgba(60, 190, 120, 0.4); color: #7be3a8; }
+	#status.err { display: block; background: rgba(220, 80, 80, 0.15); border: 1px solid rgba(220, 80, 80, 0.4); color: #f39c9c; }
+	.hint { font-size: 0.75rem; color: #77778a; }
+	.api-note { font-size: 0.72rem; color: #55556a; margin-top: 18px; text-align: center; }
+</style>
+</head>
+<body>
+<main>
+	<h1>Nothing IDE Marketplace</h1>
+	<p class="subtitle">Upload a plugin or theme. It appears in the app's Extensions panel immediately - no redeploy needed.</p>
+
+	<form id="upload-form">
+		<label>Admin token
+			<input type="password" name="token" required autocomplete="off" />
+		</label>
+
+		<div class="row">
+			<label>Plugin ID
+				<input type="text" name="id" required pattern="[a-z0-9\-]+" placeholder="my-plugin" />
+			</label>
+			<label>Version
+				<input type="text" name="version" required value="1.0.0" />
+			</label>
+		</div>
+
+		<label>Name
+			<input type="text" name="name" required placeholder="My Plugin" />
+		</label>
+
+		<label>Description
+			<textarea name="description" placeholder="What does this plugin do?"></textarea>
+		</label>
+
+		<div class="row">
+			<label>Author
+				<input type="text" name="author" value="Nothing IDE" />
+			</label>
+			<label>License
+				<input type="text" name="license" value="MIT" />
+			</label>
+		</div>
+
+		<label>Keywords <span class="hint">(comma-separated, e.g. "theme, dark")</span>
+			<input type="text" name="keywords" placeholder="theme, dark" />
+		</label>
+
+		<label>Changelog <span class="hint">(markdown)</span>
+			<textarea name="changelogs" placeholder="## 1.0.0&#10;&#10;Initial release."></textarea>
+		</label>
+
+		<label>Icon (PNG, square)
+			<input type="file" name="icon" accept="image/png" required />
+		</label>
+
+		<label>Plugin zip <span class="hint">(flat: plugin.json, main.js, icon.png, readme.md at the zip root)</span>
+			<input type="file" name="zip" accept=".zip" required />
+		</label>
+
+		<button type="submit" id="submit-btn">Upload</button>
+		<div id="status"></div>
+	</form>
+
+	<p class="api-note">Talks to the Nothing IDE marketplace API at nothing-ide-goatech-d3fa1ace.vercel.app - hosted here on GitHub Pages, the API and database live on Vercel + Supabase.</p>
+</main>
+
+<script>
+	// This page is static (GitHub Pages) - the actual server lives on Vercel.
+	// The admin token below is only ever typed into this form by you at
+	// upload time; it's never stored in this file.
+	const API_BASE = "https://nothing-ide-goatech-d3fa1ace.vercel.app";
+
+	const form = document.getElementById("upload-form");
+	const statusEl = document.getElementById("status");
+	const submitBtn = document.getElementById("submit-btn");
+
+	form.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		statusEl.className = "";
+		statusEl.textContent = "";
+		submitBtn.disabled = true;
+		submitBtn.textContent = "Uploading...";
+
+		const formData = new FormData(form);
+		const token = formData.get("token");
+		formData.delete("token");
+
+		try {
+			const response = await fetch(`${API_BASE}/api/admin/plugins`, {
+				method: "POST",
+				headers: { "x-admin-token": token },
+				body: formData,
+			});
+			const result = await response.json();
+			if (!response.ok) throw new Error(result.error || "Upload failed");
+
+			statusEl.className = "ok";
+			statusEl.textContent = `Uploaded "${result.id}". It's live in the marketplace now.`;
+			form.reset();
+		} catch (error) {
+			statusEl.className = "err";
+			statusEl.textContent = "Error: " + (error?.message || error);
+		} finally {
+			submitBtn.disabled = false;
+			submitBtn.textContent = "Upload";
+		}
+	});
+</script>
+</body>
+</html>
