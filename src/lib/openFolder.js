@@ -204,6 +204,15 @@ function openFolder(_path, opts = {}) {
 		},
 	);
 
+	void import("./projectDependencyInstaller").then(
+		({ default: recommendInstall }) => {
+			recommendInstall(_path, title);
+		},
+		(error) => {
+			console.warn("Failed to load project dependency installer.", error);
+		},
+	);
+
 	if (listFiles) {
 		FileList.addRoot({ url: _path, name: title }).catch((err) => {
 			console.error("Failed to add root to FileList:", err);
