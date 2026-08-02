@@ -75,6 +75,28 @@ async function getAccessToken() {
 	}
 }
 
+// Kept in sync with the real session (below) so ajax.configure in main.js -
+// which XHR requires to run synchronously, right before xhr.send() - can
+// attach an Authorization header without awaiting a Promise on every request.
+let cachedAccessToken = null;
+
+supabase.auth.onAuthStateChange((_event, session) => {
+	cachedAccessToken = session?.access_token || null;
+});
+// Primes the cache immediately: onAuthStateChange alone wouldn't fire until
+// the *next* change, so a fresh launch with an already-persisted session
+// would otherwise look signed-out to getAccessTokenSync() until then.
+supabase.auth.getSession().then(({ data }) => {
+	cachedAccessToken = data.session?.access_token || null;
+});
+
+/** Synchronous counterpart to getAccessToken - may lag a real session change
+ * by a moment, but that's fine for attaching a header, unlike the async
+ * version used right before an actual purchase. */
+function getAccessTokenSync() {
+	return cachedAccessToken;
+}
+
 function getUser() {
 	return supabase.auth.getUser().then(
 		(result) => result.data.user || null,
@@ -102,6 +124,7 @@ export default {
 	handleAuthCallbackUrl,
 	getSession,
 	getAccessToken,
+	getAccessTokenSync,
 	getUser,
 	signOut,
 	onAuthStateChange,

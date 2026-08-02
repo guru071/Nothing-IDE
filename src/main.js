@@ -78,6 +78,16 @@ ajax.response = (xhr) => {
 	return xhr.response;
 };
 
+// Attaches the signed-in user's session token to requests against our own
+// API (e.g. the plugin marketplace's fsOperation-based fetches) so the
+// server can tell who's asking - without this, GET /api/plugin/:id has no
+// way to know a signed-in user already owns a paid plugin.
+ajax.configure = (xhr, url) => {
+	if (!url.startsWith(config.API_BASE)) return;
+	const token = auth.getAccessTokenSync();
+	if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+};
+
 TouchEvent.prototype.preventDefault = function () {
 	if (this.cancelable) {
 		oldPreventDefault.bind(this)();

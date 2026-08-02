@@ -72,12 +72,20 @@ app.get("/api/status", (req, res) => {
 	res.json({ status: "ok" });
 });
 
-/** GET /api/plugin/:id - single plugin's full metadata. */
+/** GET /api/plugin/:id - single plugin's full metadata. When called with a
+ * valid Bearer token, also includes whether *this* user already owns it -
+ * without this, the plugin detail page has no way to know a signed-in user
+ * already bought it through Razorpay (unlike Play Billing, which the app can
+ * also confirm from the device's own local purchase receipt). */
 app.get("/api/plugin/:id", async (req, res) => {
 	try {
 		const plugin = await pluginsRepo.getPlugin(req.params.id);
 		if (!plugin) return res.status(404).json({ error: "Plugin not found" });
-		res.json(plugin);
+
+		const user = await getUserFromRequest(req);
+		const owned = user ? await pluginsRepo.hasPurchased(user.id, plugin.id) : false;
+
+		res.json({ ...plugin, owned });
 	} catch (error) {
 		sendError(res, 500, error);
 	}
@@ -177,6 +185,13 @@ app.post("/api/plugin/razorpay/order", requireUser, async (req, res) => {
 
 		const price = Number(plugin.price) || 0;
 		if (price <= 0) return sendError(res, 400, "This plugin is free.");
+
+		// Play Billing refuses to let you buy something you already own; Razorpay
+		// has no such built-in protection, so this has to be enforced here -
+		// otherwise a confused re-tap of "Buy" would charge a second time.
+		if (await pluginsRepo.hasPurchased(req.user.id, id)) {
+			return sendError(res, 409, "You already own this plugin.");
+		}
 
 		const order = await razorpay.createOrder({
 			amount: Math.round(price * 100),
