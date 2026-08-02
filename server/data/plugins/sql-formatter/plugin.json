@@ -1,0 +1,11 @@
+{
+	"id": "sql-formatter",
+	"name": "SQL Formatter",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "sql", "formatter", "query"]
+}
