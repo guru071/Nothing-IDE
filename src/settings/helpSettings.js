@@ -149,6 +149,14 @@ export default function help() {
 			chevron: true,
 		},
 		{
+			key: "database-browser",
+			text: "Database Browser",
+			icon: "cloud",
+			info: "Browse and query a SQLite file directly (offline, in-app), or run MySQL/Postgres queries via the terminal's real client and view the results here.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -208,6 +216,9 @@ export default function help() {
 				break;
 			case "manifest-editor":
 				acode.exec("open", "manifest_editor");
+				break;
+			case "database-browser":
+				acode.exec("open", "database_browser");
 				break;
 			case "github":
 				openUrl(config.GITHUB_URL);

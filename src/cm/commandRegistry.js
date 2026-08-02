@@ -690,6 +690,16 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "databaseBrowser",
+		description: "Database Browser (SQLite / MySQL / Postgres)",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "database_browser");
+			return true;
+		},
+	});
+	addCommand({
 		name: "increaseUiZoom",
 		description: "Increase UI zoom",
 		readOnly: true,

@@ -417,6 +417,14 @@ export default {
 				).default();
 				break;
 
+			case "database_browser":
+				(
+					await import(
+						/* webpackChunkName: "databaseBrowser" */ "pages/databaseBrowser/databaseBrowser"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")
