@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nothing IDE Marketplace</title>
+<style>
+	:root { color-scheme: dark; }
+	* { box-sizing: border-box; }
+	body {
+		margin: 0;
+		min-height: 100vh;
+		font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+		background: #14141a;
+		color: #e6e6ea;
+		padding: 32px 16px 64px;
+	}
+	main { width: 100%; max-width: 920px; margin: 0 auto; }
+	h1 { font-size: 1.6rem; margin-bottom: 4px; }
+	p.subtitle { color: #9a9aa5; margin-top: 0; margin-bottom: 24px; font-size: 0.9rem; }
+	.controls {
+		display: flex;
+		gap: 10px;
+		margin-bottom: 24px;
+		flex-wrap: wrap;
+	}
+	input[type="search"] {
+		flex: 1;
+		min-width: 200px;
+		background: #1c1c24;
+		border: 1px solid #2c2c36;
+		border-radius: 8px;
+		padding: 10px 14px;
+		color: #e6e6ea;
+		font-size: 0.95rem;
+	}
+	input[type="search"]:focus { outline: none; border-color: #635bff; }
+	select {
+		background: #1c1c24;
+		border: 1px solid #2c2c36;
+		border-radius: 8px;
+		padding: 10px 14px;
+		color: #e6e6ea;
+		font-size: 0.9rem;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+		gap: 14px;
+	}
+	a.card {
+		display: flex;
+		gap: 12px;
+		background: #1c1c24;
+		border: 1px solid #2c2c36;
+		border-radius: 10px;
+		padding: 14px;
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.15s ease;
+	}
+	a.card:hover { border-color: #635bff; }
+	.card img {
+		width: 44px;
+		height: 44px;
+		border-radius: 8px;
+		flex-shrink: 0;
+		background: #2c2c36;
+		object-fit: cover;
+	}
+	.card-body { min-width: 0; }
+	.card-name {
+		font-weight: 600;
+		font-size: 0.95rem;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.card-meta {
+		color: #9a9aa5;
+		font-size: 0.8rem;
+		margin-top: 3px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.badge {
+		display: inline-block;
+		margin-top: 6px;
+		font-size: 0.75rem;
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: #2c2c36;
+		color: #9a9aa5;
+	}
+	.badge.paid { background: #3d2f00; color: #ffcc66; }
+	.badge.free { background: #1a3d24; color: #6ee7a0; }
+	.status { color: #9a9aa5; font-size: 0.9rem; padding: 40px 0; text-align: center; }
+	.status.error { color: #ff8080; }
+</style>
+</head>
+<body>
+<main>
+	<h1>Nothing IDE Marketplace</h1>
+	<p class="subtitle">Browse plugins and themes for Nothing IDE.</p>
+	<div class="controls">
+		<input type="search" id="search" placeholder="Search plugins..." autocomplete="off" />
+		<select id="sort">
+			<option value="newest">Newest</option>
+			<option value="downloads">Most Downloaded</option>
+		</select>
+	</div>
+	<div id="grid" class="grid"></div>
+	<div id="status" class="status">Loading plugins...</div>
+</main>
+<script>
+const API_BASE = "https://nothing-ide-goatech-d3fa1ace.vercel.app";
+const $grid = document.getElementById("grid");
+const $status = document.getElementById("status");
+const $search = document.getElementById("search");
+const $sort = document.getElementById("sort");
+
+let allPlugins = [];
+let searchTimer = null;
+
+function renderCard(plugin) {
+	const a = document.createElement("a");
+	a.className = "card";
+	a.href = `plugin.html?id=${encodeURIComponent(plugin.id)}`;
+
+	const img = document.createElement("img");
+	img.src = plugin.icon;
+	img.alt = "";
+	img.loading = "lazy";
+	a.appendChild(img);
+
+	const body = document.createElement("div");
+	body.className = "card-body";
+
+	const name = document.createElement("div");
+	name.className = "card-name";
+	name.textContent = plugin.name;
+	body.appendChild(name);
+
+	const meta = document.createElement("div");
+	meta.className = "card-meta";
+	meta.textContent = `${plugin.author} - ${plugin.downloads} downloads`;
+	body.appendChild(meta);
+
+	const badge = document.createElement("span");
+	const isPaid = Number(plugin.price) > 0;
+	badge.className = `badge ${isPaid ? "paid" : "free"}`;
+	badge.textContent = isPaid ? `${plugin.currencySymbol || "$"}${plugin.price}` : "Free";
+	body.appendChild(badge);
+
+	a.appendChild(body);
+	return a;
+}
+
+function render(plugins) {
+	$grid.innerHTML = "";
+	if (plugins.length === 0) {
+		$status.textContent = "No plugins match your search.";
+		$status.className = "status";
+		$status.style.display = "block";
+		return;
+	}
+	$status.style.display = "none";
+	for (const plugin of plugins) {
+		$grid.appendChild(renderCard(plugin));
+	}
+}
+
+function applyFilters() {
+	const query = $search.value.trim().toLowerCase();
+	let filtered = allPlugins;
+	if (query) {
+		filtered = filtered.filter((p) =>
+			p.name.toLowerCase().includes(query) ||
+			(p.keywords || []).some((k) => k.toLowerCase().includes(query)),
+		);
+	}
+	render(filtered);
+}
+
+async function load() {
+	try {
+		const orderBy = $sort.value;
+		const res = await fetch(`${API_BASE}/api/plugins?limit=100&orderBy=${orderBy}`);
+		if (!res.ok) throw new Error(`HTTP ${res.status}`);
+		allPlugins = await res.json();
+		applyFilters();
+	} catch (err) {
+		$status.textContent = "Could not load the marketplace - the API may be down.";
+		$status.className = "status error";
+		$status.style.display = "block";
+	}
+}
+
+$search.addEventListener("input", () => {
+	clearTimeout(searchTimer);
+	searchTimer = setTimeout(applyFilters, 150);
+});
+$sort.addEventListener("change", load);
+
+load();
+</script>
+</body>
+</html>
