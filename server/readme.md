@@ -148,8 +148,11 @@ meantime):
    is also handed to the app per-order (safe, it's meant to be public); the
    Key Secret never leaves the server - it's only used here to create orders
    and verify payment signatures.
-3. Run the `purchases` (with its `razorpay_order_id`/`razorpay_payment_id`
-   columns) and `razorpay_orders` table sections of `supabase-schema.sql`.
+3. Already ran `supabase-schema.sql` before this feature existed? Run
+   `supabase-migration-razorpay.sql` instead — it only adds the new columns/
+   table and won't error on things that already exist (unlike re-running the
+   whole schema file, which fails on the `create policy` statements).
+   Setting up fresh? `supabase-schema.sql` alone already includes everything.
 4. Prices for this path are read straight off the plugin's `price` field as
    rupees (Razorpay is INR-first) - set it accordingly when uploading a
    plugin meant to sell through this path.
