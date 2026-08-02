@@ -44,6 +44,7 @@ const config = {
 	},
 
 	SUPPORTED_EDITOR: "cm",
+	GITHUB_URL: "https://github.com/guru071/Nothing-IDE",
 	FILE_NAME_REGEX: /^((?![:<>"\\\|\?\*]).)*$/,
 	FONT_SIZE: /^[0-9\.]{1,3}(px|rem|em|pt|mm|pc|in)$/,
 	DEFAULT_FILE_SESSION: "default-session",

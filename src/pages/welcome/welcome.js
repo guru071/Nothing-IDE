@@ -1,6 +1,7 @@
 import { getResolvedKeyBindings } from "cm/commandRegistry";
 import logoSrc from "components/logo/logo.png?inline";
 import EditorFile from "lib/editorFile";
+import goatechLogo from "../about/goatech-logo.jpeg";
 
 /**
  * Opens the Welcome tab as an EditorFile page
@@ -130,6 +131,23 @@ function createWelcomeContent() {
 					/>
 				</div>
 			</section>
+
+			<div className="welcome-created-by">
+				<a
+					href="#"
+					onclick={(e) => {
+						e.preventDefault();
+						system.openInBrowser("https://goatech.tech");
+					}}
+				>
+					<img
+						src={goatechLogo}
+						alt="GOAT'ECH"
+						className="welcome-goatech-logo"
+					/>
+				</a>
+				<span>Created by GOAT'ECH</span>
+			</div>
 		</div>
 	);
 }

@@ -41,6 +41,22 @@
     }
   }
 
+  .welcome-created-by {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    color: color-mix(in srgb, var(--secondary-text-color) 60%, transparent);
+    font-size: 12px;
+
+    .welcome-goatech-logo {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+  }
+
   // Section Styles
   .welcome-section {
     width: 100%;
