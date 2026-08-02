@@ -1,6 +1,6 @@
 import "core-js/stable";
 
-const DB_NAME = "acode-search-content-cache";
+const DB_NAME = "nothingide-search-content-cache";
 const DB_VERSION = 1;
 const INDEX_VERSION = 1;
 const MAX_INDEXED_CHARS = 512 * 1024;

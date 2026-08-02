@@ -142,7 +142,7 @@ public class TerminalService extends Service {
     private void acquireWakeLock() {
         if (wakeLock == null) {
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AcodeTerminal:WakeLock");
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "NothingIDE:TerminalWakeLock");
         }
         
         if (!isWakeLockHeld) {
@@ -381,7 +381,7 @@ public class TerminalService extends Service {
         int notificationIcon = resolveDrawableId("ic_notification", "ic_launcher_foreground", "ic_launcher");
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Acode Service")
+                .setContentTitle("Nothing IDE Terminal")
                 .setContentText(contentText)
                 .setSmallIcon(notificationIcon)
                 .setOngoing(true)

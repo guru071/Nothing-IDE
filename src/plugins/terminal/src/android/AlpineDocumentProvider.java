@@ -374,13 +374,13 @@ public class AlpineDocumentProvider extends DocumentsProvider {
 
     private String getApplicationLabel() {
         Context context = getContext();
-        if (context == null) return "Acode";
+        if (context == null) return "Nothing IDE";
         PackageManager pm = context.getPackageManager();
         try {
             CharSequence label = pm.getApplicationLabel(context.getApplicationInfo());
-            return label != null ? label.toString() : "Acode";
+            return label != null ? label.toString() : "Nothing IDE";
         } catch (Exception ignored) {
-            return "Acode";
+            return "Nothing IDE";
         }
     }
 }

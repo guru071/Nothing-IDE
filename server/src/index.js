@@ -53,6 +53,12 @@ async function listHandler(req, res) {
 app.get("/api/plugins", listHandler);
 app.get("/api/plugin", listHandler);
 
+/** GET /api/status - the app pings this before showing the marketplace to
+ * decide whether to show "API server down" instead of the plugin list. */
+app.get("/api/status", (req, res) => {
+	res.json({ status: "ok" });
+});
+
 /** GET /api/plugin/:id - single plugin's full metadata. */
 app.get("/api/plugin/:id", async (req, res) => {
 	try {

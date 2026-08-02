@@ -77,12 +77,6 @@ ajax.response = (xhr) => {
 	return xhr.response;
 };
 
-ajax.configure = (xhr, url) => {
-	if (url.includes("acode.app/api")) {
-		xhr.withCredentials = true;
-	}
-};
-
 TouchEvent.prototype.preventDefault = function () {
 	if (this.cancelable) {
 		oldPreventDefault.bind(this)();

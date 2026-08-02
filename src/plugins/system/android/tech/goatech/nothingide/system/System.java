@@ -1181,7 +1181,7 @@ public class System extends CordovaPlugin {
       Intent intent = new Intent(Intent.ACTION_VIEW);
       intent.setComponent(componentName);
       intent.setData(dataUri);
-      intent.putExtra("acodeFileUri", uriString);
+      intent.putExtra("fileUri", uriString);
 
       IconCompat icon;
 
@@ -1722,7 +1722,7 @@ public class System extends CordovaPlugin {
         try {
           android.content.SharedPreferences themePrefs = activity
             .getApplicationContext()
-            .getSharedPreferences("acode_theme", Context.MODE_PRIVATE);
+            .getSharedPreferences("nothingide_theme", Context.MODE_PRIVATE);
           android.content.SharedPreferences.Editor prefEditor = themePrefs.edit();
           Iterator<String> keys = scheme.keys();
           while (keys.hasNext()) {
@@ -1904,7 +1904,7 @@ public class System extends CordovaPlugin {
 
   private boolean isReservedAuthIntent(Intent intent) {
     Uri data = intent != null ? intent.getData() : null;
-    if (data == null || !"acode".equals(data.getScheme())) {
+    if (data == null || !"nothing".equals(data.getScheme())) {
       return false;
     }
     String host = data.getHost();

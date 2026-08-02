@@ -94,7 +94,7 @@ export default function mainSettings() {
 			value: config.BASE_URL,
 			prompt: "Plugin server URL",
 			promptType: "url",
-			info: "Where the plugin marketplace is hosted. Defaults to acode.app; point this at your own self-hosted server instead.",
+			info: "Where the plugin marketplace is hosted. Defaults to our own self-hosted server; point this at a different one instead.",
 			category: categories.customizationTools,
 		},
 		{
