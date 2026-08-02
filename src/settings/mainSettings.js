@@ -10,6 +10,7 @@ import plugins from "pages/plugins";
 import themeSetting from "pages/themeSetting";
 import helpers from "utils/helpers";
 import About from "../pages/about";
+import Account from "../pages/account/account";
 import otherSettings from "./appSettings";
 import backupRestore from "./backupRestore";
 import editorSettings from "./editorSettings";
@@ -199,7 +200,7 @@ export default function mainSettings() {
 	async function callback(key, value) {
 		switch (key) {
 			case "account":
-				acode.exec("open", "account");
+				Account();
 				break;
 
 			case "pluginServer":
