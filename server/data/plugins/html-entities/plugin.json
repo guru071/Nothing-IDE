@@ -1,0 +1,11 @@
+{
+	"id": "html-entities",
+	"name": "HTML Entities",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "html", "entities", "encode", "decode"]
+}

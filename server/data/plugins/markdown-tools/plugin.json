@@ -1,0 +1,11 @@
+{
+	"id": "markdown-tools",
+	"name": "Markdown Tools",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "markdown", "bold", "italic", "link"]
+}

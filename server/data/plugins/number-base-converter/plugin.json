@@ -1,0 +1,11 @@
+{
+	"id": "number-base-converter",
+	"name": "Number Base Converter",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "number", "hex", "binary", "octal", "decimal"]
+}

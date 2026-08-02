@@ -1,0 +1,11 @@
+{
+	"id": "color-converter",
+	"name": "Color Converter",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "color", "hex", "rgb", "hsl"]
+}
