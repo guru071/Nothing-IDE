@@ -630,6 +630,36 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "hexViewer",
+		description: "Hex Viewer",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "hex_viewer");
+			return true;
+		},
+	});
+	addCommand({
+		name: "dataViewer",
+		description: "Data Viewer (JSON/XML/CSV)",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "data_viewer");
+			return true;
+		},
+	});
+	addCommand({
+		name: "clipboardHistory",
+		description: "Clipboard History",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "clipboard_history");
+			return true;
+		},
+	});
+	addCommand({
 		name: "increaseUiZoom",
 		description: "Increase UI zoom",
 		readOnly: true,

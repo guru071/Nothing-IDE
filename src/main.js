@@ -40,6 +40,7 @@ import ajax from "lib/ajax";
 import androidBuilder from "lib/androidBuilder";
 import applySettings from "lib/applySettings";
 import checkFiles from "lib/checkFiles";
+import clipboardHistory from "lib/clipboardHistory";
 import { canSaveFile } from "lib/commands";
 import config from "lib/config";
 import EditorFile from "lib/editorFile";
@@ -83,6 +84,7 @@ TouchEvent.prototype.preventDefault = function () {
 };
 
 loadPolyFill.apply(window);
+clipboardHistory.init();
 window.addEventListener("resize", windowResize);
 document.addEventListener("pause", pauseHandler);
 document.addEventListener("resume", resumeHandler);

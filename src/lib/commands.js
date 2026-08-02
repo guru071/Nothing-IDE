@@ -369,6 +369,30 @@ export default {
 				).default();
 				break;
 
+			case "hex_viewer":
+				(
+					await import(
+						/* webpackChunkName: "hexViewer" */ "pages/hexViewer/hexViewer"
+					)
+				).default();
+				break;
+
+			case "data_viewer":
+				(
+					await import(
+						/* webpackChunkName: "dataViewer" */ "pages/dataViewer/dataViewer"
+					)
+				).default();
+				break;
+
+			case "clipboard_history":
+				(
+					await import(
+						/* webpackChunkName: "clipboardHistory" */ "pages/clipboardHistory/clipboardHistory"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")

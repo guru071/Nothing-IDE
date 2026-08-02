@@ -1,0 +1,136 @@
+#data-viewer {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-size: 13px;
+
+  .dv-toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .action-button {
+    border: 1px solid var(--border-color);
+    background: var(--primary-color);
+    color: var(--primary-text-color);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .dv-format {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--secondary-color, transparent);
+    color: var(--primary-text-color);
+    padding: 8px 6px;
+  }
+
+  .dv-meta {
+    margin: 10px 0;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    word-break: break-all;
+  }
+
+  .dv-error {
+    color: var(--danger-color, #c74e39);
+    font-size: 13px;
+  }
+
+  .dv-view {
+    font-family: monospace;
+  }
+
+  .dv-node {
+    margin-left: 4px;
+
+    summary {
+      cursor: pointer;
+      padding: 2px 0;
+    }
+
+    .dv-children {
+      padding-left: 16px;
+      border-left: 1px dashed var(--border-color);
+    }
+  }
+
+  .dv-leaf {
+    padding: 2px 0 2px 4px;
+    word-break: break-word;
+  }
+
+  .dv-key {
+    color: var(--secondary-text-color);
+  }
+
+  .dv-type {
+    color: var(--primary-text-color);
+    font-weight: 600;
+  }
+
+  .dv-string {
+    color: #4caf50;
+  }
+
+  .dv-number {
+    color: #2196f3;
+  }
+
+  .dv-boolean {
+    color: #ff9800;
+  }
+
+  .dv-null {
+    color: var(--secondary-text-color);
+    font-style: italic;
+  }
+
+  .dv-tag {
+    color: #9c27b0;
+    font-weight: 600;
+  }
+
+  .dv-attr {
+    color: #ff9800;
+  }
+
+  .dv-csv-wrap {
+    overflow-x: auto;
+  }
+
+  .dv-csv-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+
+    th,
+    td {
+      border: 1px solid var(--border-color);
+      padding: 4px 8px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background-color: var(--secondary-color, rgba(127, 127, 127, 0.12));
+      color: var(--primary-text-color);
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      color: var(--primary-text-color);
+    }
+  }
+
+  .dv-csv-count {
+    margin-top: 8px;
+    color: var(--secondary-text-color);
+    font-size: 11px;
+  }
+}

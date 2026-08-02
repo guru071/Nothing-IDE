@@ -101,6 +101,30 @@ export default function help() {
 			chevron: true,
 		},
 		{
+			key: "hex-viewer",
+			text: "Hex Viewer",
+			icon: "code",
+			info: "View any file's raw bytes as a hex + ASCII dump.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
+			key: "data-viewer",
+			text: "Data Viewer",
+			icon: "document-code",
+			info: "View JSON as a collapsible tree, XML as an element tree, or CSV as a table, instead of raw text.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
+			key: "clipboard-history",
+			text: "Clipboard History",
+			icon: "copy",
+			info: "The last 50 things you've copied or cut anywhere in the app, tap to copy again.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -142,6 +166,15 @@ export default function help() {
 				break;
 			case "rest-client":
 				acode.exec("open", "rest_client");
+				break;
+			case "hex-viewer":
+				acode.exec("open", "hex_viewer");
+				break;
+			case "data-viewer":
+				acode.exec("open", "data_viewer");
+				break;
+			case "clipboard-history":
+				acode.exec("open", "clipboard_history");
 				break;
 			case "github":
 				openUrl(config.GITHUB_URL);

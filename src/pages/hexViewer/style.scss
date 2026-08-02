@@ -1,0 +1,56 @@
+#hex-viewer {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  .action-button {
+    border: 1px solid var(--border-color);
+    background: var(--primary-color);
+    color: var(--primary-text-color);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .hex-meta {
+    margin: 10px 0;
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    word-break: break-all;
+  }
+
+  .hex-table {
+    font-family: monospace;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .hex-row {
+    display: flex;
+    gap: 12px;
+    padding: 1px 0;
+
+    .hex-offset {
+      color: var(--secondary-text-color);
+      flex-shrink: 0;
+    }
+
+    .hex-bytes {
+      color: var(--primary-text-color);
+      flex-shrink: 0;
+    }
+
+    .hex-ascii {
+      color: var(--secondary-text-color);
+      flex-shrink: 0;
+    }
+  }
+
+  .hex-load-more {
+    margin-top: 12px;
+    width: 100%;
+  }
+}
