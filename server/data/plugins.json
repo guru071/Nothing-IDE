@@ -20,5 +20,28 @@
 		"min_version_code": null,
 		"sku": null,
 		"file": "hello-world.zip"
+	},
+	{
+		"id": "uuid-generator",
+		"name": "UUID Generator",
+		"icon": "/static/plugins/uuid-generator/icon.png",
+		"version": "1.0.0",
+		"license": "MIT",
+		"author": "Nothing IDE",
+		"author_verified": true,
+		"price": 0,
+		"currencySymbol": "$",
+		"downloads": 0,
+		"keywords": [
+			"utility",
+			"uuid",
+			"generator"
+		],
+		"description": "Generate a random UUID v4 and copy it to your clipboard, right from the command palette.",
+		"changelogs": "## 1.0.0\n\nInitial release.",
+		"supported_editor": "cm",
+		"min_version_code": null,
+		"sku": null,
+		"file": "uuid-generator.zip"
 	}
 ]
