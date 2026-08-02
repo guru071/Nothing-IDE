@@ -1,0 +1,11 @@
+{
+	"id": "qr-code-generator",
+	"name": "QR Code Generator",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "qr code", "svg", "generator"]
+}
