@@ -38,6 +38,23 @@
           background-color: var(--primary-color);
         }
       }
+
+      .mode-button {
+        border: 1px solid var(--border-color);
+        background: none;
+        color: var(--primary-text-color);
+        cursor: pointer;
+        border-radius: 12px;
+        padding: 3px 10px;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+
+        &:hover {
+          background-color: var(--primary-color);
+        }
+      }
     }
   }
 

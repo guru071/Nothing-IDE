@@ -4,6 +4,7 @@ import toast from "components/toast";
 import confirm from "dialogs/confirm";
 import loader from "dialogs/loader";
 import { getCurrentProject, hasApiKey, runAgentTurn } from "lib/aiAgentService";
+import * as offlineAi from "lib/offlineAi";
 
 /** @type {HTMLElement} */
 let container;
@@ -13,10 +14,14 @@ let $body;
 let $input;
 /** @type {HTMLButtonElement} */
 let $sendButton;
+/** @type {HTMLElement} */
+let $headerEl;
 
 let conversation = [];
+let offlineConversation = [];
 let displayMessages = [];
 let sending = false;
+let offlineMode = false;
 
 export default [
 	"chat_bubble", // icon
@@ -27,36 +32,47 @@ export default [
 	onSelected, // onSelected function
 ];
 
-const $header = (
-	<div className="header">
-		<div className="title">
-			AI Agent
-			<span>
-				<button
-					type="button"
-					className="icon-button"
-					title="New chat"
-					onclick={() => newChat()}
-				>
-					<span className="icon delete_outline"></span>
-				</button>
-				<button
-					type="button"
-					className="icon-button"
-					title="AI Agent settings"
-					onclick={() => window.acode?.exec("open", "settings")}
-				>
-					<span className="icon settings"></span>
-				</button>
-			</span>
+function buildHeader() {
+	return (
+		<div className="header">
+			<div className="title">
+				AI Agent
+				<span>
+					<button
+						type="button"
+						className="mode-button"
+						title="Toggle online/offline mode"
+						onclick={() => toggleMode()}
+					>
+						{offlineMode ? "Offline" : "Online"}
+					</button>
+					<button
+						type="button"
+						className="icon-button"
+						title="New chat"
+						onclick={() => newChat()}
+					>
+						<span className="icon delete_outline"></span>
+					</button>
+					<button
+						type="button"
+						className="icon-button"
+						title="AI Agent settings"
+						onclick={() => window.acode?.exec("open", "settings")}
+					>
+						<span className="icon settings"></span>
+					</button>
+				</span>
+			</div>
 		</div>
-	</div>
-);
+	);
+}
 
 function initApp(el) {
 	container = el;
 	container.classList.add("ai-agent-panel");
-	container.content = $header;
+	$headerEl = buildHeader();
+	container.content = $headerEl;
 
 	$body = <div className="ai-agent-body scroll"></div>;
 
@@ -102,8 +118,19 @@ function onSelected() {
 
 function newChat() {
 	conversation = [];
+	offlineConversation = [];
 	displayMessages = [];
 	render();
+}
+
+function toggleMode() {
+	offlineMode = !offlineMode;
+	const newHeader = buildHeader();
+	$headerEl.replaceWith(newHeader);
+	$headerEl = newHeader;
+	$input.placeholder = offlineMode
+		? "Chat with the offline model (no file/shell access, conversation only)…"
+		: "Ask the AI Agent to read, write, or run something in this project…";
 }
 
 function escapeHtml(str = "") {
@@ -160,6 +187,12 @@ async function send() {
 	const text = $input.value.trim();
 	if (!text) return;
 
+	if (offlineMode) {
+		$input.value = "";
+		await sendOffline(text);
+		return;
+	}
+
 	if (!hasApiKey()) {
 		toast("Add your Anthropic API key in Settings › AI Agent first.");
 		return;
@@ -209,6 +242,67 @@ async function send() {
 				text: text || "(no response)",
 			});
 		}
+	} catch (error) {
+		displayMessages.push({
+			role: "error",
+			text: String(error?.message || error),
+		});
+	} finally {
+		sending = false;
+		$sendButton.disabled = false;
+		loader.removeTitleLoader();
+		render();
+	}
+}
+
+/**
+ * Offline mode: a plain, tool-free conversation with a small local model
+ * running in the terminal sandbox (llama.cpp + Qwen2.5-0.5B) - no file/shell
+ * access, unlike the online AI Agent, since small quantized on-device models
+ * don't reliably support tool use.
+ * @param {string} text
+ */
+async function sendOffline(text) {
+	displayMessages.push({ role: "user", text });
+	offlineConversation.push({ role: "user", content: text });
+	render();
+
+	sending = true;
+	$sendButton.disabled = true;
+	loader.showTitleLoader();
+
+	try {
+		const running = await offlineAi.isServerRunning();
+		if (!running) {
+			const setUp = await offlineAi.isSetUp();
+			if (!setUp) {
+				const proceed = await confirm(
+					"Offline AI isn't set up",
+					"This installs llama.cpp and downloads a ~450MB model in a terminal tab (one-time, needs internet once). Continue?",
+				);
+				if (proceed) {
+					await offlineAi.runSetup();
+					displayMessages.push({
+						role: "tool",
+						text: 'Watch the terminal tab for setup progress. Once it says "Offline AI is ready", try sending again.',
+					});
+				}
+			} else {
+				await offlineAi.startServer();
+				displayMessages.push({
+					role: "tool",
+					text: "Starting the offline model in a terminal tab - try sending again in a few seconds.",
+				});
+			}
+			return;
+		}
+
+		const reply = await offlineAi.chatCompletion(offlineConversation);
+		offlineConversation.push({ role: "assistant", content: reply });
+		displayMessages.push({
+			role: "assistant",
+			text: reply || "(no response)",
+		});
 	} catch (error) {
 		displayMessages.push({
 			role: "error",

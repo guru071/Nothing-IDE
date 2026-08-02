@@ -1,0 +1,11 @@
+{
+	"id": "case-converter",
+	"name": "Case Converter",
+	"main": "main.js",
+	"icon": "icon.png",
+	"readme": "readme.md",
+	"version": "1.0.0",
+	"author": "Nothing IDE",
+	"license": "MIT",
+	"keywords": ["utility", "case", "camelcase", "snakecase"]
+}
