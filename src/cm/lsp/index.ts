@@ -42,6 +42,7 @@ export {
 	fetchDocumentSymbols,
 	getDocumentSymbols,
 	getDocumentSymbolsFlat,
+	getSymbolKindAbbreviation,
 	getSymbolKindIcon,
 	getSymbolKindName,
 	navigateToSymbol,

@@ -1,37 +1,12 @@
 import "./styles.scss";
-import { fetchDocumentSymbols, navigateToSymbol } from "cm/lsp";
+import {
+	fetchDocumentSymbols,
+	getSymbolKindAbbreviation,
+	navigateToSymbol,
+} from "cm/lsp";
 import actionStack from "lib/actionStack";
 
 let currentPanel = null;
-
-const SYMBOL_KIND_ABBREV = {
-	1: "Fi",
-	2: "Mo",
-	3: "Ns",
-	4: "Pk",
-	5: "C",
-	6: "M",
-	7: "P",
-	8: "F",
-	9: "Co",
-	10: "E",
-	11: "I",
-	12: "fn",
-	13: "V",
-	14: "c",
-	15: "S",
-	16: "#",
-	17: "B",
-	18: "[]",
-	19: "{}",
-	20: "K",
-	21: "∅",
-	22: "Em",
-	23: "St",
-	24: "Ev",
-	25: "Op",
-	26: "T",
-};
 
 function sanitize(str) {
 	if (!str) return "";
@@ -266,7 +241,7 @@ function createSymbolsPanel() {
 	function createSymbolItem(symbol) {
 		const kindName = symbol.kindName || "Unknown";
 		const kindClass = `kind-${kindName.toLowerCase().replace(/\s+/g, "")}`;
-		const abbrev = SYMBOL_KIND_ABBREV[symbol.kind] || "?";
+		const abbrev = getSymbolKindAbbreviation(symbol.kind);
 		const indent = (symbol.depth || 0) * 16;
 		const startLine = symbol.selectionRange?.startLine ?? 0;
 
