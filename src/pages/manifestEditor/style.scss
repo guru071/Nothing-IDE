@@ -1,0 +1,99 @@
+#manifest-editor {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-size: 13px;
+
+  .me-status {
+    color: var(--secondary-text-color);
+    font-size: 12px;
+    margin-bottom: 14px;
+    word-break: break-all;
+  }
+
+  .me-field {
+    margin-bottom: 12px;
+
+    .me-label {
+      display: block;
+      color: var(--secondary-text-color);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 4px;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--secondary-color, transparent);
+      color: var(--primary-text-color);
+      font-size: 13px;
+    }
+  }
+
+  .me-section-label {
+    color: var(--secondary-text-color);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 16px 0 8px;
+  }
+
+  .me-empty {
+    color: var(--secondary-text-color);
+    font-size: 12px;
+  }
+
+  .me-permission-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-color);
+
+    .me-permission-name {
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--primary-text-color);
+      word-break: break-all;
+    }
+
+    button {
+      flex-shrink: 0;
+      border: none;
+      background: none;
+      color: var(--secondary-text-color);
+      cursor: pointer;
+    }
+  }
+
+  .me-add-permission {
+    margin-top: 8px;
+    border: none;
+    background: none;
+    color: var(--primary-text-color);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 0;
+  }
+
+  .action-button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    background: var(--primary-color);
+    color: var(--primary-text-color);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 20px;
+  }
+}

@@ -680,6 +680,16 @@ function registerCoreCommands() {
 		},
 	});
 	addCommand({
+		name: "manifestEditor",
+		description: "Manifest Editor (AndroidManifest.xml / config.xml)",
+		readOnly: true,
+		requiresView: false,
+		run() {
+			acode.exec("open", "manifest_editor");
+			return true;
+		},
+	});
+	addCommand({
 		name: "increaseUiZoom",
 		description: "Increase UI zoom",
 		readOnly: true,

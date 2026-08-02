@@ -409,6 +409,14 @@ export default {
 				).default();
 				break;
 
+			case "manifest_editor":
+				(
+					await import(
+						/* webpackChunkName: "manifestEditor" */ "pages/manifestEditor/manifestEditor"
+					)
+				).default();
+				break;
+
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")

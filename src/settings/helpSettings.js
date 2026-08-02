@@ -141,6 +141,14 @@ export default function help() {
 			chevron: true,
 		},
 		{
+			key: "manifest-editor",
+			text: "Manifest Editor",
+			icon: "document-code",
+			info: "Edit the open project's AndroidManifest.xml or config.xml: package/ID, version, and permissions - without hand-editing XML.",
+			category: categories.guide,
+			chevron: true,
+		},
+		{
 			key: "github",
 			text: "GitHub Repository",
 			icon: "github",
@@ -197,6 +205,9 @@ export default function help() {
 				break;
 			case "android-build":
 				acode.exec("open", "android_build");
+				break;
+			case "manifest-editor":
+				acode.exec("open", "manifest_editor");
 				break;
 			case "github":
 				openUrl(config.GITHUB_URL);
