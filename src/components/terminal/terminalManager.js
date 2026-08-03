@@ -801,8 +801,18 @@ class TerminalManager {
 			alert(strings["error"], `Terminal connection error: ${errorMessage}`);
 		};
 
-		terminalComponent.onTitleChange = async (title) => {
-			if (title) {
+		// Shells commonly emit an OSC title escape sequence on every prompt
+		// render (sometimes every keystroke, e.g. with fancy prompt configs),
+		// and xterm's onTitleChange fires once per sequence. Applying each one
+		// immediately to the tab's filename/header forced a UI re-render on
+		// every single event - visible as the tab label and its close button
+		// rapidly resizing/jittering ("glitching, compressing"). Debounce so
+		// only the title after a short quiet period actually lands.
+		let titleChangeTimeout = null;
+		terminalComponent.onTitleChange = (title) => {
+			if (!title) return;
+			if (titleChangeTimeout) clearTimeout(titleChangeTimeout);
+			titleChangeTimeout = setTimeout(async () => {
 				// Keep the tab prefix stable for this terminal instance.
 				const formattedTitle = `${titlePrefix} - ${title}`;
 				terminalFile.filename = formattedTitle;
@@ -823,7 +833,7 @@ class TerminalManager {
 					// Force refresh of the header subtitle
 					terminalFile.setCustomTitle(getTerminalTitle);
 				}
-			}
+			}, 300);
 		};
 
 		terminalComponent.onProcessExit = (exitData) => {
