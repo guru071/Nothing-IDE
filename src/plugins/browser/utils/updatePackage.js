@@ -46,7 +46,7 @@ try {
   replaceImport(docProvider, appName);
   replaceImport(menuJava, appName);
 
-  const msg = `==== Changed package to tech.goatech.nothingide.${appName} ====`;
+  const msg = `==== Patched R import in browser Java sources to variant "${appName}" ====`;
 
   console.log("\n" + repeatChar("=", msg.length));
   console.log(msg);
