@@ -704,6 +704,22 @@ class TerminalManager {
 				lastWidth = width;
 				lastHeight = height;
 
+				// This is the first time the container has reported a real
+				// (non-hidden) size - if the tab was created while inactive/
+				// off-screen, the mount-time fit() in terminal.js ran against
+				// a zero-size container and computed 0 rows/cols, which then
+				// never self-corrects because every later resize event only
+				// re-fits when it differs from this recorded baseline. Fit
+				// now, against the first real measurement, so the terminal
+				// isn't left permanently blank.
+				try {
+					if (terminalComponent.terminal && terminalComponent.container) {
+						terminalComponent.fit();
+					}
+				} catch (error) {
+					console.error(`Initial fit error for terminal ${terminalId}:`, error);
+				}
+
 				return;
 			}
 
@@ -1124,7 +1140,8 @@ class TerminalManager {
 	convertProotPath(prootPath) {
 		if (!prootPath) return prootPath;
 
-		const packageName = window.BuildInfo?.packageName || "tech.goatech.nothingide";
+		const packageName =
+			window.BuildInfo?.packageName || "tech.goatech.nothingide";
 		const dataDir = `/data/user/0/${packageName}`;
 		const alpineRoot = `${dataDir}/files/alpine`;
 
