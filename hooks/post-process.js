@@ -30,6 +30,7 @@ enableLegacyJni();
 enableStaticContext();
 patchTargetSdkVersion();
 enableKeyboardWorkaround();
+enableWebViewSoftwareRendering();
 
 function getPackageName() {
   const configPath = path.resolve(__dirname, '../config.xml');
@@ -264,6 +265,54 @@ function enableKeyboardWorkaround() {
     console.log('[Cordova Hook] ✅ Enabled keyboard workaround');
   } catch (err) {
     console.error('[Cordova Hook] ❌ Failed to enable keyboard workaround:', err.message);
+  }
+}
+
+// Some devices (seen on a Snapdragon-based Moto G57 Power) fail to
+// rasterize custom web-font glyphs (the app's icon fonts, which use
+// Private Use Area codepoints) when the WebView is hardware-accelerated,
+// even though the font/CSS itself loads and is declared correctly -
+// regular text renders fine, only the custom glyphs come out as
+// tofu/missing-glyph boxes. Forcing the WebView specifically (not the
+// whole app) to software rendering is the standard workaround for this
+// class of Android WebView text-rendering bug.
+function enableWebViewSoftwareRendering() {
+  try {
+    const prefix = execSync('npm prefix').toString().trim();
+    const packageName = getPackageName();
+    const mainActivityPath = path.join(
+      prefix,
+      'platforms/android/app/src/main/java',
+      packageName.replace(/\./g, '/'),
+      'MainActivity.java'
+    );
+
+    if (!fs.existsSync(mainActivityPath)) {
+      console.warn('[Cordova Hook] ⚠️ MainActivity.java not found at', mainActivityPath);
+      return;
+    }
+
+    let content = fs.readFileSync(mainActivityPath, 'utf-8');
+
+    if (content.includes('LAYER_TYPE_SOFTWARE')) {
+      console.log('[Cordova Hook] ✅ WebView software rendering already enabled, skipping');
+      return;
+    }
+
+    content = content.replace(
+      /loadUrl\(launchUrl\);/,
+      `loadUrl(launchUrl);\n\n        ` +
+        `// Workaround: some devices fail to render the app's icon-font glyphs ` +
+        `under hardware acceleration - see enableWebViewSoftwareRendering() in hooks/post-process.js\n` +
+        `        if (this.appView != null && this.appView.getView() != null) {\n` +
+        `            this.appView.getView().setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);\n` +
+        `        }`
+    );
+
+    fs.writeFileSync(mainActivityPath, content, 'utf-8');
+    console.log('[Cordova Hook] ✅ Enabled WebView software rendering');
+  } catch (err) {
+    console.error('[Cordova Hook] ❌ Failed to enable WebView software rendering:', err.message);
   }
 }
 

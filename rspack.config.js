@@ -173,6 +173,40 @@ module.exports = (env, options) => {
       new rspack.CssExtractRspackPlugin({
         filename: '[name].css',
       }),
+      // css-loader/postcss-loader prepend a BOM (U+FEFF) to each CSS module's
+      // output. When CssExtractRspackPlugin concatenates multiple modules into
+      // one file, only the very first module's BOM lands at byte 0 (harmless,
+      // stripped by any UTF-8 decoder) - every other module's BOM ends up
+      // sitting mid-stream, directly before that module's first rule. A
+      // mid-stream U+FEFF isn't CSS whitespace, so it breaks the parser's
+      // recognition of an immediately-following at-rule: this is exactly why
+      // the icon fonts' @font-face rules were silently dropped from the
+      // page's CSSOM (confirmed via postcss.parse() reproducing the same
+      // drop on a minimal `}﻿@font-face{...}` snippet) even though the
+      // rule was present, correctly formed, byte-for-byte, in the built file.
+      {
+        apply(compiler) {
+          compiler.hooks.compilation.tap('StripMidStreamBOM', (compilation) => {
+            compilation.hooks.processAssets.tap(
+              {
+                name: 'StripMidStreamBOM',
+                stage: rspack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+              },
+              (assets) => {
+                for (const name of Object.keys(assets)) {
+                  if (!name.endsWith('.css')) continue;
+                  const source = compilation.getAsset(name).source.source().toString();
+                  if (!source.includes('﻿')) continue;
+                  compilation.updateAsset(
+                    name,
+                    new rspack.sources.RawSource(source.replace(/﻿/g, '')),
+                  );
+                }
+              },
+            );
+          });
+        },
+      },
     ],
   };
 
