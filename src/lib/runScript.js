@@ -12,80 +12,14 @@ const RUNNERS = {
 	sh: (f) => `sh ${sh(f)}`,
 	bash: (f) => `bash ${sh(f)}`,
 	rb: (f) => `ruby ${sh(f)}`,
-	php: (f) => `php83 ${sh(f)}`,
+	php: (f) => `php ${sh(f)}`,
 	pl: (f) => `perl ${sh(f)}`,
-	lua: (f) => `lua5.4 ${sh(f)}`,
+	lua: (f) => `lua ${sh(f)}`,
 	go: (f) => `go run ${sh(f)}`,
 	java: (f) => `java ${sh(f)}`,
 	c: (f) => `gcc ${sh(f)} -o /tmp/a.out && /tmp/a.out`,
 	cpp: (f) => `g++ ${sh(f)} -o /tmp/a.out && /tmp/a.out`,
 };
-
-/**
- * Which binary each runner actually needs on PATH, and which Alpine apk
- * package(s) provide it if missing - package names verified against
- * pkgs.alpinelinux.org, not guessed (bash is omitted: init-alpine.sh
- * already installs it unconditionally as a required package).
- */
-const RUNTIME_REQUIREMENTS = {
-	py: { binary: "python3", packages: ["python3"] },
-	js: { binary: "node", packages: ["nodejs"] },
-	mjs: { binary: "node", packages: ["nodejs"] },
-	cjs: { binary: "node", packages: ["nodejs"] },
-	rb: { binary: "ruby", packages: ["ruby"] },
-	php: { binary: "php83", packages: ["php83"] },
-	pl: { binary: "perl", packages: ["perl"] },
-	lua: { binary: "lua5.4", packages: ["lua5.4"] },
-	go: { binary: "go", packages: ["go"] },
-	java: { binary: "java", packages: ["openjdk17"] },
-	c: { binary: "gcc", packages: ["gcc", "musl-dev"] },
-	cpp: { binary: "g++", packages: ["g++", "musl-dev"] },
-};
-
-/**
- * Checks whether a runner's interpreter/compiler is already on PATH in the
- * Alpine sandbox (this also picks up anything the user already installed
- * themselves via the terminal - the check has no way to tell the
- * difference, which is exactly the point), and if not, offers to install
- * it with one tap instead of failing with a bare "command not found".
- * @param {string} ext
- * @returns {Promise<boolean>} true if it's available (already was, or was
- *   just installed) - false if missing and the user declined to install it
- */
-async function ensureRuntimeAvailable(ext) {
-	const requirement = RUNTIME_REQUIREMENTS[ext];
-	if (!requirement) return true; // e.g. sh/bash - always present
-
-	try {
-		const check = `command -v ${requirement.binary} >/dev/null 2>&1 && echo FOUND || echo MISSING`;
-		const result = await window.Executor.execute(check, true);
-		if (result.includes("FOUND")) return true;
-	} catch {
-		// Sandbox not reachable yet - let the actual run attempt surface the
-		// real error rather than guessing here.
-		return true;
-	}
-
-	const { default: confirmDialog } = await import("dialogs/confirm");
-	const packageList = requirement.packages.join(" ");
-	const proceed = await confirmDialog(
-		strings.info,
-		`${requirement.binary} isn't installed yet. Install it now (apk add ${packageList})?`,
-	);
-	if (!proceed) return false;
-
-	try {
-		window.toast?.(`Installing ${requirement.binary}...`);
-		await window.Executor.execute(`apk add --no-cache ${packageList}`, true);
-		window.toast?.(`${requirement.binary} installed.`);
-		return true;
-	} catch (error) {
-		window.toast?.(
-			`Could not install ${requirement.binary}: ${error?.message || error}`,
-		);
-		return false;
-	}
-}
 
 function sh(str = "") {
 	return `'${String(str).replace(/'/g, `'\\''`)}'`;
@@ -101,10 +35,7 @@ function sh(str = "") {
 function splitPath(prootPath) {
 	const idx = prootPath.lastIndexOf("/");
 	if (idx <= 0) return { dir: "/", name: prootPath };
-	return {
-		dir: prootPath.slice(0, idx) || "/",
-		name: prootPath.slice(idx + 1),
-	};
+	return { dir: prootPath.slice(0, idx) || "/", name: prootPath.slice(idx + 1) };
 }
 
 /**
@@ -159,10 +90,7 @@ async function buildProjectCommand(project) {
 		}
 		const scriptName = scripts.dev ? "dev" : scripts.start ? "start" : null;
 		const command = scriptName ? `npm run ${scriptName}` : "npm start";
-		return {
-			command: `cd ${sh(project.path)} && ${command}`,
-			name: "package.json",
-		};
+		return { command: `cd ${sh(project.path)} && ${command}`, name: "package.json" };
 	}
 
 	if (out.includes("HAS_MAIN_PY")) {
@@ -214,30 +142,13 @@ async function runCommandInTerminal(title, command) {
 }
 
 /**
- * Whether the active file has a recognized terminal runner (.py, .c, .go,
- * ...) - used to decide whether the header Run button should execute it in
- * the terminal or fall back to the web-preview "run" command instead.
- * @returns {boolean}
- */
-function hasTerminalRunner() {
-	return buildActiveFileCommand() !== null;
-}
-
-/**
  * Runs the active file if it has a recognized runner, otherwise falls back
  * to detecting a runnable entry point in the open project.
  */
 async function run() {
 	const fileCommand = buildActiveFileCommand();
 	if (fileCommand) {
-		const ext = (fileCommand.name || "").split(".").pop()?.toLowerCase();
-		const available = await ensureRuntimeAvailable(ext);
-		if (!available) return;
-
-		await runCommandInTerminal(
-			`Run - ${fileCommand.name}`,
-			fileCommand.command,
-		);
+		await runCommandInTerminal(`Run - ${fileCommand.name}`, fileCommand.command);
 		return;
 	}
 
@@ -277,4 +188,4 @@ function init() {
 	});
 }
 
-export default { init, run, hasTerminalRunner };
+export default { init, run };

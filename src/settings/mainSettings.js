@@ -1,19 +1,12 @@
 import settingsPage from "components/settingsPage";
 import confirm from "dialogs/confirm";
-import loader from "dialogs/loader";
 import rateBox from "dialogs/rateBox";
 import actionStack from "lib/actionStack";
-import auth from "lib/auth";
 import config from "lib/config";
-import customTab from "lib/customTab";
 import openFile from "lib/openFile";
-import removeAds from "lib/removeAds";
 import appSettings from "lib/settings";
 import settings from "lib/settings";
-import openAdRewardsPage from "pages/adRewards";
-import Changelog from "pages/changelog/changelog";
 import plugins from "pages/plugins";
-import Sponsors from "pages/sponsors";
 import themeSetting from "pages/themeSetting";
 import helpers from "utils/helpers";
 import About from "../pages/about";
@@ -95,6 +88,16 @@ export default function mainSettings() {
 			chevron: true,
 		},
 		{
+			key: "pluginServer",
+			text: "Plugin server",
+			icon: "cloud",
+			value: config.BASE_URL,
+			prompt: "Plugin server URL",
+			promptType: "url",
+			info: "Where the plugin marketplace is hosted. Defaults to acode.app; point this at your own self-hosted server instead.",
+			category: categories.customizationTools,
+		},
+		{
 			key: "lsp-settings",
 			text:
 				strings?.lsp_settings ||
@@ -138,22 +141,6 @@ export default function mainSettings() {
 			chevron: true,
 		},
 		{
-			key: "sponsors",
-			text: strings.sponsor,
-			icon: "favorite",
-			info: strings["settings-info-main-sponsors"],
-			category: categories.aboutAcode,
-			chevron: true,
-		},
-		{
-			key: "changeLog",
-			text: `${strings["changelog"]}`,
-			icon: "update",
-			info: strings["settings-info-main-changelog"],
-			category: categories.aboutAcode,
-			chevron: true,
-		},
-		{
 			key: "rateapp",
 			text: strings["rate acode"],
 			icon: "star_outline",
@@ -163,51 +150,17 @@ export default function mainSettings() {
 		},
 	];
 
-	if (!config.HAS_PRO) {
-		items.push({
-			key: "adRewards",
-			text: strings["earn ad-free time"],
-			icon: "play_arrow",
-			info: strings["settings-info-main-ad-rewards"],
-			category: categories.supportAcode,
-			chevron: true,
-		});
-		items.push({
-			key: "removeads",
-			text: strings["remove ads"],
-			icon: "block",
-			info: `${strings["settings-info-main-remove-ads"]}${!helpers.shouldAllowExternalPurchase() ? ` ${strings["iap-pro-purchase-warning"]}` : ""}`,
-			category: categories.supportAcode,
-			chevron: true,
-		});
-	}
-
-	// Add promotion items from cached data
-	const cachedPromotions = helpers.parseJSON(
-		localStorage.getItem("cached_promotions"),
-	);
-	if (Array.isArray(cachedPromotions) && cachedPromotions.length) {
-		categories.promotions = strings["settings-category-discover-apps"];
-		cachedPromotions.forEach((promo) => {
-			if (!promo.url || !promo.label || !/^https?:\/\//.test(promo.url)) return;
-			items.push({
-				key: `promo-${encodeURIComponent(promo.url)}`,
-				text: promo.label,
-				image: typeof promo.icon === "string" ? promo.icon : null,
-				info: typeof promo.link_text === "string" ? promo.link_text : "",
-				link: promo.url,
-				category: categories.promotions,
-			});
-		});
-	}
-
 	/**
 	 * Callback for settings page for handling click event
 	 * @this {HTMLElement}
 	 * @param {string} key
 	 */
-	async function callback(key) {
+	async function callback(key, value) {
 		switch (key) {
+			case "pluginServer":
+				config.BASE_URL = value;
+				break;
+
 			case "app-settings":
 			case "backup-restore":
 			case "editor-settings":
@@ -225,20 +178,12 @@ export default function mainSettings() {
 				About();
 				break;
 
-			case "sponsors":
-				Sponsors();
-				break;
-
 			case "rateapp":
 				rateBox();
 				break;
 
 			case "plugins":
 				plugins();
-				break;
-
-			case "adRewards":
-				openAdRewardsPage();
 				break;
 
 			case "formatter":
@@ -260,59 +205,6 @@ export default function mainSettings() {
 					await appSettings.reset();
 					location.reload();
 				}
-				break;
-
-			case "removeads":
-				try {
-					if (!helpers.shouldAllowExternalPurchase()) {
-						await removeAds();
-						this.remove();
-						break;
-					}
-
-					loader.create(strings.login, strings["loading..."]);
-
-					try {
-						let user = await auth.getLoggedInUser();
-						if (!user) {
-							const confirmation = await confirm(
-								strings.confirm,
-								strings["confirm-login"],
-							);
-
-							if (!confirmation) {
-								return;
-							}
-
-							loader.show();
-							await auth.login();
-
-							user = await auth.getLoggedInUser();
-						}
-
-						if (!user) {
-							throw new Error("Unable to fetch user");
-						}
-
-						if (user.acode_pro) {
-							this.remove();
-							return;
-						}
-					} catch (error) {
-						helpers.error(error);
-						return;
-					} finally {
-						loader.destroy();
-					}
-
-					customTab(`${config.BASE_URL}/pro?redirect=app`).catch(helpers.error);
-				} catch (error) {
-					helpers.error(error);
-				}
-				break;
-
-			case "changeLog":
-				Changelog();
 				break;
 
 			default:

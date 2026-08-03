@@ -4,11 +4,11 @@ const path = require("path");
 const configXML = path.resolve(__dirname, "../../../config.xml");
 const menuJava = path.resolve(
   __dirname,
-  "../../../platforms/android/app/src/main/java/com/foxdebug/browser/Menu.java"
+  "../../../platforms/android/app/src/main/java/tech/goatech/nothingide/browser/Menu.java"
 );
 const docProvider = path.resolve(
   __dirname,
-  "../../../platforms/android/app/src/main/java/com/foxdebug/acode/rk/exec/terminal/AlpineDocumentProvider.java"
+  "../../../platforms/android/app/src/main/java/tech/goatech/nothingide/rk/exec/terminal/AlpineDocumentProvider.java"
 );
 
 const repeatChar = (char, times) => char.repeat(times);
@@ -22,7 +22,7 @@ function replaceImport(filePath, appName) {
   const data = fs.readFileSync(filePath, "utf8");
 
   const updated = data.replace(
-    /(import\s+com\.foxdebug\.)(acode|acodefree)(\.R;)/,
+    /(import\s+com\.goatech\.)(nothingide|nothingidefree)(\.R;)/,
     `$1${appName}$3`
   );
 
@@ -46,7 +46,7 @@ try {
   replaceImport(docProvider, appName);
   replaceImport(menuJava, appName);
 
-  const msg = `==== Changed package to com.foxdebug.${appName} ====`;
+  const msg = `==== Changed package to tech.goatech.nothingide.${appName} ====`;
 
   console.log("\n" + repeatChar("=", msg.length));
   console.log(msg);

@@ -1,9 +1,9 @@
 import "./about.scss";
+import goatechLogo from "./goatech-logo.jpeg";
 import Logo from "components/logo";
 import Page from "components/page";
 import Reactive from "html-tag-js/reactive";
 import actionStack from "lib/actionStack";
-import config from "lib/config";
 import { hideAd } from "lib/startAd";
 import helpers from "utils/helpers";
 export default function AboutInclude() {
@@ -17,7 +17,7 @@ export default function AboutInclude() {
 			<Logo />
 
 			<div className="version-info">
-				<h1 className="version-title">Acode editor</h1>
+				<h1 className="version-title">Nothing IDE</h1>
 				<div className="version-number">
 					Version {BuildInfo.version} ({BuildInfo.versionCode})
 				</div>
@@ -42,63 +42,19 @@ export default function AboutInclude() {
 						<div className="info-item-subtext">{webviewPackageName}</div>
 					</div>
 				</a>
-				<a href={config.BASE_URL} className="info-item">
-					<div className="info-item-icon">
-						<span className="icon acode"></span>
-					</div>
-					<div className="info-item-text">
-						Official webpage
-						<div className="info-item-subtext">{config.BASE_URL}</div>
-					</div>
-				</a>
-				<a href={config.FOXBIZ_URL} className="info-item">
-					<div className="info-item-icon">
-						<span className="icon foxbiz"></span>
-					</div>
-					<div className="info-item-text">
-						Foxbiz Software Pvt. Ltd.
-						<div className="info-item-subtext">{config.FOXBIZ_URL}</div>
-					</div>
-				</a>
 			</div>
 
-			<div className="social-links">
-				<a href="mailto:apps@foxdebug.com" className="social-link">
-					<div className="social-icon">
-						<span className="icon gmail"></span>
-					</div>
-					Mail
+			<div className="created-by">
+				<a
+					href="#"
+					onclick={(e) => {
+						e.preventDefault();
+						system.openInBrowser("https://goatech.tech");
+					}}
+				>
+					<img src={goatechLogo} alt="GOAT'ECH" className="goatech-logo" />
 				</a>
-				<a href={config.TWITTER_URL} className="social-link">
-					<div className="social-icon">
-						<span className="icon twitter"></span>
-					</div>
-					Twitter
-				</a>
-				<a href={config.INSTAGRAM_URL} className="social-link">
-					<div className="social-icon">
-						<span className="icon instagram"></span>
-					</div>
-					Instagram
-				</a>
-				<a href={config.GITHUB_URL} className="social-link">
-					<div className="social-icon">
-						<span className="icon github"></span>
-					</div>
-					GitHub
-				</a>
-				<a href={config.TELEGRAM_URL} className="social-link">
-					<div className="social-icon">
-						<span className="icon telegram"></span>
-					</div>
-					Telegram
-				</a>
-				<a href={config.DISCORD_URL} className="social-link">
-					<div className="social-icon">
-						<span className="icon discord"></span>
-					</div>
-					Discord
-				</a>
+				<div className="created-by-text">Created by GOAT'ECH</div>
 			</div>
 		</main>
 	);

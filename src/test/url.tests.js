@@ -23,11 +23,11 @@ const JOIN_CASES = [
 	{
 		name: "Acode SAF join",
 		folderUrl:
-			"content://com.foxdebug.acode.documents/tree/%2Fdata%2Fuser%2F0%2Fcom.foxdebug.acode%2Ffiles%2Fpublic",
+			"content://tech.goatech.nothingide.documents/tree/%2Fdata%2Fuser%2F0%2Ftech.goatech.nothingide%2Ffiles%2Fpublic",
 		activeLocation:
-			"content://com.foxdebug.acode.documents/tree/%2Fdata%2Fuser%2F0%2Fcom.foxdebug.acode%2Ffiles%2Fpublic::/data/user/0/com.foxdebug.acode/files/public/",
+			"content://tech.goatech.nothingide.documents/tree/%2Fdata%2Fuser%2F0%2Ftech.goatech.nothingide%2Ffiles%2Fpublic::/data/user/0/tech.goatech.nothingide/files/public/",
 		expectedJoined:
-			"content://com.foxdebug.acode.documents/tree/%2Fdata%2Fuser%2F0%2Fcom.foxdebug.acode%2Ffiles%2Fpublic::/data/user/0/com.foxdebug.acode/files/public/index.html",
+			"content://tech.goatech.nothingide.documents/tree/%2Fdata%2Fuser%2F0%2Ftech.goatech.nothingide%2Ffiles%2Fpublic::/data/user/0/tech.goatech.nothingide/files/public/index.html",
 	},
 ];
 
@@ -44,8 +44,8 @@ const TRAILING_SLASH_CASES = [
 	},
 	{
 		name: "Acode SAF trailing slash",
-		a: "content://com.foxdebug.acode.documents/tree/%2Fdata%2Fuser%2F0%2Fcom.foxdebug.acode%2Ffiles%2Fpublic/",
-		b: "content://com.foxdebug.acode.documents/tree/%2Fdata%2Fuser%2F0%2Fcom.foxdebug.acode%2Ffiles%2Fpublic",
+		a: "content://tech.goatech.nothingide.documents/tree/%2Fdata%2Fuser%2F0%2Ftech.goatech.nothingide%2Ffiles%2Fpublic/",
+		b: "content://tech.goatech.nothingide.documents/tree/%2Fdata%2Fuser%2F0%2Ftech.goatech.nothingide%2Ffiles%2Fpublic",
 	},
 ];
 

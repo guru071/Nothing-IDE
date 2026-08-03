@@ -1,9 +1,9 @@
 {
-  "name": "com.foxdebug.acode.rk.customtabs",
+  "name": "tech.goatech.nothingide.rk.customtabs",
   "version": "1.0.0",
   "description": "Custom tabs api",
   "cordova": {
-    "id": "com.foxdebug.acode.rk.customtabs",
+    "id": "tech.goatech.nothingide.rk.customtabs",
     "platforms": [
       "android"
     ]

@@ -1,4 +1,4 @@
-package com.foxdebug.acode.rk.plugin;
+package tech.goatech.nothingide.rk.plugin;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -18,7 +18,7 @@ import android.content.Context;
 import org.apache.cordova.*;
 
 //auth plugin
-import com.foxdebug.acode.rk.auth.EncryptedPreferenceManager;
+import tech.goatech.nothingide.rk.auth.EncryptedPreferenceManager;
 
 public class Tee extends CordovaPlugin {
 

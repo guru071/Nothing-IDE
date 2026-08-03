@@ -83,7 +83,6 @@ public class System extends CordovaPlugin {
   private int systemBarColor = 0xFF000000;
   private Theme theme;
   private CallbackContext intentHandler;
-  private CallbackContext authCallbackHandler;
   private CordovaWebView webView;
   private String fileProviderAuthority;
   private RewardPassManager rewardPassManager;
@@ -165,9 +164,6 @@ public class System extends CordovaPlugin {
         return true;
       case "set-intent-handler":
         setIntentHandler(callbackContext);
-        return true;
-      case "set-auth-callback-handler":
-        setAuthCallbackHandler(callbackContext);
         return true;
       case "shareText":
         String text = args.getString(0);
@@ -263,18 +259,6 @@ public class System extends CordovaPlugin {
         }
 
         callbackContext.success(arch);
-        return true;
-      case "openDeveloperOptions":
-        try {
-          Intent devOptionsIntent = new Intent(
-            Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS
-          );
-          devOptionsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          context.startActivity(devOptionsIntent);
-          callbackContext.success();
-        } catch (Exception e) {
-          callbackContext.error(e.toString());
-        }
         return true;
       case "requestStorageManager":
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -1197,7 +1181,7 @@ public class System extends CordovaPlugin {
       Intent intent = new Intent(Intent.ACTION_VIEW);
       intent.setComponent(componentName);
       intent.setData(dataUri);
-      intent.putExtra("fileUri", uriString);
+      intent.putExtra("acodeFileUri", uriString);
 
       IconCompat icon;
 
@@ -1738,7 +1722,7 @@ public class System extends CordovaPlugin {
         try {
           android.content.SharedPreferences themePrefs = activity
             .getApplicationContext()
-            .getSharedPreferences("nothingide_theme", Context.MODE_PRIVATE);
+            .getSharedPreferences("acode_theme", Context.MODE_PRIVATE);
           android.content.SharedPreferences.Editor prefEditor = themePrefs.edit();
           Iterator<String> keys = scheme.keys();
           while (keys.hasNext()) {
@@ -1886,7 +1870,6 @@ public class System extends CordovaPlugin {
   private void getCordovaIntent(CallbackContext callback) {
     Intent intent = activity.getIntent();
     if (isReservedAuthIntent(intent)) {
-      forwardAuthCallback(intent);
       callback.sendPluginResult(
         new PluginResult(PluginResult.Status.OK, new JSONObject())
       );
@@ -1904,32 +1887,9 @@ public class System extends CordovaPlugin {
     callback.sendPluginResult(result);
   }
 
-  private void setAuthCallbackHandler(CallbackContext callback) {
-    authCallbackHandler = callback;
-    PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-    result.setKeepCallback(true);
-    callback.sendPluginResult(result);
-  }
-
-  /** Forwards a nothing://auth/callback intent's full data URI (which
-   * carries the OAuth tokens as a URL fragment) to JS instead of silently
-   * dropping it - the reserved-intent check still keeps it out of the
-   * normal file/URL-open intent handler above. */
-  private void forwardAuthCallback(Intent intent) {
-    if (authCallbackHandler == null) return;
-    Uri data = intent != null ? intent.getData() : null;
-    PluginResult result = new PluginResult(
-      PluginResult.Status.OK,
-      data != null ? data.toString() : ""
-    );
-    result.setKeepCallback(true);
-    authCallbackHandler.sendPluginResult(result);
-  }
-
   @Override
   public void onNewIntent(Intent intent) {
     if (isReservedAuthIntent(intent)) {
-      forwardAuthCallback(intent);
       return;
     }
     if (intentHandler != null) {
@@ -1944,7 +1904,7 @@ public class System extends CordovaPlugin {
 
   private boolean isReservedAuthIntent(Intent intent) {
     Uri data = intent != null ? intent.getData() : null;
-    if (data == null || !"nothing".equals(data.getScheme())) {
+    if (data == null || !"acode".equals(data.getScheme())) {
       return false;
     }
     String host = data.getHost();

@@ -1,9 +1,9 @@
 {
-  "name": "com.foxdebug.acode.rk.exec.proot",
+  "name": "tech.goatech.nothingide.rk.exec.proot",
   "version": "1.0.0",
   "description": "Proot stuff",
   "cordova": {
-    "id": "com.foxdebug.acode.rk.exec.proot",
+    "id": "tech.goatech.nothingide.rk.exec.proot",
     "platforms": [
       "android"
     ]

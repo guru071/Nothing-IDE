@@ -24,12 +24,12 @@ import appSettings from "./settings";
 const isTermuxSafUri = (value = "") =>
 	value.startsWith("content://com.termux.documents/tree/");
 const isAcodeTerminalPublicSafUri = (value = "") =>
-	value.startsWith("content://com.foxdebug.acode.documents/tree/");
+	value.startsWith("content://tech.goatech.nothingide.documents/tree/");
 const isTerminalSafUri = (value = "") =>
 	isTermuxSafUri(value) || isAcodeTerminalPublicSafUri(value);
 
 const getTerminalPaths = () => {
-	const packageName = window.BuildInfo?.packageName || "com.foxdebug.acode";
+	const packageName = window.BuildInfo?.packageName || "tech.goatech.nothingide";
 	const dataDir = `/data/user/0/${packageName}`;
 	const alpineRoot = `${dataDir}/files/alpine`;
 	const publicDir = `${dataDir}/files/public`;
@@ -1291,4 +1291,10 @@ openFolder.find = (url) => {
 	return addedFolder.find((folder) => isInsideOpenFolder(url, folder.url));
 };
 
+export {
+	isTerminalAccessiblePath,
+	convertToProotPath,
+	isTerminalSafUri,
+	isAcodeTerminalPublicSafUri,
+};
 export default openFolder;

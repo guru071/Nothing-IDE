@@ -1,4 +1,4 @@
-package com.foxdebug.websocket;
+package tech.goatech.nothingide.websocket;
 
 import android.util.Log;
 

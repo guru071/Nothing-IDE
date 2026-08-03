@@ -1,4 +1,4 @@
-package com.foxdebug.acode.rk.exec.terminal;
+package tech.goatech.nothingide.rk.exec.terminal;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
-import com.foxdebug.acode.R;
-import com.foxdebug.acode.rk.exec.terminal.*;
+import tech.goatech.nothingide.R;
+import tech.goatech.nothingide.rk.exec.terminal.*;
 
 public class AlpineDocumentProvider extends DocumentsProvider {
     

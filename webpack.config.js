@@ -27,7 +27,7 @@ module.exports = (env, options) => {
       ],
     },
     {
-      test: /\.(hbs|md)$/,
+      test: /\.(hbs|md|sh)$/,
       use: ['raw-loader'],
     },
     {

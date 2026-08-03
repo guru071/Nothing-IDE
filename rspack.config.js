@@ -76,7 +76,7 @@ module.exports = (env, options) => {
     },
     // Handlebars and Markdown files
     {
-      test: /\.(hbs|md)$/,
+      test: /\.(hbs|md|sh)$/,
       type: 'asset/source',
     },
     // Module CSS/SCSS (with .m prefix)

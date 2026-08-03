@@ -1,6 +1,5 @@
 import { getResolvedKeyBindings } from "cm/commandRegistry";
 import logoSrc from "components/logo/logo.png?inline";
-import config from "lib/config";
 import EditorFile from "lib/editorFile";
 
 /**
@@ -21,7 +20,7 @@ export default function openWelcomeTab() {
 		render: true,
 		type: "page",
 		content: welcomeContent,
-		tabIcon: "icon acode",
+		tabIcon: "icon home",
 		hideQuickTools: true,
 	});
 
@@ -46,7 +45,7 @@ function createWelcomeContent() {
 			<header className="welcome-header">
 				<img className="logo" src={logoSrc} width="48" height="48" alt="" />
 				<div className="welcome-header-text">
-					<h1>Welcome to Acode</h1>
+					<h1>Welcome to Nothing IDE</h1>
 					<p className="tagline">Powerful code editor for Android</p>
 				</div>
 			</header>
@@ -131,21 +130,6 @@ function createWelcomeContent() {
 					/>
 				</div>
 			</section>
-
-			{/* Links Section */}
-			<section className="welcome-section welcome-links">
-				<h2 className="section-label">CONNECT</h2>
-				<div className="link-row">
-					<LinkItem icon="acode" label="Website" url={config.BASE_URL} />
-					<LinkItem icon="github" label="GitHub" url={config.GITHUB_URL} />
-					<LinkItem
-						icon="telegram"
-						label="Telegram"
-						url={config.TELEGRAM_URL}
-					/>
-					<LinkItem icon="discord" label="Discord" url={config.DISCORD_URL} />
-				</div>
-			</section>
 		</div>
 	);
 }
@@ -160,22 +144,5 @@ function ActionRow({ icon, label, shortcut, onClick }) {
 			<span className="action-label">{label}</span>
 			{shortcut && <span className="action-shortcut">{shortcut}</span>}
 		</div>
-	);
-}
-
-/**
- * Link item component - opens URL in external browser
- */
-function LinkItem({ icon, label, url }) {
-	const handleClick = (e) => {
-		e.preventDefault();
-		system.openInBrowser(url);
-	};
-
-	return (
-		<a href={url} className="link-item" onclick={handleClick}>
-			<span className={`icon ${icon}`}></span>
-			<span>{label}</span>
-		</a>
 	);
 }

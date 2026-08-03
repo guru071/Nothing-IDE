@@ -4,18 +4,12 @@
 	"description": "Self-hosted plugin marketplace server for Nothing IDE",
 	"main": "src/index.js",
 	"scripts": {
-		"start": "node src/index.js",
-		"migrate": "node scripts/migrate-to-supabase.js"
+		"start": "node src/index.js"
 	},
 	"engines": {
 		"node": ">=18"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.109.0",
-		"express": "^4.19.2",
-		"google-auth-library": "^10.9.1",
-		"multer": "^2.2.0",
-		"razorpay": "^2.9.8",
-		"ws": "^8.21.1"
+		"express": "^4.19.2"
 	}
 }

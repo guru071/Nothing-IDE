@@ -24,6 +24,7 @@ import tomorrowNightBright, {
 	config as tomorrowNightBrightConfig,
 } from "./tomorrowNightBright";
 import vscodeDark, { config as vscodeDarkConfig } from "./vscodeDark";
+import vscodeLight, { config as vscodeLightConfig } from "./vscodeLight";
 
 const oneDarkConfig = {
 	name: "one_dark",
@@ -83,7 +84,7 @@ function validateThemeExtensions(themeId, extensions) {
 	}
 
 	try {
-		// Validate against Acode's own CodeMirror instance.
+		// Validate against this app's own CodeMirror instance.
 		EditorState.create({ doc: "", extensions });
 		return true;
 	} catch (error) {
@@ -274,6 +275,13 @@ addTheme(
 	!!vscodeDarkConfig.dark,
 	() => vscodeDark(),
 	vscodeDarkConfig,
+);
+addTheme(
+	vscodeLightConfig.name,
+	"VS Code Light",
+	!!vscodeLightConfig.dark,
+	() => vscodeLight(),
+	vscodeLightConfig,
 );
 
 export default {

@@ -1,5 +1,5 @@
 {
-  "name": "Acode Development",
+  "name": "Nothing IDE Development",
   "build": {
     "dockerfile": "Dockerfile",
     "target": "devcontainer"
