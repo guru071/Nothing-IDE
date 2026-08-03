@@ -144,6 +144,16 @@ module.exports = (env, options) => {
         },
       },
     },
+    optimization: {
+      // Default CSS minimizer (LightningCSS) was stripping the icon fonts'
+      // @font-face rules entirely in production builds - they're only ever
+      // referenced via an inherited `font-family` on a parent class, not
+      // directly on the same selector, which apparently reads as "unused"
+      // to its optimizer. JS still gets minified normally; only the CSS
+      // minimizer is disabled (CSS is a small fraction of this bundle's
+      // size regardless).
+      minimizer: prod ? [new rspack.SwcJsMinimizerRspackPlugin()] : undefined,
+    },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mjs', '.json'],
       fallback: {
