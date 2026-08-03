@@ -1272,7 +1272,12 @@ export default class EditorFile {
 				}
 			}
 
-			const runnableFile = /\.((html?)|(md)|(js)|(svg))$/;
+			// Web-preview-eligible files, plus every extension runScript.js knows
+			// how to execute in the terminal (Python, C/C++, Java, Ruby, PHP,
+			// Go, Lua, shell, Perl) - keeps the header Run button visible for
+			// language files too, not just web ones.
+			const runnableFile =
+				/\.((html?)|(md)|(js)|(mjs)|(cjs)|(svg)|(sh)|(bash)|(rb)|(php)|(pl)|(lua)|(go)|(java)|(c)|(cpp)|(py))$/;
 			if (runnableFile.test(this.filename)) {
 				this.#canRun = Promise.resolve(true);
 				return;

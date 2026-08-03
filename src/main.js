@@ -414,7 +414,9 @@ async function loadApp() {
 			style={{ fontSize: "1.2em" }}
 			className="icon play_arrow"
 			attr-action="run"
-			onclick={() => acode.exec("run")}
+			onclick={() =>
+				acode.exec(runScript.hasTerminalRunner() ? "run-in-terminal" : "run")
+			}
 			oncontextmenu={() => acode.exec("run-file")}
 		/>
 	);

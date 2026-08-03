@@ -49,6 +49,36 @@ function getTerminalRequiredMessage(): string {
   );
 }
 
+/**
+ * Terminal.isInstalled() is a single native round-trip (getFilesDir + three
+ * fileExists calls). Right after a cold app launch, the native bridge can
+ * still be warming up when the first file opens and immediately triggers an
+ * LSP connection - a single check there can false-negative even though the
+ * sandbox is genuinely installed, showing "please install Terminal first"
+ * every time despite nothing actually being missing. Retrying a few times
+ * with short delays absorbs that startup race without masking a real
+ * "actually not installed" case (which stays false across every retry).
+ */
+async function checkTerminalInstalledWithRetry(): Promise<boolean> {
+  const terminal = (
+    globalThis as unknown as {
+      Terminal?: { isInstalled?: () => Promise<boolean> | boolean };
+    }
+  ).Terminal;
+
+  const attempts = [0, 400, 800, 1600];
+  for (const delay of attempts) {
+    if (delay > 0) await sleep(delay);
+    try {
+      if (await terminal?.isInstalled?.()) return true;
+    } catch {
+      // keep retrying - a thrown error this early is as likely to be the
+      // native bridge not being ready yet as a real failure.
+    }
+  }
+  return false;
+}
+
 interface LspError extends Error {
   code?: string;
 }
@@ -1035,15 +1065,7 @@ export async function ensureServerRunning(
     // Failed to check, proceed with normal startup
   }
 
-  const terminal = (
-    globalThis as unknown as {
-      Terminal?: { isInstalled?: () => Promise<boolean> | boolean };
-    }
-  ).Terminal;
-  let isTerminalInstalled = false;
-  try {
-    isTerminalInstalled = Boolean(await terminal?.isInstalled?.());
-  } catch {}
+  const isTerminalInstalled = await checkTerminalInstalledWithRetry();
   if (!isTerminalInstalled) {
     const message = getTerminalRequiredMessage();
 

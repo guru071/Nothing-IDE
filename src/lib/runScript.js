@@ -148,6 +148,16 @@ async function runCommandInTerminal(title, command) {
 }
 
 /**
+ * Whether the active file has a recognized terminal runner (.py, .c, .go,
+ * ...) - used to decide whether the header Run button should execute it in
+ * the terminal or fall back to the web-preview "run" command instead.
+ * @returns {boolean}
+ */
+function hasTerminalRunner() {
+	return buildActiveFileCommand() !== null;
+}
+
+/**
  * Runs the active file if it has a recognized runner, otherwise falls back
  * to detecting a runnable entry point in the open project.
  */
@@ -197,4 +207,4 @@ function init() {
 	});
 }
 
-export default { init, run };
+export default { init, run, hasTerminalRunner };
