@@ -2,17 +2,9 @@ import fsOperation from "fileSystem";
 import loader from "dialogs/loader";
 import helpers from "utils/helpers";
 import Url from "utils/Url";
-import cascadiaCode from "../res/fonts/CascadiaCode.ttf";
 import firaCode from "../res/fonts/FiraCode.ttf";
-import jetBrainsMonoBold from "../res/fonts/JetBrainsMonoBold.ttf";
-import jetBrainsMonoRegular from "../res/fonts/JetBrainsMonoRegular.ttf";
 import MesloLGSNFRegular from "../res/fonts/MesloLGSNFRegular.ttf";
-import notoMono from "../res/fonts/NotoMono.ttf";
-import proggyClean from "../res/fonts/ProggyClean.ttf";
 import robotoMono from "../res/fonts/RobotoMono.ttf";
-import sourceCodePro from "../res/fonts/SourceCodePro.ttf";
-import victorMonoItalic from "../res/fonts/VictorMonoItalic.ttf";
-import victorMonoMedium from "../res/fonts/VictorMonoMedium.ttf";
 
 const fonts = new Map();
 const customFontNames = new Set();
@@ -60,7 +52,7 @@ add(
 	"Source Code",
 	`@font-face {
   font-family: 'Source Code';
-  src: url(${sourceCodePro}) format('truetype');
+  src: url(https://acode.app/SourceCodePro.ttf) format('truetype');
   font-weight: 300 700;
   font-style: normal;
 }`,
@@ -70,7 +62,7 @@ add(
 	"Victor Mono Italic",
 	`@font-face {
   font-family: 'Victor Mono Italic';
-  src: url(${victorMonoItalic}) format('truetype');
+  src: url(https://acode.app/VictorMono-Italic.otf) format('truetype');
   font-style: normal;
 }`,
 );
@@ -79,7 +71,7 @@ add(
 	"Victor Mono Medium",
 	`@font-face {
   font-family: 'Victor Mono Medium';
-  src: url(${victorMonoMedium}) format('truetype');
+  src: url(https://acode.app/VictorMono-Medium.otf) format('truetype');
   font-weight: medium;
   font-style: normal;
 }`,
@@ -89,7 +81,7 @@ add(
 	"Cascadia Code",
 	`@font-face {
   font-family: 'Cascadia Code';
-  src: url(${cascadiaCode}) format('truetype');
+  src: url(https://acode.app/CascadiaCode.ttf) format('truetype');
   font-weight: 300 700;
   font-style: normal;
 }`,
@@ -99,7 +91,7 @@ add(
 	"Proggy Clean",
 	`@font-face {
   font-family: 'Proggy Clean';
-  src: url(${proggyClean}) format('truetype');
+  src: url(https://acode.app/ProggyClean.ttf) format('truetype');
   font-weight: 300 700;
   font-style: normal;
 }`,
@@ -109,7 +101,7 @@ add(
 	"JetBrains Mono Bold",
 	`@font-face {
   font-family: 'JetBrains Mono Bold';
-  src: url(${jetBrainsMonoBold}) format('truetype');
+  src: url(https://acode.app/JetBrainsMono-Bold.ttf) format('truetype');
   font-weight: bold;
 }`,
 );
@@ -118,7 +110,7 @@ add(
 	"JetBrains Mono Regular",
 	`@font-face {
   font-family: 'JetBrains Mono Regular';
-  src: url(${jetBrainsMonoRegular}) format('truetype');
+  src: url(https://acode.app/JetBrainsMono-Regular.ttf) format('truetype');
   font-weight: 300 700;
   font-style: normal;
 }`,
@@ -129,7 +121,7 @@ add(
 	`@font-face {
   font-display: swap;
   font-family: 'Noto Mono';
-  src: url(${notoMono}) format('truetype');
+  src: url(https://acode.app/NotoMono-Regular.woff) format("woff");
   font-weight: 400;
   font-style: normal;
   unicode-range: U+0590-06FF;

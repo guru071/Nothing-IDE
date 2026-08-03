@@ -64,7 +64,6 @@ import createTouchSelectionMenu from "cm/touchSelectionMenu";
 import "cm/supportedModes";
 import { autocompletion } from "@codemirror/autocomplete";
 import { serverCompletionSource } from "@codemirror/lsp-client";
-import autoElseExtension, { autoElseCompletionSource } from "cm/autoElse";
 import colorView from "cm/colorView";
 import {
 	getAllFolds,
@@ -83,7 +82,6 @@ import {
 	isMultiCursorSelectionActive as resolveMultiCursorSelectionActive,
 	isShiftSelectionActive as resolveShiftSelectionActive,
 } from "cm/shiftSelection";
-import snippetsExtension, { snippetCompletionSource } from "cm/snippets";
 import tagAutoRename from "cm/tagAutoRename";
 import { getThemeConfig, getThemeExtensions } from "cm/themes";
 import list from "components/collapsableList";
@@ -91,7 +89,6 @@ import quickTools from "components/quickTools";
 import ScrollBar from "components/scrollbar";
 import SideButton, { sideButtonContainer } from "components/sideButton";
 import keyboardHandler, { keydownState } from "handlers/keyboard";
-import { clearQuickToolsModifierState } from "handlers/quickTools";
 import { animate } from "motion";
 import config from "./config";
 import EditorFile from "./editorFile";
@@ -805,19 +802,11 @@ async function EditorManager($header, $body) {
 		});
 	};
 	const isMultiCursorSelectionActive = (event) => {
-		const quickToolsCtrl = quickTools?.$footer?.dataset?.ctrl != null;
-		const quickToolsMeta = quickTools?.$footer?.dataset?.meta != null;
-		const active = resolveMultiCursorSelectionActive({
+		return resolveMultiCursorSelectionActive({
 			event,
-			quickToolsCtrl,
-			quickToolsMeta,
+			quickToolsCtrl: quickTools?.$footer?.dataset?.ctrl != null,
+			quickToolsMeta: quickTools?.$footer?.dataset?.meta != null,
 		});
-		// The on-screen Ctrl/Meta quick-tools buttons are sticky toggles with no
-		// physical key to release, so a tap that consumes one to add a cursor
-		// must release it immediately - otherwise every later tap in the editor
-		// keeps adding more cursors until the user notices and taps it off.
-		if (quickToolsCtrl || quickToolsMeta) clearQuickToolsModifierState();
-		return active;
 	};
 	const isQuickToolsMultiCursorSelectionActive = () => {
 		return resolveMultiCursorSelectionActive({
@@ -951,8 +940,6 @@ async function EditorManager($header, $body) {
 	const cursorThemeCompartment = new Compartment();
 	// Compartment for HTML-like tag auto rename
 	const tagAutoRenameCompartment = new Compartment();
-	// Compartment for language-specific code snippet abbreviations (sop, psvm, ...)
-	const snippetsCompartment = new Compartment();
 	// Compartment for read-only toggling
 	const readOnlyCompartment = new Compartment();
 	// Compartment for scrolling past the end of the file
@@ -1003,11 +990,6 @@ async function EditorManager($header, $body) {
 
 			if (appSettings?.value?.useEmmet !== false) {
 				config.override.push(getEmmetCompletionSource);
-			}
-
-			if (appSettings?.value?.codeSnippets !== false) {
-				config.override.push(snippetCompletionSource);
-				config.override.push(autoElseCompletionSource);
 			}
 		}
 
@@ -1271,12 +1253,7 @@ async function EditorManager($header, $body) {
 			},
 		},
 		{
-			keys: [
-				"liveAutoCompletion",
-				"localWordCompletion",
-				"languageCompletion",
-				"codeSnippets",
-			],
+			keys: ["liveAutoCompletion", "localWordCompletion", "languageCompletion"],
 			compartments: [completionCompartment],
 			build() {
 				return autocompletion(getAutocompleteConfig());
@@ -1297,16 +1274,6 @@ async function EditorManager($header, $body) {
 				// Default-on for older settings files that do not have this key yet.
 				const enabled = appSettings?.value?.autoRenameTags !== false;
 				return enabled ? tagAutoRename() : [];
-			},
-		},
-		{
-			keys: ["codeSnippets"],
-			compartments: [snippetsCompartment],
-			build() {
-				// Default-on; also re-added inside getAutocompleteConfig()'s override
-				// branch for when languageCompletion is turned off.
-				const enabled = appSettings?.value?.codeSnippets !== false;
-				return enabled ? [snippetsExtension(), autoElseExtension()] : [];
 			},
 		},
 		{
@@ -3525,10 +3492,6 @@ async function EditorManager($header, $body) {
 
 	appSettings.on("update:autoRenameTags", function () {
 		applyOptions(["autoRenameTags"]);
-	});
-
-	appSettings.on("update:codeSnippets", function () {
-		applyOptions(["codeSnippets"]);
 	});
 
 	appSettings.on("update:scrollPastEnd", function () {

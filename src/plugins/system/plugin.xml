@@ -13,12 +13,12 @@
 
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="System">
-        <param name="android-package" value="tech.goatech.nothingide.system.System"/>
+        <param name="android-package" value="com.foxdebug.system.System"/>
       </feature>
     </config-file>
 
     <config-file target="AndroidManifest.xml" parent="./application">
-      <provider android:name="androidx.core.content.FileProvider" android:authorities="tech.goatech.nothingide.provider" android:exported="false" android:grantUriPermissions="true">
+      <provider android:name="androidx.core.content.FileProvider" android:authorities="com.foxdebug.provider" android:exported="false" android:grantUriPermissions="true">
         <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider"/>
       </provider>
     </config-file>
@@ -35,13 +35,13 @@
 
     <resource-file src="res/android/file_provider.xml" target="res/xml/file_provider.xml" />
     <resource-file src="res/android/icon.ttf" target="assets/font/icon.ttf" />
-    <source-file src="android/tech/goatech/nothingide/system/Ui.java" target-dir="src/tech/goatech/nothingide/system"/>
-    <source-file src="android/tech/goatech/nothingide/system/System.java" target-dir="src/tech/goatech/nothingide/system"/>
-    <source-file src="android/tech/goatech/nothingide/system/SoftInputAssist.java" target-dir="src/tech/goatech/nothingide/system"/>
+    <source-file src="android/com/foxdebug/system/Ui.java" target-dir="src/com/foxdebug/system"/>
+    <source-file src="android/com/foxdebug/system/System.java" target-dir="src/com/foxdebug/system"/>
+    <source-file src="android/com/foxdebug/system/SoftInputAssist.java" target-dir="src/com/foxdebug/system"/>
 
     <framework src="androidx.core:core:1.6.0" />
     <framework src="androidx.core:core-google-shortcuts:1.0.0" />
     <framework src="androidx.documentfile:documentfile:1.0.1" />
-    <source-file src="android/tech/goatech/nothingide/system/RewardPassManager.java" target-dir="src/tech/goatech/nothingide/system"/>
+    <source-file src="android/com/foxdebug/system/RewardPassManager.java" target-dir="src/com/foxdebug/system"/>
   </platform>
 </plugin>

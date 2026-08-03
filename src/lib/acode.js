@@ -73,7 +73,6 @@ import encodings, { decode, encode } from "utils/encodings";
 import helpers from "utils/helpers";
 import KeyboardEvent from "utils/keyboardEvent";
 import Url from "utils/Url";
-import auth from "./auth";
 import config from "./config";
 
 class Acode {
@@ -557,7 +556,6 @@ class Acode {
 
 						let purchaseToken;
 						let product;
-						let accessToken;
 						const pluginUrl = Url.join(config.API_BASE, `plugin/${pluginId}`);
 						fsOperation(pluginUrl)
 							.readFile("json")
@@ -590,15 +588,6 @@ class Acode {
 															return;
 														}
 
-														accessToken = await auth.getAccessToken();
-														if (!accessToken) {
-															alert(
-																strings.info,
-																"Sign in first (Settings › Account) to buy this plugin.",
-															);
-															return;
-														}
-
 														const { default: purchaseListener } = await import(
 															/* webpackChunkName: "purchaseHandler" */ "handlers/purchase"
 														);
@@ -628,25 +617,14 @@ class Acode {
 
 									async function onpurchase(e) {
 										const purchase = await getPurchase(product.productId);
-										const orderRes = await fetch(
-											Url.join(config.API_BASE, "plugin/order"),
-											{
-												method: "POST",
-												headers: {
-													"Content-Type": "application/json",
-													Authorization: `Bearer ${accessToken}`,
-												},
-												body: JSON.stringify({
-													id: remotePlugin.id,
-													token: purchase?.purchaseToken,
-													package: BuildInfo.packageName,
-												}),
-											},
-										);
-										if (!orderRes.ok) {
-											const { error } = await orderRes.json().catch(() => ({}));
-											throw new Error(error || "Purchase verification failed.");
-										}
+										await fetch(Url.join(config.API_BASE, "plugin/order"), {
+											method: "POST",
+											body: JSON.stringify({
+												id: remotePlugin.id,
+												token: purchase?.purchaseToken,
+												package: BuildInfo.packageName,
+											}),
+										});
 										purchaseToken = purchase?.purchaseToken;
 									}
 

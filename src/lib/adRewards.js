@@ -1,4 +1,5 @@
 import toast from "components/toast";
+import auth from "./auth";
 import config from "./config";
 import secureAdRewardState from "./secureAdRewardState";
 import { adUnitIdRewarded, bannerAd } from "./startAd";

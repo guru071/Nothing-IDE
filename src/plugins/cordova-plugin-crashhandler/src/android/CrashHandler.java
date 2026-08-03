@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.crashhandler;
+package com.foxdebug.crashhandler;
 
 import android.content.Context;
 import android.content.Intent;

@@ -675,9 +675,9 @@ export default function PluginsInclude(updates) {
 		$list.owned.setAttribute("empty-msg", strings["loading..."]);
 
 		let iapPurchases = [];
-		const disabledMap = settings.value.pluginsDisabled || {};
 		if (helpers.isIapAvailable()) {
 			iapPurchases = await helpers.promisify(iap.getPurchases);
+			const disabledMap = settings.value.pluginsDisabled || {};
 
 			iapPurchases.forEach(async ({ productIds }) => {
 				const [sku] = productIds;
@@ -686,13 +686,14 @@ export default function PluginsInclude(updates) {
 
 				plugins.owned.push(plugin);
 			});
+		} else if (!(await auth.getLoggedInUser())) {
+			console.log("Not logged in");
+			$list.owned.setAttribute("empty-msg", strings["login-to-view"]);
+			return;
 		}
 
 		try {
-			const accessToken = await auth.getAccessToken();
-			const res = await fetch(`${config.API_BASE}/plugins?owned=true`, {
-				headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
-			});
+			const res = await fetch(`${config.API_BASE}/plugins?owned=true`);
 			if (res.ok) {
 				const ownedPlugins = await res.json();
 				if (Array.isArray(ownedPlugins)) {

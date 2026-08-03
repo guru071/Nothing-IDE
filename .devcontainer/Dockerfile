@@ -1,9 +1,9 @@
-# Nothing IDE Development Container
+# Acode Development Container
 #
 # Devcontainer usage: automatic via devcontainer.json
 # Standalone usage:
-#   docker build --target standalone -t nothing-ide-dev .devcontainer/
-#   docker run -it -v $(pwd):/workspaces/nothing-ide nothing-ide-dev
+#   docker build --target standalone -t acode-dev .devcontainer/
+#   docker run -it -v $(pwd):/workspaces/acode acode-dev
 
 FROM mcr.microsoft.com/devcontainers/java:1-21-bullseye AS base
 
@@ -32,10 +32,10 @@ RUN wget -q "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-
 
 ENV PATH="${PATH}:${GRADLE_HOME}/bin"
 
-WORKDIR /workspaces/nothing-ide
+WORKDIR /workspaces/acode
 
-LABEL org.opencontainers.image.authors="Nothing IDE"
-LABEL description="Development environment for building Nothing IDE - Code Editor for Android"
+LABEL org.opencontainers.image.authors="Acode Foundation <https://github.com/Acode-Foundation/Acode>"
+LABEL description="Development environment for building Acode - Code Editor for Android"
 
 
 # Devcontainer stage

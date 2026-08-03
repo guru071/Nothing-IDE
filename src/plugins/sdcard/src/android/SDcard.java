@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.sdcard;
+package com.foxdebug.sdcard;
 
 import android.app.Activity;
 import android.content.ContentResolver;

@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.sdcard;
+package com.foxdebug.sdcard;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -1374,7 +1374,7 @@ class WorkspaceIndex {
 
   private static class DB extends SQLiteOpenHelper {
     DB(Context context) {
-      super(context, "nothingide_workspace_index.db", null, DB_VERSION);
+      super(context, "acode_workspace_index.db", null, DB_VERSION);
     }
 
     @Override

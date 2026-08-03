@@ -74,38 +74,6 @@ class Logger {
 		}
 	}
 
-	/**
-	 * Returns buffered log entries not yet flushed to disk, oldest first.
-	 * @returns {string[]}
-	 */
-	getBufferedEntries() {
-		return Array.from(this.#logBuffer.values());
-	}
-
-	/**
-	 * Reads the full persisted log file, flushing the in-memory buffer first
-	 * so the result reflects the most recent entries too.
-	 * @returns {Promise<string>}
-	 */
-	async readLogFile() {
-		this.flushLogs();
-		const logFilePath = Url.join(DATA_STORAGE, this.#logFileName);
-		if (!(await fsOperation(logFilePath).exists())) return "";
-		return fsOperation(logFilePath).readFile("utf8");
-	}
-
-	/**
-	 * Deletes the persisted log file and clears the in-memory buffer.
-	 * @returns {Promise<void>}
-	 */
-	async clearLogs() {
-		this.#logBuffer.clear();
-		const logFilePath = Url.join(DATA_STORAGE, this.#logFileName);
-		if (await fsOperation(logFilePath).exists()) {
-			await fsOperation(logFilePath).delete();
-		}
-	}
-
 	#writeLogToFile = async (logContent) => {
 		try {
 			const logFilePath = Url.join(DATA_STORAGE, config.LOG_FILE_NAME);
@@ -160,5 +128,4 @@ class Logger {
 	};
 }
 
-export { Logger };
-export default new Logger();
+export default Logger;

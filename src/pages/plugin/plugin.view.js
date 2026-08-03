@@ -9,6 +9,7 @@ import alert from "dialogs/alert";
 import DOMPurify from "dompurify";
 import Ref from "html-tag-js/ref";
 import actionStack from "lib/actionStack";
+import auth, { loginEvents } from "lib/auth";
 import config from "lib/config";
 import helpers from "utils/helpers";
 import Url from "utils/Url";
@@ -345,6 +346,30 @@ async function Buttons(props) {
 		);
 	}
 
+	const user = await auth.getLoggedInUser();
+	if (isPaid && helpers.shouldAllowExternalPurchase() && !user) {
+		const buttonRef = Ref();
+		return (
+			<button
+				ref={buttonRef}
+				data-type="info"
+				className="btn btn-install"
+				onclick={async () => {
+					try {
+						await auth.login();
+						const newButton = await Buttons(props);
+						buttonRef.el.replaceWith(newButton);
+					} catch (error) {
+						helpers.error(error);
+					}
+				}}
+			>
+				<i className="icon user-round"></i>
+				{strings.login}
+			</button>
+		);
+	}
+
 	if (isPaid && !purchased && price) {
 		return (
 			<button data-type="buy" className="btn btn-install" onclick={buy}>
@@ -381,7 +406,7 @@ function LegacyEditorWarning({ unsupportedEditor }) {
 		<div className="legacy-editor-warning">
 			<span className="icon info"></span>
 			<span>
-				{`Built for an older editor engine (${oldEditor}). Install with caution; some features may behave unexpectedly in the current CodeMirror version.`}
+				{`Built for older Acode versions powered by ${oldEditor}. Install with caution; some features may behave unexpectedly in the current CodeMirror version.`}
 			</span>
 		</div>
 	);

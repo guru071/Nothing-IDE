@@ -704,22 +704,6 @@ class TerminalManager {
 				lastWidth = width;
 				lastHeight = height;
 
-				// This is the first time the container has reported a real
-				// (non-hidden) size - if the tab was created while inactive/
-				// off-screen, the mount-time fit() in terminal.js ran against
-				// a zero-size container and computed 0 rows/cols, which then
-				// never self-corrects because every later resize event only
-				// re-fits when it differs from this recorded baseline. Fit
-				// now, against the first real measurement, so the terminal
-				// isn't left permanently blank.
-				try {
-					if (terminalComponent.terminal && terminalComponent.container) {
-						terminalComponent.fit();
-					}
-				} catch (error) {
-					console.error(`Initial fit error for terminal ${terminalId}:`, error);
-				}
-
 				return;
 			}
 
@@ -801,18 +785,8 @@ class TerminalManager {
 			alert(strings["error"], `Terminal connection error: ${errorMessage}`);
 		};
 
-		// Shells commonly emit an OSC title escape sequence on every prompt
-		// render (sometimes every keystroke, e.g. with fancy prompt configs),
-		// and xterm's onTitleChange fires once per sequence. Applying each one
-		// immediately to the tab's filename/header forced a UI re-render on
-		// every single event - visible as the tab label and its close button
-		// rapidly resizing/jittering ("glitching, compressing"). Debounce so
-		// only the title after a short quiet period actually lands.
-		let titleChangeTimeout = null;
-		terminalComponent.onTitleChange = (title) => {
-			if (!title) return;
-			if (titleChangeTimeout) clearTimeout(titleChangeTimeout);
-			titleChangeTimeout = setTimeout(async () => {
+		terminalComponent.onTitleChange = async (title) => {
+			if (title) {
 				// Keep the tab prefix stable for this terminal instance.
 				const formattedTitle = `${titlePrefix} - ${title}`;
 				terminalFile.filename = formattedTitle;
@@ -833,7 +807,7 @@ class TerminalManager {
 					// Force refresh of the header subtitle
 					terminalFile.setCustomTitle(getTerminalTitle);
 				}
-			}, 300);
+			}
 		};
 
 		terminalComponent.onProcessExit = (exitData) => {
@@ -1150,15 +1124,14 @@ class TerminalManager {
 	convertProotPath(prootPath) {
 		if (!prootPath) return prootPath;
 
-		const packageName =
-			window.BuildInfo?.packageName || "tech.goatech.nothingide";
+		const packageName = window.BuildInfo?.packageName || "com.foxdebug.acode";
 		const dataDir = `/data/user/0/${packageName}`;
 		const alpineRoot = `${dataDir}/files/alpine`;
 
 		let convertedPath;
 
 		if (prootPath.startsWith("/public")) {
-			// /public -> /data/user/0/tech.goatech.nothingide/files/public
+			// /public -> /data/user/0/com.foxdebug.acode/files/public
 			convertedPath = `file://${dataDir}/files${prootPath}`;
 		} else if (
 			prootPath.startsWith("/sdcard") ||

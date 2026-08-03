@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.rk.exec.terminal;
+package com.foxdebug.acode.rk.exec.terminal;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;

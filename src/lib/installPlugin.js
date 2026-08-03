@@ -7,7 +7,6 @@ import JSZip from "jszip";
 import helpers from "utils/helpers";
 import Url from "utils/Url";
 import { isVersionGreater } from "utils/version";
-import auth from "./auth";
 import config from "./config";
 import InstallState from "./installState";
 import { loadPluginWithTimeout } from "./loadPlugins";
@@ -73,7 +72,7 @@ export default async function installPlugin(
 			pluginUrl.startsWith("file:") ||
 			pluginUrl.startsWith("content:")
 		) {
-			// Use fsOperation for the plugin registry URL
+			// Use fsOperation for Acode registry URL
 			plugin = await fsOperation(pluginUrl).readFile(
 				undefined,
 				(loaded, total) => {
@@ -139,10 +138,9 @@ export default async function installPlugin(
 
 				let titleText;
 				if (manifests.length > 1) {
-					titleText =
-						"Nothing IDE wants to install the following dependencies:";
+					titleText = "Acode wants to install the following dependencies:";
 				} else {
-					titleText = "Nothing IDE wants to install the following dependency:";
+					titleText = "Acode wants to install the following dependency:";
 				}
 
 				const shouldInstall = await confirm(
@@ -464,37 +462,20 @@ async function resolveDep(manifest) {
 			return true;
 		}
 
-		const accessToken = await auth.getAccessToken();
-		if (!accessToken) {
-			alert(
-				strings.info,
-				"Sign in first (Settings › Account) to buy this plugin.",
-			);
-			return true;
-		}
-
 		iap.setPurchaseUpdatedListener(...purchaseListener(onpurchase, onerror));
 		loaderDialog.setMessage(strings["loading..."]);
 		await helpers.promisify(iap.purchase, product.productId);
 
 		async function onpurchase(e) {
 			const purchase = await getPurchase(product.productId);
-			const orderRes = await fetch(Url.join(config.API_BASE, "plugin/order"), {
+			await fetch(Url.join(config.API_BASE, "plugin/order"), {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${accessToken}`,
-				},
 				body: JSON.stringify({
 					id: manifest.id,
 					token: purchase?.purchaseToken,
 					package: BuildInfo.packageName,
 				}),
 			});
-			if (!orderRes.ok) {
-				const { error } = await orderRes.json().catch(() => ({}));
-				throw new Error(error || "Purchase verification failed.");
-			}
 			purchaseToken = purchase?.purchaseToken;
 		}
 

@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.rk.exec.terminal;
+package com.foxdebug.acode.rk.exec.terminal;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -9,7 +9,7 @@ import java.util.TimeZone;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import tech.goatech.nothingide.rk.exec.terminal.*;
+import com.foxdebug.acode.rk.exec.terminal.*;
 
 public class ProcessManager {
     

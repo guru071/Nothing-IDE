@@ -34,7 +34,7 @@ export const pythonServers: LspServerManifest[] = [
 				},
 			},
 		},
-		enabled: true,
+		enabled: false,
 	}),
 ];
 

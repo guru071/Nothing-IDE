@@ -77,32 +77,58 @@
     }
   }
 
-  .created-by {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
+  .social-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 400px;
 
-    .goatech-logo {
-      width: 160px;
-      max-width: 60vw;
-      border-radius: 8px;
-    }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px;
+      background: color-mix(in srgb,
+          var(--popup-background-color) 20%,
+          transparent);
+      border-radius: 12px;
+      color: var(--secondary-text-color);
+      text-decoration: none;
+      transition: all 0.2s ease;
 
-    .created-by-text {
-      font-size: 13px;
-      color: color-mix(in srgb, var(--primary-text-color) 60%, transparent);
-      letter-spacing: 0.5px;
+      &:hover {
+        background: color-mix(in srgb,
+            var(--popup-background-color) 40%,
+            transparent);
+        transform: translateY(-1px);
+      }
+
+      .social-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+      }
     }
   }
 
   @supports not (gap: 1px) {
     > * + * { margin-top: 24px; }
+    .social-links > * { margin-right: 12px; margin-bottom: 12px; }
   }
 
   .icon {
     height: 100%;
     width: 100%;
+  }
+
+  .foxbiz {
+    background-image: url(./foxbiz.svg);
+  }
+
+  .discord {
+    background-image: url(./discord.svg);
   }
 }

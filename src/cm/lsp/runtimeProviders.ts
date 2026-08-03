@@ -186,7 +186,7 @@ export function inferWorkspaceKind(
 	}
 	if (scheme !== "content") return "unknown";
 
-	if (/^content:\/\/tech\.goatech\.nothingide(?:free)?\.documents\//i.test(uri)) {
+	if (/^content:\/\/com\.foxdebug\.acode(?:free)?\.documents\//i.test(uri)) {
 		return "builtin-alpine";
 	}
 	if (/termux/i.test(uri)) return "termux-saf";
@@ -206,7 +206,7 @@ export function isBuiltinAlpineAccessible(
 	if (scheme === "file") return true;
 	if (scheme !== "content") return false;
 
-	return /^content:\/\/tech\.goatech\.nothingide(?:free)?\.documents\//i.test(uri);
+	return /^content:\/\/com\.foxdebug\.acode(?:free)?\.documents\//i.test(uri);
 }
 
 export default {

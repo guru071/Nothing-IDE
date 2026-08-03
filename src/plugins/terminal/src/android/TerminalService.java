@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.rk.exec.terminal;
+package com.foxdebug.acode.rk.exec.terminal;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import tech.goatech.nothingide.rk.exec.terminal.*;
+import com.foxdebug.acode.rk.exec.terminal.*;
 
 
 public class TerminalService extends Service {
@@ -38,10 +38,10 @@ public class TerminalService extends Service {
 
     public static final String CHANNEL_ID = "terminal_exec_channel";
     
-    public static final String ACTION_EXIT_SERVICE = "tech.goatech.nothingide.ACTION_EXIT_SERVICE";
-    public static final String MOVE_TO_BACKGROUND = "tech.goatech.nothingide.MOVE_TO_BACKGROUND";
-    public static final String MOVE_TO_FOREGROUND = "tech.goatech.nothingide.MOVE_TO_FOREGROUND";
-    public static final String ACTION_TOGGLE_WAKE_LOCK = "tech.goatech.nothingide.ACTION_TOGGLE_WAKE_LOCK";
+    public static final String ACTION_EXIT_SERVICE = "com.foxdebug.acode.ACTION_EXIT_SERVICE";
+    public static final String MOVE_TO_BACKGROUND = "com.foxdebug.acode.MOVE_TO_BACKGROUND";
+    public static final String MOVE_TO_FOREGROUND = "com.foxdebug.acode.MOVE_TO_FOREGROUND";
+    public static final String ACTION_TOGGLE_WAKE_LOCK = "com.foxdebug.acode.ACTION_TOGGLE_WAKE_LOCK";
     public static boolean Default_Foreground = true;
 
     private final Map<String, Process> processes = new ConcurrentHashMap<>();
@@ -142,7 +142,7 @@ public class TerminalService extends Service {
     private void acquireWakeLock() {
         if (wakeLock == null) {
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "NothingIDE:TerminalWakeLock");
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AcodeTerminal:WakeLock");
         }
         
         if (!isWakeLockHeld) {
@@ -381,7 +381,7 @@ public class TerminalService extends Service {
         int notificationIcon = resolveDrawableId("ic_notification", "ic_launcher_foreground", "ic_launcher");
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Nothing IDE Terminal")
+                .setContentTitle("Acode Service")
                 .setContentText(contentText)
                 .setSmallIcon(notificationIcon)
                 .setOngoing(true)

@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.rk.exec.terminal;
+package com.foxdebug.acode.rk.exec.terminal;
 
 import org.apache.cordova.*;
 import org.json.*;
@@ -27,7 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.app.Activity;
-import tech.goatech.nothingide.rk.exec.terminal.*;
+import com.foxdebug.acode.rk.exec.terminal.*;
 
 import java.net.ServerSocket;
 

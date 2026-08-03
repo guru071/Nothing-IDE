@@ -24,13 +24,12 @@ import appSettings from "./settings";
 const isTermuxSafUri = (value = "") =>
 	value.startsWith("content://com.termux.documents/tree/");
 const isAcodeTerminalPublicSafUri = (value = "") =>
-	value.startsWith("content://tech.goatech.nothingide.documents/tree/");
+	value.startsWith("content://com.foxdebug.acode.documents/tree/");
 const isTerminalSafUri = (value = "") =>
 	isTermuxSafUri(value) || isAcodeTerminalPublicSafUri(value);
 
 const getTerminalPaths = () => {
-	const packageName =
-		window.BuildInfo?.packageName || "tech.goatech.nothingide";
+	const packageName = window.BuildInfo?.packageName || "com.foxdebug.acode";
 	const dataDir = `/data/user/0/${packageName}`;
 	const alpineRoot = `${dataDir}/files/alpine`;
 	const publicDir = `${dataDir}/files/public`;
@@ -194,24 +193,6 @@ function openFolder(_path, opts = {}) {
 	editorManager.emit("update", "add-folder");
 	editorManager.onupdate("add-folder", event);
 	editorManager.emit("add-folder", event);
-
-	void import("./projectExtensionRecommendations").then(
-		({ default: recommend }) => {
-			recommend(_path, title);
-		},
-		(error) => {
-			console.warn("Failed to load project extension recommendations.", error);
-		},
-	);
-
-	void import("./projectDependencyInstaller").then(
-		({ default: recommendInstall }) => {
-			recommendInstall(_path, title);
-		},
-		(error) => {
-			console.warn("Failed to load project dependency installer.", error);
-		},
-	);
 
 	if (listFiles) {
 		FileList.addRoot({ url: _path, name: title }).catch((err) => {
@@ -1310,10 +1291,4 @@ openFolder.find = (url) => {
 	return addedFolder.find((folder) => isInsideOpenFolder(url, folder.url));
 };
 
-export {
-	convertToProotPath,
-	isAcodeTerminalPublicSafUri,
-	isTerminalAccessiblePath,
-	isTerminalSafUri,
-};
 export default openFolder;

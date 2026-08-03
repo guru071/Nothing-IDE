@@ -2,29 +2,21 @@ import { EditorState } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import aura, { config as auraConfig } from "./aura";
 import ayuDark, { config as ayuDarkConfig } from "./ayuDark";
-import ayuLight, { config as ayuLightConfig } from "./ayuLight";
-import catppuccinMocha, {
-	config as catppuccinMochaConfig,
-} from "./catppuccinMocha";
 import cobalt, { config as cobaltConfig } from "./cobalt";
 import dracula, { config as draculaConfig } from "./dracula";
 import githubDark, { config as githubDarkConfig } from "./githubDark";
 import githubLight, { config as githubLightConfig } from "./githubLight";
 import gruvboxDark, { config as gruvboxDarkConfig } from "./gruvboxDark";
-import gruvboxLight, { config as gruvboxLightConfig } from "./gruvboxLight";
 import materialPalenight, {
 	config as materialPalenightConfig,
 } from "./materialPalenight";
 import monokai, { config as monokaiConfig } from "./monokai";
-import nightOwl, { config as nightOwlConfig } from "./nightOwl";
 import noctisLilac, { config as noctisLilacConfig } from "./noctisLilac";
 import nord, { config as nordConfig } from "./nord";
-import rosePineDawn, { config as rosePineDawnConfig } from "./rosePineDawn";
 import solarizedDark, { config as solarizedDarkConfig } from "./solarizedDark";
 import solarizedLight, {
 	config as solarizedLightConfig,
 } from "./solarizedLight";
-import synthwave84, { config as synthwave84Config } from "./synthwave84";
 import tokyoNight, { config as tokyoNightConfig } from "./tokyoNight";
 import tokyoNightDay, { config as tokyoNightDayConfig } from "./tokyoNightDay";
 import tomorrowNight, { config as tomorrowNightConfig } from "./tomorrowNight";
@@ -32,7 +24,6 @@ import tomorrowNightBright, {
 	config as tomorrowNightBrightConfig,
 } from "./tomorrowNightBright";
 import vscodeDark, { config as vscodeDarkConfig } from "./vscodeDark";
-import vscodeLight, { config as vscodeLightConfig } from "./vscodeLight";
 
 const oneDarkConfig = {
 	name: "one_dark",
@@ -92,7 +83,7 @@ function validateThemeExtensions(themeId, extensions) {
 	}
 
 	try {
-		// Validate against this app's own CodeMirror instance.
+		// Validate against Acode's own CodeMirror instance.
 		EditorState.create({ doc: "", extensions });
 		return true;
 	} catch (error) {
@@ -283,55 +274,6 @@ addTheme(
 	!!vscodeDarkConfig.dark,
 	() => vscodeDark(),
 	vscodeDarkConfig,
-);
-addTheme(
-	vscodeLightConfig.name,
-	"VS Code Light",
-	!!vscodeLightConfig.dark,
-	() => vscodeLight(),
-	vscodeLightConfig,
-);
-addTheme(
-	catppuccinMochaConfig.name,
-	"Catppuccin Mocha",
-	!!catppuccinMochaConfig.dark,
-	() => catppuccinMocha(),
-	catppuccinMochaConfig,
-);
-addTheme(
-	rosePineDawnConfig.name,
-	"Rosé Pine Dawn",
-	!!rosePineDawnConfig.dark,
-	() => rosePineDawn(),
-	rosePineDawnConfig,
-);
-addTheme(
-	nightOwlConfig.name,
-	"Night Owl",
-	!!nightOwlConfig.dark,
-	() => nightOwl(),
-	nightOwlConfig,
-);
-addTheme(
-	synthwave84Config.name,
-	"Synthwave '84",
-	!!synthwave84Config.dark,
-	() => synthwave84(),
-	synthwave84Config,
-);
-addTheme(
-	ayuLightConfig.name,
-	"Ayu Light",
-	!!ayuLightConfig.dark,
-	() => ayuLight(),
-	ayuLightConfig,
-);
-addTheme(
-	gruvboxLightConfig.name,
-	"Gruvbox Light",
-	!!gruvboxLightConfig.dark,
-	() => gruvboxLight(),
-	gruvboxLightConfig,
 );
 
 export default {

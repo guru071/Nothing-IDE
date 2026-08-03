@@ -188,13 +188,6 @@ export default function editorSettings() {
 			category: categories.assistance,
 		},
 		{
-			key: "codeSnippets",
-			text: strings["code snippets"],
-			checkbox: values.codeSnippets ?? true,
-			info: strings["settings-info-editor-code-snippets"],
-			category: categories.assistance,
-		},
-		{
 			key: "colorPreview",
 			text: strings["color preview"],
 			checkbox: values.colorPreview,

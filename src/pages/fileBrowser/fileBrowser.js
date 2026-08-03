@@ -1310,7 +1310,7 @@ function FileBrowserInclude(mode, info, doesOpenLast = true) {
 
 			if (ANDROID_SDK_INT === 29) {
 				const rootDirName = cordova.file.externalRootDirectory;
-				const testDirName = "NothingIDE_Test_file" + helpers.uuid();
+				const testDirName = "Acode_Test_file" + helpers.uuid();
 				const testDirFs = fsOperation(Url.join(rootDirName, testDirName));
 
 				try {

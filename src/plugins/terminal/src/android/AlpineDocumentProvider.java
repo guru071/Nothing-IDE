@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.rk.exec.terminal;
+package com.foxdebug.acode.rk.exec.terminal;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
-import tech.goatech.nothingide.R;
-import tech.goatech.nothingide.rk.exec.terminal.*;
+import com.foxdebug.acode.R;
+import com.foxdebug.acode.rk.exec.terminal.*;
 
 public class AlpineDocumentProvider extends DocumentsProvider {
     
@@ -374,13 +374,13 @@ public class AlpineDocumentProvider extends DocumentsProvider {
 
     private String getApplicationLabel() {
         Context context = getContext();
-        if (context == null) return "Nothing IDE";
+        if (context == null) return "Acode";
         PackageManager pm = context.getPackageManager();
         try {
             CharSequence label = pm.getApplicationLabel(context.getApplicationInfo());
-            return label != null ? label.toString() : "Nothing IDE";
+            return label != null ? label.toString() : "Acode";
         } catch (Exception ignored) {
-            return "Nothing IDE";
+            return "Acode";
         }
     }
 }

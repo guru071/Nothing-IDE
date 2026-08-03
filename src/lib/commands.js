@@ -329,110 +329,6 @@ export default {
 				).default();
 				break;
 
-			case "account":
-				(
-					await import(
-						/* webpackChunkName: "account" */ "pages/account/account"
-					)
-				).default();
-				break;
-
-			case "log_viewer":
-				(
-					await import(
-						/* webpackChunkName: "logViewer" */ "pages/logViewer/logViewer"
-					)
-				).default();
-				break;
-
-			case "wireless_debug":
-				(
-					await import(
-						/* webpackChunkName: "wirelessDebug" */ "pages/wirelessDebug/wirelessDebug"
-					)
-				).default();
-				break;
-
-			case "regex_playground":
-				(
-					await import(
-						/* webpackChunkName: "regexPlayground" */ "pages/regexPlayground/regexPlayground"
-					)
-				).default();
-				break;
-
-			case "color_picker":
-				(
-					await import(
-						/* webpackChunkName: "colorPicker" */ "pages/colorPicker/colorPicker"
-					)
-				).default();
-				break;
-
-			case "rest_client":
-				(
-					await import(
-						/* webpackChunkName: "restClient" */ "pages/restClient/restClient"
-					)
-				).default();
-				break;
-
-			case "hex_viewer":
-				(
-					await import(
-						/* webpackChunkName: "hexViewer" */ "pages/hexViewer/hexViewer"
-					)
-				).default();
-				break;
-
-			case "data_viewer":
-				(
-					await import(
-						/* webpackChunkName: "dataViewer" */ "pages/dataViewer/dataViewer"
-					)
-				).default();
-				break;
-
-			case "clipboard_history":
-				(
-					await import(
-						/* webpackChunkName: "clipboardHistory" */ "pages/clipboardHistory/clipboardHistory"
-					)
-				).default();
-				break;
-
-			case "apk_analyzer":
-				(
-					await import(
-						/* webpackChunkName: "apkAnalyzer" */ "pages/apkAnalyzer/apkAnalyzer"
-					)
-				).default();
-				break;
-
-			case "android_build":
-				(
-					await import(
-						/* webpackChunkName: "androidBuild" */ "pages/androidBuild/androidBuild"
-					)
-				).default();
-				break;
-
-			case "manifest_editor":
-				(
-					await import(
-						/* webpackChunkName: "manifestEditor" */ "pages/manifestEditor/manifestEditor"
-					)
-				).default();
-				break;
-
-			case "database_browser":
-				(
-					await import(
-						/* webpackChunkName: "databaseBrowser" */ "pages/databaseBrowser/databaseBrowser"
-					)
-				).default();
-				break;
-
 			case "plugins":
 				(
 					await import(/* webpackChunkName: "plugins" */ "pages/plugins")
@@ -761,7 +657,7 @@ export default {
 		editorManager.activeFile.eol = eol;
 	},
 	"open-log-file"() {
-		this.open("log_viewer");
+		openFile(Url.join(DATA_STORAGE, config.LOG_FILE_NAME));
 	},
 	"copy-device-info"() {
 		let webviewInfo = {};

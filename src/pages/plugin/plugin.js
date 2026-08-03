@@ -6,7 +6,7 @@ import loader from "dialogs/loader";
 import { addIntentHandler, removeIntentHandler } from "handlers/intent";
 import purchaseListener from "handlers/purchase";
 import actionStack from "lib/actionStack";
-import auth from "lib/auth";
+import auth, { loginEvents } from "lib/auth";
 import config from "lib/config";
 import customTab from "lib/customTab";
 import installPlugin from "lib/installPlugin";
@@ -270,85 +270,39 @@ export default async function PluginInclude(
 		const $button = e.target;
 		const oldText = $button.textContent;
 
-		if (helpers.shouldAllowExternalPurchase()) {
-			// Not a Play Store install, so Play Billing isn't available - use the
-			// native Razorpay checkout instead (typeof guard: on iOS/desktop
-			// builds this Android-only Cordova plugin simply doesn't exist).
-			if (typeof razorpay === "undefined") {
-				alert(strings.error, strings.api_error);
+		try {
+			if (helpers.shouldAllowExternalPurchase()) {
+				await customTab(`${config.BASE_URL}/plugin/${id}?callback=app`);
+				if (!purchaseHandlerSet) {
+					purchaseHandlerSet = true;
+					const handler = async ({ module, action, value }) => {
+						if (module === "plugin" && action === "purchased" && value === id) {
+							loader.show();
+
+							try {
+								const pluginData = await fsOperation(
+									config.API_BASE,
+									`plugin/${id}`,
+								).readFile("json");
+
+								purchased = pluginData.owned;
+								render();
+							} catch (error) {
+								window.log(error);
+								helpers.error(error);
+							}
+
+							loader.hide();
+							purchaseHandlerSet = false;
+							removeIntentHandler(handler);
+						}
+					};
+					addIntentHandler(handler);
+					cleanups.push(() => removeIntentHandler(handler));
+				}
 				return;
 			}
-
-			const accessToken = await auth.getAccessToken();
-			if (!accessToken) {
-				alert(
-					strings.info,
-					"Sign in first (Settings › Account) to buy this plugin.",
-				);
-				return;
-			}
-
-			try {
-				$button.textContent = strings["loading..."];
-
-				const orderRes = await fetch(
-					Url.join(config.API_BASE, "plugin/razorpay/order"),
-					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${accessToken}`,
-						},
-						body: JSON.stringify({ id: plugin.id }),
-					},
-				);
-				if (!orderRes.ok) {
-					const { error } = await orderRes.json().catch(() => ({}));
-					throw new Error(error || "Could not start checkout.");
-				}
-				const order = await orderRes.json();
-
-				const result = await razorpay.open(order.keyId, {
-					order_id: order.orderId,
-					amount: order.amount,
-					currency: order.currency,
-					name: config.BRAND_NAME,
-					description: plugin.name,
-					image: config.BRAND_LOGO_URL,
-					theme: { color: config.BRAND_COLOR },
-				});
-
-				const verifyRes = await fetch(
-					Url.join(config.API_BASE, "plugin/razorpay/verify"),
-					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${accessToken}`,
-						},
-						body: JSON.stringify({
-							orderId: result.orderId,
-							paymentId: result.paymentId,
-							signature: result.signature,
-						}),
-					},
-				);
-				if (!verifyRes.ok) {
-					const { error } = await verifyRes.json().catch(() => ({}));
-					throw new Error(error || "Payment verification failed.");
-				}
-
-				purchased = true;
-				$button.textContent = oldText;
-				install();
-			} catch (error) {
-				window.log("error", "Failed to buy via Razorpay:");
-				window.log("error", error);
-				helpers.error(error);
-				$button.textContent = oldText;
-			}
-			return;
-		}
+		} catch (error) {}
 
 		try {
 			if (!product) throw new Error("Product not found");
@@ -359,45 +313,20 @@ export default async function PluginInclude(
 				return;
 			}
 
-			// Purchases must be tied to a signed-in account so the server can
-			// actually record ownership - check this before charging real money
-			// through Play Billing, not after.
-			const accessToken = await auth.getAccessToken();
-			if (!accessToken) {
-				alert(
-					strings.info,
-					"Sign in first (Settings › Account) to buy this plugin.",
-				);
-				return;
-			}
-
 			iap.setPurchaseUpdatedListener(...purchaseListener(onpurchase, onerror));
 			$button.textContent = strings["loading..."];
 			await helpers.promisify(iap.purchase, product.productId);
 
 			async function onpurchase(e) {
 				const purchase = await getPurchase(product.productId);
-				const orderRes = await fetch(
-					Url.join(config.API_BASE, "plugin/order"),
-					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${accessToken}`,
-						},
-						body: JSON.stringify({
-							id: plugin.id,
-							token: purchase?.purchaseToken,
-							package: BuildInfo.packageName,
-						}),
-					},
-				);
-				if (!orderRes.ok) {
-					const { error } = await orderRes.json().catch(() => ({}));
-					helpers.error(new Error(error || "Purchase verification failed."));
-					$button.textContent = oldText;
-					return;
-				}
+				await fetch(Url.join(config.API_BASE, "plugin/order"), {
+					method: "POST",
+					body: JSON.stringify({
+						id: plugin.id,
+						token: purchase?.purchaseToken,
+						package: BuildInfo.packageName,
+					}),
+				});
 				purchaseToken = purchase?.purchaseToken;
 				purchased = !!purchase;
 				$button.textContent = oldText;

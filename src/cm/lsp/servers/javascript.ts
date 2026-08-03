@@ -87,11 +87,6 @@ export const javascriptServers: LspServerManifest[] = [
 			executable: "vtsls",
 			packages: ["@vtsls/language-server"],
 		}),
-		// Intentionally stays disabled: an alternative TypeScript/JS server
-		// covering the exact same languages as "typescript" above, which is
-		// already enabled - running both at once would duplicate every
-		// completion/hover/diagnostic. Leave this off unless "typescript" is
-		// disabled first.
 		enabled: false,
 		initializationOptions: {
 			hostInfo: "acode",
@@ -255,7 +250,7 @@ export const javascriptServers: LspServerManifest[] = [
 			executable: "vscode-eslint-language-server",
 			packages: ["vscode-langservers-extracted"],
 		}),
-		enabled: true,
+		enabled: false,
 		initializationOptions: {
 			validate: "on",
 			rulesCustomizations: [],

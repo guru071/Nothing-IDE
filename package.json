@@ -1,8 +1,8 @@
 {
-  "name": "tech.goatech.nothingide",
-  "displayName": "Nothing IDE",
+  "name": "com.foxdebug.acode",
+  "displayName": "Acode",
   "version": "1.12.3",
-  "description": "Nothing IDE is a code editor for android",
+  "description": "Acode is a code editor for android",
   "scripts": {
     "lang": "node ./utils/lang.js",
     "build": "sh utils/scripts/build.sh",
@@ -21,15 +21,13 @@
   "keywords": [
     "ecosystem:cordova"
   ],
-  "author": "GOAT'ECH",
+  "author": "Foxdebug (Ajit Kumar)",
   "license": "MIT",
   "cordova": {
     "plugins": {
       "cordova-clipboard": {},
       "cordova-plugin-device": {},
-      "cordova-plugin-file": {
-        "ANDROIDX_WEBKIT_VERSION": "1.4.0"
-      },
+      "cordova-plugin-file": {},
       "cordova-plugin-server": {},
       "cordova-plugin-ftp": {},
       "cordova-plugin-sdcard": {},
@@ -37,17 +35,15 @@
       "cordova-plugin-buildinfo": {},
       "cordova-plugin-browser": {},
       "cordova-plugin-sftp": {},
-      "tech.goatech.nothingide.rk.exec.terminal": {},
-      "tech.goatech.nothingide.rk.plugin.plugincontext": {},
-      "tech.goatech.nothingide.rk.exec.proot": {},
+      "com.foxdebug.acode.rk.exec.terminal": {},
+      "com.foxdebug.acode.rk.plugin.plugincontext": {},
+      "com.foxdebug.acode.rk.auth": {},
+      "com.foxdebug.acode.rk.exec.proot": {},
       "cordova-plugin-iap": {},
-      "cordova-plugin-razorpay": {},
-      "tech.goatech.nothingide.rk.customtabs": {},
+      "com.foxdebug.acode.rk.customtabs": {},
       "cordova-plugin-system": {},
       "cordova-plugin-crashhandler": {},
-      "cordova-plugin-advanced-http": {
-        "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
-      }
+      "cordova-plugin-advanced-http": {}
     },
     "platforms": [
       "android"
@@ -55,12 +51,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guru071/Nothing-IDE.git"
+    "url": "git+https://github.com/deadlyjack/acode.git"
   },
   "bugs": {
-    "url": "https://github.com/guru071/Nothing-IDE/issues"
+    "url": "https://github.com/deadlyjack/acode/issues"
   },
-  "homepage": "https://github.com/guru071/Nothing-IDE#readme",
+  "homepage": "https://github.com/deadlyjack/acode#readme",
   "devDependencies": {
     "@babel/core": "^8.0.1",
     "@babel/generator": "^7.29.1",
@@ -81,7 +77,11 @@
     "autoprefixer": "^10.5.0",
     "babel-loader": "^10.1.1",
     "chokidar": "^4.0.3",
-    "cordova": "13.0.0",
+    "com.foxdebug.acode.rk.auth": "file:src/plugins/auth",
+    "com.foxdebug.acode.rk.customtabs": "file:src/plugins/custom-tabs",
+    "com.foxdebug.acode.rk.exec.proot": "file:src/plugins/proot",
+    "com.foxdebug.acode.rk.exec.terminal": "file:src/plugins/terminal",
+    "com.foxdebug.acode.rk.plugin.plugincontext": "file:src/plugins/pluginContext",
     "cordova-android": "^15.0.0",
     "cordova-clipboard": "^1.3.0",
     "cordova-plugin-advanced-http": "file:src/plugins/cordova-plugin-advanced-http",
@@ -92,7 +92,6 @@
     "cordova-plugin-file": "^8.1.3",
     "cordova-plugin-ftp": "file:src/plugins/ftp",
     "cordova-plugin-iap": "file:src/plugins/iap",
-    "cordova-plugin-razorpay": "file:src/plugins/razorpay",
     "cordova-plugin-sdcard": "file:src/plugins/sdcard",
     "cordova-plugin-server": "file:src/plugins/server",
     "cordova-plugin-sftp": "file:src/plugins/sftp",
@@ -108,19 +107,13 @@
     "sass": "^1.99.0",
     "sass-loader": "^16.0.8",
     "style-loader": "^4.0.0",
-    "tech.goatech.nothingide.rk.customtabs": "file:src/plugins/custom-tabs",
-    "tech.goatech.nothingide.rk.exec.proot": "file:src/plugins/proot",
-    "tech.goatech.nothingide.rk.exec.terminal": "file:src/plugins/terminal",
-    "tech.goatech.nothingide.rk.plugin.plugincontext": "file:src/plugins/pluginContext",
     "terminal": "^0.1.4",
     "ts-loader": "^9.5.7",
     "typescript": "^5.9.3",
-    "vscode-languageserver-protocol": "^3.17.5",
     "vscode-languageserver-types": "^3.17.5",
     "ws": "^8.21.0"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.68.0",
     "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/lang-angular": "^0.1.4",
@@ -153,11 +146,11 @@
     "@codemirror/state": "^6.6.0",
     "@codemirror/theme-one-dark": "^6.1.3",
     "@codemirror/view": "^6.43.4",
+    "@deadlyjack/ajax": "^1.2.6",
     "@emmetio/codemirror6-plugin": "^0.4.1",
     "@lezer/common": "^1.5.0",
     "@lezer/highlight": "^1.2.3",
     "@lezer/lr": "^1.4.7",
-    "@supabase/supabase-js": "^2.109.0",
     "@ungap/custom-elements": "^1.3.0",
     "@xterm/addon-attach": "^0.12.0",
     "@xterm/addon-fit": "^0.11.0",
@@ -170,10 +163,12 @@
     "acorn": "^8.16.0",
     "autosize": "^6.0.1",
     "codemirror": "^6.0.2",
+    "cordova": "13.0.0",
     "core-js": "^3.49.0",
     "dayjs": "^1.11.20",
     "dompurify": "^3.4.11",
     "escape-string-regexp": "^5.0.0",
+    "esprima": "^4.0.1",
     "filesize": "^11.0.17",
     "html-tag-js": "^2.4.16",
     "jszip": "^3.10.1",
@@ -190,7 +185,6 @@
     "motion": "^12.42.0",
     "mustache": "^4.2.0",
     "picomatch": "^4.0.4",
-    "sql.js": "^1.14.1",
     "url-parse": "^1.5.10",
     "vanilla-picker": "^2.12.3",
     "yargs": "^18.0.0"

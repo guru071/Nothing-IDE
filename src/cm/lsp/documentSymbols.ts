@@ -120,41 +120,6 @@ export function getSymbolKindIcon(kind: SymbolKind): string {
 	return SYMBOL_KIND_ICONS[kind] || "code";
 }
 
-// Short text badges (not icon-font glyphs - this app's icon font doesn't
-// have per-symbol-kind glyphs) shown next to each symbol in outline UIs.
-const SYMBOL_KIND_ABBREV: Record<SymbolKind, string> = {
-	1: "Fi",
-	2: "Mo",
-	3: "Ns",
-	4: "Pk",
-	5: "C",
-	6: "M",
-	7: "P",
-	8: "F",
-	9: "Co",
-	10: "E",
-	11: "I",
-	12: "fn",
-	13: "V",
-	14: "c",
-	15: "S",
-	16: "#",
-	17: "B",
-	18: "[]",
-	19: "{}",
-	20: "K",
-	21: "∅",
-	22: "Em",
-	23: "St",
-	24: "Ev",
-	25: "Op",
-	26: "T",
-};
-
-export function getSymbolKindAbbreviation(kind: SymbolKind): string {
-	return SYMBOL_KIND_ABBREV[kind] || "?";
-}
-
 function isDocumentSymbol(
 	item: DocumentSymbol | SymbolInformation,
 ): item is DocumentSymbol {

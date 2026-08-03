@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.rk.customtabs;
+package com.foxdebug.acode.rk.customtabs;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

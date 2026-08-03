@@ -1,7 +1,6 @@
 import "core-js/stable";
 import "html-tag-js/dist/polyfill";
 import { parse } from "acorn";
-import DOMPurify from "dompurify";
 import css from "styles/console.m.scss";
 import loadPolyFill from "utils/polyfill";
 
@@ -391,17 +390,11 @@ import loadPolyFill from "utils/polyfill";
 				const fun = ("(" + data.toString() + ")").replace(/\{.*\}/, "{}");
 				parsed = parse(fun, acornOptions).body[0];
 			} catch (error) {
-				// Unlike the success paths below (which only ever extract bare
-				// identifier names, safe by construction), this fallback only
-				// runs when the source didn't parse as valid JS at all - so it
-				// can't be assumed to be free of HTML-special characters before
-				// the caller sets it via innerHTML.
-				const fallback = data
+				return data
 					.toString()
 					.replace(/({).*(})/, "$1...$2")
 					.replace(/^function\s+[\w_$\d]+\s*/, "")
 					.replace(/\s*/g, "");
-				return DOMPurify.sanitize(fallback, { ALLOWED_TAGS: [] });
 			}
 		}
 

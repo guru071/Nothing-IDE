@@ -1,7 +1,4 @@
 module.exports = {
-  openDeveloperOptions: function (success, error) {
-    cordova.exec(success, error, 'System', 'openDeveloperOptions', []);
-  },
   isManageExternalStorageDeclared: function (success, error) {
     cordova.exec(success, error, 'System', 'isManageExternalStorageDeclared', []);
   },
@@ -218,9 +215,6 @@ module.exports = {
   },
   setIntentHandler: function (handler, onerror) {
     cordova.exec(handler, onerror, 'System', 'set-intent-handler', []);
-  },
-  setAuthCallbackHandler: function (handler, onerror) {
-    cordova.exec(handler, onerror, 'System', 'set-auth-callback-handler', []);
   },
   getCordovaIntent: function (onSuccess, onFail) {
     cordova.exec(onSuccess, onFail, 'System', 'get-cordova-intent', []);

@@ -13,15 +13,11 @@ export const systemsServers: LspServerManifest[] = [
 			"--header-insertion=never",
 		],
 		checkCommand: "which clangd",
-		// The unversioned "clang-extra-tools" package name never actually
-		// existed in Alpine (confirmed via pkgs.alpinelinux.org - clangd is
-		// only ever shipped in a versioned package, e.g. clang22-extra-tools
-		// on the current stable branch) - fixed while enabling this server.
 		installer: installers.apk({
 			executable: "clangd",
-			packages: ["clang22-extra-tools"],
+			packages: ["clang-extra-tools"],
 		}),
-		enabled: true,
+		enabled: false,
 	}),
 	defineServer({
 		id: "gopls",

@@ -4,7 +4,6 @@ node_modules
 /plugins
 /platforms
 /keystore.jks
-/keystore/
 /platforms/android/debug-signing.properties
 /platforms/android/release-signing.properties
 **/*/.DS_Store

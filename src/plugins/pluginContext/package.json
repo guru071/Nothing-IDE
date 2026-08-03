@@ -1,9 +1,9 @@
 {
-  "name": "tech.goatech.nothingide.rk.plugin.plugincontext",
+  "name": "com.foxdebug.acode.rk.plugin.plugincontext",
   "version": "1.0.0",
   "description": "PluginContext",
   "cordova": {
-    "id": "tech.goatech.nothingide.rk.plugin.plugincontext",
+    "id": "com.foxdebug.acode.rk.plugin.plugincontext",
     "platforms": [
       "android"
     ]

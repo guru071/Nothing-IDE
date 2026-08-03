@@ -27,7 +27,7 @@ module.exports = (env, options) => {
       ],
     },
     {
-      test: /\.(hbs|md|sh)$/,
+      test: /\.(hbs|md)$/,
       use: ['raw-loader'],
     },
     {
@@ -44,7 +44,7 @@ module.exports = (env, options) => {
       type: 'asset/source',
     },
     {
-      test: /\.(png|svg|jpg|jpeg|ico|ttf|webp|eot|woff|webm|mp4|webp|wav|wasm)(\?.*)?$/,
+      test: /\.(png|svg|jpg|jpeg|ico|ttf|webp|eot|woff|webm|mp4|webp|wav)(\?.*)?$/,
       resourceQuery: { not: [/raw/] },
       type: "asset/resource",
     },

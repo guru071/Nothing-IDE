@@ -25,12 +25,10 @@ fs.copyFileSync(gradleFilePath, androidGradleFilePath);
 // directories that are required later in the build. Keep the generated tree and
 // only overlay this project's custom resources on top of it.
 copyDirRecursively(localResPath, resPath);
-removeStaleCordovaTemplateIcons();
 enableLegacyJni();
 enableStaticContext();
 patchTargetSdkVersion();
 enableKeyboardWorkaround();
-enableWebViewSoftwareRendering();
 
 function getPackageName() {
   const configPath = path.resolve(__dirname, '../config.xml');
@@ -40,7 +38,7 @@ function getPackageName() {
   }
   const content = fs.readFileSync(configPath, 'utf-8');
   const match = content.match(/id="([^"]+)"/);
-  const packageName = match ? match[1] : 'tech.goatech.nothingide';
+  const packageName = match ? match[1] : 'com.foxdebug.acode';
   return packageName;
 }
 
@@ -237,11 +235,11 @@ function enableKeyboardWorkaround() {
     }
 
     // Add import
-    if (!content.includes('import tech.goatech.nothingide.system.SoftInputAssist;')) {
+    if (!content.includes('import com.foxdebug.system.SoftInputAssist;')) {
       content = content.replace(
         /import java.lang.ref.WeakReference;|import org\.apache\.cordova\.\*;/,
         match =>
-          match + '\nimport tech.goatech.nothingide.system.SoftInputAssist;'
+          match + '\nimport com.foxdebug.system.SoftInputAssist;'
       );
     }
 
@@ -268,54 +266,6 @@ function enableKeyboardWorkaround() {
   }
 }
 
-// Some devices (seen on a Snapdragon-based Moto G57 Power) fail to
-// rasterize custom web-font glyphs (the app's icon fonts, which use
-// Private Use Area codepoints) when the WebView is hardware-accelerated,
-// even though the font/CSS itself loads and is declared correctly -
-// regular text renders fine, only the custom glyphs come out as
-// tofu/missing-glyph boxes. Forcing the WebView specifically (not the
-// whole app) to software rendering is the standard workaround for this
-// class of Android WebView text-rendering bug.
-function enableWebViewSoftwareRendering() {
-  try {
-    const prefix = execSync('npm prefix').toString().trim();
-    const packageName = getPackageName();
-    const mainActivityPath = path.join(
-      prefix,
-      'platforms/android/app/src/main/java',
-      packageName.replace(/\./g, '/'),
-      'MainActivity.java'
-    );
-
-    if (!fs.existsSync(mainActivityPath)) {
-      console.warn('[Cordova Hook] ⚠️ MainActivity.java not found at', mainActivityPath);
-      return;
-    }
-
-    let content = fs.readFileSync(mainActivityPath, 'utf-8');
-
-    if (content.includes('LAYER_TYPE_SOFTWARE')) {
-      console.log('[Cordova Hook] ✅ WebView software rendering already enabled, skipping');
-      return;
-    }
-
-    content = content.replace(
-      /loadUrl\(launchUrl\);/,
-      `loadUrl(launchUrl);\n\n        ` +
-        `// Workaround: some devices fail to render the app's icon-font glyphs ` +
-        `under hardware acceleration - see enableWebViewSoftwareRendering() in hooks/post-process.js\n` +
-        `        if (this.appView != null && this.appView.getView() != null) {\n` +
-        `            this.appView.getView().setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null);\n` +
-        `        }`
-    );
-
-    fs.writeFileSync(mainActivityPath, content, 'utf-8');
-    console.log('[Cordova Hook] ✅ Enabled WebView software rendering');
-  } catch (err) {
-    console.error('[Cordova Hook] ❌ Failed to enable WebView software rendering:', err.message);
-  }
-}
-
 
 /**
  * Copy directory recursively
@@ -323,31 +273,6 @@ function enableWebViewSoftwareRendering() {
  * @param {string} dest Destination directory
  * @param {string[]} skip Files to not copy
  */
-// cordova-android's own project template ships default launcher-icon assets under
-// mipmap-{density}-v26/, a path our res/android overlay never populates (it only
-// has mipmap-{density}/ and mipmap-anydpi-v26/). Android treats an exact density
-// match as more specific than the anydpi-v26 wildcard, so those stock template
-// icons would silently win over ours on real devices unless removed here.
-function removeStaleCordovaTemplateIcons() {
-  const densities = ['ldpi', 'mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi'];
-  const iconFiles = [
-    'ic_launcher.xml',
-    'ic_launcher_background.png',
-    'ic_launcher_foreground.png',
-    'ic_launcher_monochrome.png',
-  ];
-  densities.forEach((density) => {
-    const dir = path.join(resPath, `mipmap-${density}-v26`);
-    iconFiles.forEach((file) => {
-      const filePath = path.join(dir, file);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    });
-    if (fs.existsSync(dir) && fs.readdirSync(dir).length === 0) {
-      fs.rmdirSync(dir);
-    }
-  });
-}
-
 function copyDirRecursively(src, dest, skip = [], currPath = '') {
   const exists = fs.existsSync(src);
   const stats = exists && fs.statSync(src);

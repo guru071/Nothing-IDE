@@ -1,4 +1,4 @@
-package tech.goatech.nothingide.crashhandler;
+package com.foxdebug.crashhandler;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -86,7 +86,7 @@ public class CrashActivity extends Activity {
         String webViewVersion = getWebViewVersion();
         String appLanguage = getAppLanguage();
 
-        fullReport = "Nothing IDE Crash Report\n" +
+        fullReport = "Acode Crash Report\n" +
                 "==================\n" +
                 "WebView Version: " + webViewVersion + "\n" +
                 "App Language: " + appLanguage + "\n" +
@@ -114,7 +114,7 @@ public class CrashActivity extends Activity {
         rootLayout.setLayoutParams(rootParams);
 
         TextView titleView = new TextView(this);
-        titleView.setText("Nothing IDE Crashed");
+        titleView.setText("Acode Crashed");
         titleView.setTextSize(24);
         titleView.setTextColor(colorPrimaryText);
         titleView.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
@@ -126,7 +126,7 @@ public class CrashActivity extends Activity {
         rootLayout.addView(titleView);
 
         TextView descView = new TextView(this);
-        descView.setText("An unrecoverable exception occurred in Nothing IDE's native system. The application details and exception logs have been recorded below.");
+        descView.setText("An unrecoverable exception occurred in Acode's native system. The application details and exception logs have been recorded below.");
         descView.setTextSize(14);
         descView.setTextColor(colorSecondaryText);
         LinearLayout.LayoutParams descParams = new LinearLayout.LayoutParams(
@@ -221,7 +221,7 @@ public class CrashActivity extends Activity {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         buttonsLayout.setLayoutParams(buttonsParams);
 
-        TextView btnRestart = createButton("Restart Nothing IDE", colorButtonPrimaryText, colorButtonPrimaryBg, false);
+        TextView btnRestart = createButton("Restart Acode", colorButtonPrimaryText, colorButtonPrimaryBg, false);
         btnRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,7 +241,7 @@ public class CrashActivity extends Activity {
             @Override
             public void onClick(View v) {
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Nothing IDE Crash Log", fullReport);
+                ClipData clip = ClipData.newPlainText("Acode Crash Log", fullReport);
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(CrashActivity.this, "Copied report to clipboard!", Toast.LENGTH_SHORT).show();
             }
@@ -267,7 +267,7 @@ public class CrashActivity extends Activity {
         SharedPreferences prefs = null;
         try {
             prefs = getApplicationContext()
-                    .getSharedPreferences("nothingide_theme", Context.MODE_PRIVATE);
+                    .getSharedPreferences("acode_theme", Context.MODE_PRIVATE);
         } catch (Exception ignored) {}
 
         colorPrimaryBg = getThemeColor(prefs, "primaryColor", "#23272a");
